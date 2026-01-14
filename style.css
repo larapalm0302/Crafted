@@ -1,0 +1,17 @@
+/*
+Theme Name: Crafted
+Theme URI: https://example.com/
+Author: Jij
+Description: Simpel custom theme.
+Version: 1.0
+*/
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+header, footer {
+    background: #111;
+    color: white;
+    padding: 20px;
+}
