@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $to = get_option('admin_email');
             $subject = 'Nieuwe vraag van: ' . $naam;
             
-            $message = 'Dit komt van ' . $naam . '. Mail adres is ' . $email . ' met de vraag: ' . $vraag;
+            $message = 'Dit bericht is afkomstig van de heer/ mevrouw ' . $naam . '. Het mail adres is ' . $email . ' en die heeft de vraag: ' . $vraag;
             
             $headers = array('Content-Type: text/plain; charset=UTF-8');
             $headers[] = 'From: ' . get_option('blogname') . ' <' . get_option('admin_email') . '>';
