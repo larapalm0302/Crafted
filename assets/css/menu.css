@@ -20,7 +20,7 @@ menu {
     background-color: #00000033;
     backdrop-filter: blur(8px) brightness(0.75);
     transition:
-            opacity 0.5s ease,
+        opacity 0.5s ease,
             visibility 0s linear 0s,
             backdrop-filter 0.5s ease;
     display: grid;
@@ -41,7 +41,7 @@ menu.menu-invisible {
     /* display: none; */
     opacity: 0;
     transition:
-            opacity 0.5s ease,
+        opacity 0.5s ease,
             visibility 0s linear 0.5s,
             backdrop-filter 0.5s ease;
     visibility: hidden;
@@ -79,7 +79,7 @@ menu.menu-invisible {
 
 .menu-header {
     display: flex;
-        grid-area: text;
+    grid-area: text;
     align-items: center;
     justify-items: center;
     height: 100%;
@@ -114,17 +114,6 @@ menu.menu-invisible {
     gap: 40px;
 }
 
-@media screen and (max-width: 1024px) {
-    .info-container {
-        display: none;
-    }
-}
-
-@media screen and (max-width: 768px) {
-    .info-container {
-        display: none;
-    }
-}
 .info {
     background: #c25a95;
     border-radius: 12px;
@@ -209,6 +198,9 @@ menu.menu-invisible {
         text-shadow: -5px -1.5px 0px #4f2e5b;
     }
 
+        .info {
+            max-width: 450px;
+        }
     .timer {
         flex-wrap: wrap;
         gap: 12px;
@@ -278,6 +270,7 @@ menu.menu-invisible {
         height: 40px;
     }
 }
+
 @media screen and (max-width: 768px) {
     menu {
         grid-template-columns: 1fr;
@@ -300,6 +293,18 @@ menu.menu-invisible {
     .menu-header .crafted-text {
         font-size: 32px;
         text-shadow: -4px -1px 0px #4f2e5b;
+    }
+
+    .info {
+        max-width: 450px;
+    }
+
+    .largeH br {
+        display: none;
+    }
+
+    .smallFont {
+        font-size: unset
     }
 
     .timer {
@@ -340,7 +345,7 @@ menu.menu-invisible {
         padding: 8px 6px;
         height: 40px;
         border: none;
-            cursor: pointer;
+        cursor: pointer;
             transition: all 0.3s ease;
         }
         
@@ -377,7 +382,7 @@ menu.menu-invisible {
         width: 100%;
         gap: 10px;
         justify-content: center;
-            flex-wrap: wrap;
+        flex-wrap: wrap;
     }
 
     .socials .social-image-container {
@@ -392,20 +397,21 @@ menu.menu-invisible {
 
 @media screen and (max-width: 480px) {
     menu {
-            padding: 16px;
+        padding: 16px;
             gap: 20px;
         }
     
         .menu-header {
             gap: 12px;
         }
+
     .menu-header .crafted-text {
         font-size: 24px;
         text-shadow: -3px -1px 0px #4f2e5b;
-        }
-        
-        .timer {
-            gap: 6px;
+    }
+
+    .timer {
+        display: none;
     }
 
     .timercounter {
@@ -434,27 +440,27 @@ menu.menu-invisible {
         padding: 6px 4px;
         height: 35px;
         min-height: 35px;
-        }
-        
-        .info {
-            min-height: 130px;
-            padding: 12px;
-        }
-        
-        .info p {
-            font-size: 12px;
-        }
-        
-        .socials {
-            gap: 8px;
-        }
-        
-        .socials .social-image-container {
-            padding: 6px;
-        }
-        
-        .socials svg {
-            width: 25px;
-            height: 25px;
+    }
+
+    .info {
+        min-height: 130px;
+        padding: 12px;
+    }
+
+    .info p {
+        font-size: 12px;
+    }
+
+    .socials {
+        gap: 8px;
+    }
+
+    .socials .social-image-container {
+        padding: 6px;
+    }
+
+    .socials svg {
+        width: 25px;
+        height: 25px;
     }
 }
