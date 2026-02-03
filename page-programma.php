@@ -2,7 +2,7 @@
 /*
 Template Name: Programma
 */
-wp_enqueue_style('page-programma-style', get_template_directory_uri() . '/assets/programma.css');
+wp_enqueue_style('page-programma-style', get_template_directory_uri() . '/assets/css/programma.css');
 
 get_header();
 
