@@ -409,12 +409,10 @@ body {
         font-size: 16px;
         white-space: normal;
         overflow: hidden;
-        -webkit-line-clamp: 2;
     }
 
     .news-descriptions {
         font-size: 12px;
-        -webkit-line-clamp: 1;
     }
 
     #storylines {
@@ -557,7 +555,6 @@ body {
         
             .news-descriptions {
                 font-size: 13px;
-                -webkit-line-clamp: 1;
             }
         
             #storylines {
@@ -685,12 +682,10 @@ body {
 
     .news-title {
         font-size: 14px;
-        -webkit-line-clamp: 1;
     }
 
     .news-descriptions {
         font-size: 11px;
-        -webkit-line-clamp: 1;
     }
         
         #storylines {

@@ -1,19 +1,16 @@
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Summa Fashion Show</title>
-    <link rel="stylesheet" href="<?php echo get_stylesheet_directory_uri(); ?>/ticket.css">
-</head>
+<?php 
+wp_enqueue_style('ticket-style', get_template_directory_uri() . '/assets/css/ticket.css');
+get_header();
+?>
+
 <body>
     <div class="container">
         <div class="content-wrapper">
             <div class="left-section">
                 <h1>Summa fashion show</h1>
-                
+
                 <p>Welkom bij de jaarlijkse CRAFTED Fashion Show! Een spetterend evenement waar creativiteit, mode en talent samenkomen. Onze getalenteerde studenten presenteren hun unieke ontwerpen op de catwalk.</p>
-                
+
                 <p>Verwacht een avond vol verrassende creaties, van avant-garde tot streetwear. Elke collectie vertelt een verhaal en laat de passie en vakmanschap van onze studenten zien.</p>
 
                 <ul class="features">
@@ -64,6 +61,6 @@
         </div>
     </div>
 
-    
+
 
     <?php get_footer(); ?>
