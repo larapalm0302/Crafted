@@ -1,0 +1,460 @@
+html:has(menu:not(.menu-invisible)) {
+    overflow: hidden;
+
+    * :not(menu, menu *) {
+        pointer-events: none;
+        user-select: none;
+    }
+}
+
+menu {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    margin: 0;
+    padding: 0;
+    background-color: #00000033;
+    backdrop-filter: blur(8px) brightness(0.75);
+    transition:
+            opacity 0.5s ease,
+            visibility 0s linear 0s,
+            backdrop-filter 0.5s ease;
+    display: grid;
+    grid-template-columns: 40% 1fr 40%;
+    grid-template-rows: 20% 1fr;
+    gap: 0px 0px;
+    grid-template-areas:
+        "Header Header Header"
+        "MenuButtons Spacer Info";
+    justify-items: center;
+    align-items: center;
+
+    visibility: visible;
+    opacity: 1;
+}
+
+menu.menu-invisible {
+    /* display: none; */
+    opacity: 0;
+    transition:
+            opacity 0.5s ease,
+            visibility 0s linear 0.5s,
+            backdrop-filter 0.5s ease;
+    visibility: hidden;
+}
+
+.menu-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    grid-area: MenuButtons;
+}
+
+.menu-buttons .menu-button {
+    opacity: 0;
+    transform: translateX(-120px);
+}
+
+.menu-buttons .menu-button.fly-in {
+    animation-name: fly-in;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes fly-in {
+    0% {
+        opacity: 0;
+        transform: translateX(-120px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0px);
+    }
+}
+
+.menu-header {
+    display: flex;
+        grid-area: text;
+    align-items: center;
+    justify-items: center;
+    height: 100%;
+}
+
+.menu-header .header-logo {
+    border-radius: 100%;
+    box-shadow: 0 4px 4px #00000040;
+    width: 62px;
+    height: 62px;
+    grid-area: logo;
+}
+
+.menu-header .flex,
+.countdown-timer.flex {
+    grid-area: text;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.menu-header .crafted-text {
+    font-size: 48px;
+    text-shadow: -6px -2px 0px #4f2e5b;
+}
+
+.info-container {
+    grid-area: Info;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+@media screen and (max-width: 1024px) {
+    .info-container {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .info-container {
+        display: none;
+    }
+}
+.info {
+    background: #c25a95;
+    border-radius: 12px;
+    padding-block: 25px;
+    padding-inline: 15px;
+    height: 350px;
+    width: 70%;
+    overflow: hidden;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+
+    & p {
+        margin: 0;
+        overflow: hidden;
+        font-size: clamp(18px, 4vw, 30px);
+        font-family: "Roboto", Helvetica, sans-serif;
+        color: #ffffff;
+    }
+}
+
+.socials {
+    width: 70%;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.socials .social-image-container {
+    padding: 12px;
+    background: #ffea99;
+    border-radius: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+}
+
+.socials svg {
+    width: 50px;
+    height: 50px;
+    color: #4f2e5b;
+}
+
+.social-image-container.appear {
+    animation-name: appear;
+    animation-duration: 1.5s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes appear {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    menu {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr auto;
+        grid-template-areas:
+            "Header"
+            "MenuButtons"
+            "Info";
+        padding: 30px 25px;
+        gap: 30px;
+    }
+
+    .menu-header {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+        gap: 20px;
+    }
+
+    .menu-header .crafted-text {
+        font-size: 40px;
+        text-shadow: -5px -1.5px 0px #4f2e5b;
+    }
+
+    .timer {
+        flex-wrap: wrap;
+        gap: 12px;
+        justify-content: center;
+    }
+
+    .timercounter {
+        width: 80px;
+        height: 60px;
+        font-size: 28px;
+    }
+
+    .timer-label {
+        font-size: 12px;
+    }
+
+    .timer .divider {
+        font-size: 24px;
+        margin-bottom: 12px;
+    }
+
+    .menu-buttons {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        width: 100%;
+        max-width: 350px;
+        justify-self: center;
+    }
+
+    .menu-button.largeW {
+        font-size: 13px;
+        padding: 12px 8px;
+        height: 50px;
+        min-height: 50px;
+    }
+
+    .info-container {
+        width: 100%;
+        align-items: center;
+        gap: 25px;
+    }
+
+    .info {
+        width: 100%;
+        height: auto;
+        min-height: 180px;
+        padding: 20px;
+    }
+
+    .info p {
+        font-size: 16px;
+    }
+
+    .socials {
+        width: 100%;
+        gap: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .socials .social-image-container {
+        padding: 10px;
+    }
+
+    .socials svg {
+        width: 40px;
+        height: 40px;
+    }
+}
+@media screen and (max-width: 768px) {
+    menu {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr auto;
+        grid-template-areas:
+            "Header"
+            "MenuButtons"
+            "Info";
+        padding: 20px;
+        overflow-y: auto;
+    }
+
+    .menu-header {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+        grid-template-areas: "text";
+        gap: 15px;
+    }
+
+    .menu-header .crafted-text {
+        font-size: 32px;
+        text-shadow: -4px -1px 0px #4f2e5b;
+    }
+
+    .timer {
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+    }
+
+    .timercounter {
+        width: 70px;
+        height: 50px;
+        font-size: 24px;
+    }
+
+    .timer-label {
+        font-size: 10px;
+    }
+
+    .timer .divider {
+        font-size: 20px;
+        margin-bottom: 15px;
+    }
+
+    .menu-buttons {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+        gap: 8px;
+        width: 100%;
+        max-width: 320px;
+        justify-self: center;
+    }
+
+    .menu-buttons .menu-button {
+        width: 100%;
+        max-width: none;
+        font-size: 10px;
+        padding: 8px 6px;
+        height: 40px;
+        border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .menu-buttons .menu-button:active {
+            transform: scale(0.95);
+    }
+
+    .menu-buttons .menu-button.largeW {
+        width: 100%;
+    }
+
+    .menu-buttons .menu-button.largeH {
+        height: 40px;
+    }
+
+    .info-container {
+        width: 100%;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .info {
+        width: 100%;
+        height: auto;
+        min-height: 150px;
+        padding: 15px;
+    }
+
+    .info p {
+        font-size: 14px;
+    }
+
+    .socials {
+        width: 100%;
+        gap: 10px;
+        justify-content: center;
+            flex-wrap: wrap;
+    }
+
+    .socials .social-image-container {
+        padding: 8px;
+    }
+
+    .socials svg {
+        width: 30px;
+        height: 30px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    menu {
+            padding: 16px;
+            gap: 20px;
+        }
+    
+        .menu-header {
+            gap: 12px;
+        }
+    .menu-header .crafted-text {
+        font-size: 24px;
+        text-shadow: -3px -1px 0px #4f2e5b;
+        }
+        
+        .timer {
+            gap: 6px;
+    }
+
+    .timercounter {
+        width: 60px;
+        height: 45px;
+        font-size: 20px;
+    }
+
+    .timer-label {
+        font-size: 8px;
+    }
+
+    .timer .divider {
+        font-size: 16px;
+        width: 10px;
+        margin-bottom: 12px;
+    }
+
+    .menu-buttons {
+        max-width: 280px;
+        gap: 6px;
+    }
+
+    .menu-buttons .menu-button {
+        font-size: 9px;
+        padding: 6px 4px;
+        height: 35px;
+        min-height: 35px;
+        }
+        
+        .info {
+            min-height: 130px;
+            padding: 12px;
+        }
+        
+        .info p {
+            font-size: 12px;
+        }
+        
+        .socials {
+            gap: 8px;
+        }
+        
+        .socials .social-image-container {
+            padding: 6px;
+        }
+        
+        .socials svg {
+            width: 25px;
+            height: 25px;
+    }
+}

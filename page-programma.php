@@ -2,7 +2,7 @@
 /*
 Template Name: Programma
 */
-wp_enqueue_style('page-programma-style', get_template_directory_uri() . '/assets/page-programma.css');
+wp_enqueue_style('page-programma-style', get_template_directory_uri() . '/assets/programma.css');
 
 get_header();
 
@@ -50,9 +50,9 @@ wp_reset_postdata();
             <div class="program-card">
                 <div class="card-image">
                     <?php if ($image_url): ?>
-                        <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($item['title']); ?>">
+                    <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($item['title']); ?>">
                     <?php else: ?>
-                        <div class="image-placeholder">[image PH]</div>
+                    <div class="image-placeholder">[image PH]</div>
                     <?php endif; ?>
                 </div>
 
@@ -67,8 +67,7 @@ wp_reset_postdata();
     </div>
     <?php endforeach; ?>
 
-    
+
 </main>
 
 <?php get_footer(); ?>
-
