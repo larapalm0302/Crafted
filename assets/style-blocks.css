@@ -1679,6 +1679,7 @@ details[open] .faq-icon {
   color: #4A2040;
   font-family: 'Inter', sans-serif;
   padding: 0;
+  grid-area: footer;
 }
 
 .footer-gradient-bg {
