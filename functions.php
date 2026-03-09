@@ -296,6 +296,9 @@ function crafted_friends_enqueue_assets()
 {
     wp_enqueue_style('crafted-main-style', get_template_directory_uri() . '/style.css');
     wp_enqueue_style('crafted-footer-style', get_template_directory_uri() . '/assets/css/footer.css', [], '1.0');
+    if (is_page('livestream') || is_page_template('page-livestream.php') || is_page('crafted-friends') || is_page_template('page-crafted-friends.php')) {
+        wp_enqueue_style('crafted-livestream-style', get_template_directory_uri() . '/assets/css/style-blocks.css', [], '3.0');
+    }
     wp_enqueue_script('crafted-carousel', get_template_directory_uri() . '/assets/js/carousel.js', [], '1.0', true);
 }
 add_action('wp_enqueue_scripts', 'crafted_friends_enqueue_assets');
