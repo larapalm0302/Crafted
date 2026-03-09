@@ -17,13 +17,13 @@
                         $text = get_option("crafted_footer_btn_{$i}_text", "Knop $i");
                         $url = get_option("crafted_footer_btn_{$i}_url", "#");
                         ?>
-                        <a href="<?= esc_url($url) ?>" class="footer-glass-btn">
-                            <div class="btn-icon-box">
-                                <!-- Using Dashicons for simplicity, can be replaced with SVGs -->
-                                <span class="dashicons <?= $icons[$i - 1] ?>"></span>
-                            </div>
-                            <span class="btn-text"><?= esc_html($text) ?></span>
-                        </a>
+                    <a href="<?= esc_url($url) ?>" class="footer-glass-btn">
+                        <div class="btn-icon-box">
+                            <!-- Using Dashicons for simplicity, can be replaced with SVGs -->
+                            <span class="dashicons <?= $icons[$i - 1] ?>"></span>
+                        </div>
+                        <span class="btn-text"><?= esc_html($text) ?></span>
+                    </a>
                     <?php endfor; ?>
                 </div>
             </div>
@@ -45,11 +45,11 @@
                     foreach ($socials as $key => $data):
                         if ($data['url']):
                             ?>
-                            <a href="<?= esc_url($data['url']) ?>" target="_blank" class="social-circle-btn"
-                                aria-label="<?= ucfirst($key) ?>">
-                                <span class="dashicons <?= $data['icon'] ?>"></span>
-                            </a>
-                        <?php endif; endforeach; ?>
+                    <a href="<?= esc_url($data['url']) ?>" target="_blank" class="social-circle-btn"
+                       aria-label="<?= ucfirst($key) ?>">
+                        <span class="dashicons <?= $data['icon'] ?>"></span>
+                    </a>
+                    <?php endif; endforeach; ?>
                 </div>
             </div>
 
@@ -133,9 +133,9 @@
     <!-- Wave SVG Animation (Moved Outside Wrapper) -->
     <div class="footer-wave-container">
         <svg class="footer-wave-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1077 59"
-            preserveAspectRatio="none">
+             preserveAspectRatio="none">
             <path d="M0 8.71041C269.25 38.8842 538.5 -21.4633 1077 8.71041V59H0V8.71041Z" fill="url(#wave_gradient)"
-                fill-opacity="0.2" />
+                  fill-opacity="0.2" />
             <defs>
                 <linearGradient id="wave_gradient" x1="0" y1="0" x2="100%" y2="0" gradientUnits="userSpaceOnUse">
                     <stop stop-color="#77357C" />

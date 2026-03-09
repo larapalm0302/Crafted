@@ -68,7 +68,7 @@ header {
 .hero {
     width: 100%;
     height: 100vh;
-    background-image: url('../../../wp-content/themes/Crafted/images/f718efc10de9453e88fb38d5da48fed3893494b9.jpg');
+    background-image: url('../images/landing.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -102,13 +102,13 @@ header {
 
 
 .site-title {
-  color: #ffea99;
-  text-shadow: -10px -4px 0 #4f2e5b;
-  font-family: "Krona One";
-  font-size: 120px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
+    color: #ffea99;
+    text-shadow: -10px -4px 0 #4f2e5b;
+    font-family: "Krona One";
+    font-size: 120px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
 }
 
 .hero p {
@@ -200,6 +200,7 @@ header {
         opacity: 0;
         transform: translateY(-50px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -211,6 +212,7 @@ header {
         opacity: 0;
         transform: translateY(50px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);

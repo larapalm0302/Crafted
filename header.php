@@ -4,80 +4,50 @@
 <head>
     <meta charset="<?php bloginfo('charset'); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="<?php echo esc_url(get_template_directory_uri() . '/header.css'); ?>">
-    <link rel="stylesheet" href="<?php echo esc_url(get_template_directory_uri() . '/front-page.css'); ?>">
+    <link rel="icon" href="<?php echo get_template_directory_uri(); ?>/assets/images/logo.png">
+    <link rel="stylesheet" href="<?php echo esc_url(get_template_directory_uri() . '/assets/css/header.css'); ?>">
+    <link rel="stylesheet" href="<?php echo esc_url(get_template_directory_uri() . '/assets/css/index.css'); ?>">
+    <link rel="stylesheet" href="<?php echo esc_url(get_template_directory_uri() . '/assets/css/menu.css'); ?>">
+    <script src="<?php echo get_template_directory_uri(); ?>/assets/js/menu.js"></script>
+    <script src="<?php echo get_template_directory_uri(); ?>/assets/js/timer.js"></script>
     <?php wp_head(); ?>
     <title><?php wp_title(); ?></title>
 </head>
 
 <body <?php body_class(); ?>>
-    <header class="site-header">
-        <div class="header-inner">
-
-            <div class="header-left">
-                <img class="logo" src="<?php echo esc_url( get_template_directory_uri() . '/images/Image%20(Logo).png' ); ?>" alt="Logo">
-            </div>
-
-            <!-- Midden: Titel + countdown -->
-            <div class="header-center">
-                <h1 class="site-title">CRAFTED</h1>
-
-                <div class="countdown">
-                    <div class="time-box">
-                        <span id="days">00</span>
-                        <small>DAGEN</small>
-                    </div>
-                    <span class="colon">:</span>
-                    <div class="time-box">
-                        <span id="hours">00</span>
-                        <small>UREN</small>
-                    </div>
-                    <span class="colon">:</span>
-                    <div class="time-box">
-                        <span id="minutes">00</span>
-                        <small>MINUTEN</small>
-                    </div>
-                    <span class="colon">:</span>
-                    <div class="time-box">
-                        <span id="seconds">00</span>
-                        <small>SECONDEN</small>
-                    </div>
+    <header id="header">
+        <img class="header-logo" src="<?php echo get_template_directory_uri(); ?>/assets/images/Logo.png" />
+        <!-- <div class="crafted-text">CRAFTED</div> -->
+        <div class="header-buttons">
+            <button class="menu-button" data-button="menu">Menu</button>
+            <button id="language-picker" class="menu-button" data-button="language">
+                <img src="<?php echo get_template_directory_uri(); ?>/assets/images/Globe.png" />
+                NL
+            </button>
+        </div>
+        <div class="countdown-timer flex">
+            <div class="crafted-text">CRAFTED</div>
+            <div class="timer <?php echo is_front_page() ? 'home-page' : 'timer-invisible'; ?>">
+                <div class="timerelement">
+                    <div id="days" class="timercounter">162</div>
+                    <div class="timer-label">dagen</div>
+                </div>
+                <div class="divider">:</div>
+                <div class="timerelement">
+                    <div id="hours" class="timercounter">07</div>
+                    <div class="timer-label">uren</div>
+                </div>
+                <div class="divider">:</div>
+                <div class="timerelement">
+                    <div id="minutes" class="timercounter">14</div>
+                    <div class="timer-label">minuten</div>
+                </div>
+                <div class="divider">:</div>
+                <div class="timerelement">
+                    <div id="seconds" class="timercounter">15</div>
+                    <div class="timer-label">seconden</div>
                 </div>
             </div>
-
-            <div class="header-right">
-                <!-- plek voor zoek/knoppen -->
-            </div>
-
         </div>
     </header>
-
-    <script>
-        // Countdown Timer
-        function updateCountdown() {
-            const targetDate = new Date('2026-06-18T00:00:00').getTime();
-            const now = new Date().getTime();
-            const distance = targetDate - now;
-
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            document.getElementById('days').textContent = String(days).padStart(2, '0');
-            document.getElementById('hours').textContent = String(hours).padStart(2, '0');
-            document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
-            document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
-
-            if (distance < 0) {
-                document.getElementById('days').textContent = '00';
-                document.getElementById('hours').textContent = '00';
-                document.getElementById('minutes').textContent = '00';
-                document.getElementById('seconds').textContent = '00';
-            }
-        }
-
-        // Update countdown every second
-        updateCountdown();
-        setInterval(updateCountdown, 1000);
-    </script>
+    <?php include get_template_directory() . '/menu.php'; ?>
