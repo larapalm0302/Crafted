@@ -16,21 +16,21 @@ get_header();
    <section class="awaits-section">
      <div class="cards-container">
        <div class="card">
-         <div class="card-image" style="background-image: url('https://via.placeholder.com/300x250?text=Programma');"></div>
+         <div class="card-image" style="background-image: url('<?php echo esc_url(get_template_directory_uri() . '/assets/images/landing.jpg'); ?>');"></div>
          <h3 class="card-title">Programma</h3>
          <p class="card-description">State-of-the-art lighting, visuals, and production design create a multi-sensory journey like no other</p>
          <button class="card-button">→</button>
        </div>
 
        <div class="card">
-         <div class="card-image" style="background-image: url('https://via.placeholder.com/300x250?text=Tickets');"></div>
+         <div class="card-image" style="background-image: url('<?php echo esc_url(get_template_directory_uri() . '/assets/images/landing.jpg'); ?>');"></div>
          <h3 class="card-title">Tickets</h3>
          <p class="card-description">World-class artists and emerging talents come together on multiple stages to create unforgettable moments</p>
          <button class="card-button">→</button>
        </div>
 
        <div class="card">
-         <div class="card-image" style="background-image: url('https://via.placeholder.com/300x250?text=Crafted%20%26%20Friends');"></div>
+         <div class="card-image" style="background-image: url('<?php echo esc_url(get_template_directory_uri() . '/assets/images/landing.jpg'); ?>');"></div>
          <h3 class="card-title">Crafted & Friends</h3>
          <p class="card-description">Dance until sunrise with cutting-edge electronic music from renowned DJs and producers from around the globe</p>
          <button class="card-button">→</button>

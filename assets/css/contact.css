@@ -124,27 +124,34 @@ body {
     font-size: 40px;
 }
 
-.social-icons {
+.contact-wrapper .socials {
+    width: 100%;
     display: flex;
     justify-content: center;
-    gap: 30px;
-    margin-bottom: 40px;
+    gap: 42px;
+    margin: 0 0 40px;
+    flex-wrap: wrap;
 }
 
-.social-icon {
-    width: 90px;
-    height: 90px;
+.contact-wrapper .socials .social-image-container {
+    padding: 12px;
+    background: #ffea99;
+    border-radius: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 2px solid black;
-    border-radius: 50%;
-    background: linear-gradient(146.664deg, rgba(124, 63, 189, 0.36) 6.7894%, rgb(238, 129, 220) 93.211%);
+    opacity: 1;
+    transition: transform 0.2s ease;
 }
 
-.social-icon svg {
-    width: 58px;
-    height: 58px;
+.contact-wrapper .socials .social-image-container:hover {
+    transform: translateY(-3px);
+}
+
+.contact-wrapper .socials svg {
+    width: 50px;
+    height: 50px;
+    color: #4f2e5b;
 }
 
 .contact-content {

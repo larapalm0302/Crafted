@@ -75,15 +75,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="header-line"></div>
                 </div>
 
-                <div class="social-icons">
-                    <div class="social-icon" delay="0.15s">
+                <div class="socials">
+                    <?php $instagram_url = get_option('crafted_social_insta'); ?>
+                    <?php if ($instagram_url): ?>
+                    <a href="<?php echo esc_url($instagram_url); ?>" target="_blank" rel="noopener noreferrer" class="social-image-container" aria-label="Instagram">
                         <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 51 51" class="icon">
                             <path d="M36.125 4.25H14.875C9.00697 4.25 4.25 9.00697 4.25 14.875V36.125C4.25 41.993 9.00697 46.75 14.875 46.75H36.125C41.993 46.75 46.75 41.993 46.75 36.125V14.875C46.75 9.00697 41.993 4.25 36.125 4.25Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
                             <path d="M34.0001 24.1613C34.2624 25.9298 33.9603 27.736 33.1368 29.3229C32.3134 30.9099 31.0105 32.1968 29.4136 33.0006C27.8166 33.8044 26.0068 34.0842 24.2417 33.8001C22.4765 33.5161 20.8459 32.6827 19.5816 31.4185C18.3174 30.1543 17.484 28.5236 17.2 26.7585C16.916 24.9933 17.1957 23.1836 17.9996 21.5866C18.8034 19.9896 20.0903 18.6867 21.6772 17.8633C23.2641 17.0399 25.0703 16.7378 26.8389 17C28.6428 17.2675 30.3129 18.1081 31.6025 19.3977C32.892 20.6872 33.7326 22.3573 34.0001 24.1613Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
                             <path d="M37.1875 13.8125H37.2081" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
-                    </div>
-                    <div class="social-icon" delay="0.30s">
+                    </a>
+                    <?php endif; ?>
+
+                    <?php $linkedin_url = get_option('crafted_social_linkedin'); ?>
+                    <?php if ($linkedin_url): ?>
+                    <a href="<?php echo esc_url($linkedin_url); ?>" target="_blank" rel="noopener noreferrer" class="social-image-container" aria-label="LinkedIn">
                         <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 52 52" class="icon">
                             <g clip-path="url(#clip0)">
                                 <path d="M34.6667 17.3333C38.1146 17.3333 41.4212 18.703 43.8591 21.1409C46.2971 23.5789 47.6667 26.8855 47.6667 30.3333V45.5H39.0001V30.3333C39.0001 29.184 38.5435 28.0818 37.7309 27.2692C36.9182 26.4565 35.816 26 34.6667 26C33.5175 26 32.4153 26.4565 31.6026 27.2692C30.79 28.0818 30.3334 29.184 30.3334 30.3333V45.5H21.6667V30.3333C21.6667 26.8855 23.0364 23.5789 25.4744 21.1409C27.9123 18.703 31.2189 17.3333 34.6667 17.3333Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
@@ -96,8 +102,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 </clipPath>
                             </defs>
                         </svg>
-                    </div>
-                    <div class="social-icon" delay="0.45s">
+                    </a>
+                    <?php endif; ?>
+
+                    <?php $tiktok_url = get_option('crafted_social_tiktok'); ?>
+                    <?php if ($tiktok_url): ?>
+                    <a href="<?php echo esc_url($tiktok_url); ?>" target="_blank" rel="noopener noreferrer" class="social-image-container" aria-label="TikTok">
                         <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="512" height="512" viewBox="0 0 682.667 682.667" class="my-icon">
                             <g>
                                 <defs>
@@ -110,13 +120,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 </g>
                             </g>
                         </svg>
-                    </div>
-                    <div class="social-icon" delay="0.60s">
+                    </a>
+                    <?php endif; ?>
+
+                    <?php $youtube_url = get_option('crafted_social_youtube'); ?>
+                    <?php if ($youtube_url): ?>
+                    <a href="<?php echo esc_url($youtube_url); ?>" target="_blank" rel="noopener noreferrer" class="social-image-container" aria-label="YouTube">
                         <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 51 51" class="icon">
                             <path d="M5.31258 36.125C3.8281 29.1194 3.8281 21.8806 5.31258 14.875C5.50763 14.1636 5.88449 13.5152 6.40611 12.9935C6.92774 12.4719 7.57615 12.095 8.28758 11.9C19.6849 10.0118 31.3152 10.0118 42.7126 11.9C43.424 12.095 44.0724 12.4719 44.594 12.9935C45.1157 13.5152 45.4925 14.1636 45.6876 14.875C47.1721 21.8806 47.1721 29.1194 45.6876 36.125C45.4925 36.8364 45.1157 37.4848 44.594 38.0065C44.0724 38.5281 43.424 38.9049 42.7126 39.1C31.3153 40.9885 19.6849 40.9885 8.28758 39.1C7.57615 38.9049 6.92774 38.5281 6.40611 38.0065C5.88449 37.4848 5.50763 36.8364 5.31258 36.125Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
                             <path d="M21.25 31.875L31.875 25.5L21.25 19.125V31.875Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
-                    </div>
+                    </a>
+                    <?php endif; ?>
                 </div>
 
                 <div class="contact-content">

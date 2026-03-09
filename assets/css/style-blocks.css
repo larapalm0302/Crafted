@@ -1,4 +1,4 @@
-.wp-block:first-child {
+/* .wp-block:first-child {
   margin-top: 0 !important;
 }
 
@@ -1289,7 +1289,7 @@ details[open] .faq-icon {
   line-height: 1.6;
 }
 
-/* .contact-form {
+.contact-form {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -1310,7 +1310,7 @@ details[open] .faq-icon {
 .contact-form textarea:focus {
   border-color: #ffd700;
   outline: none;
-} */
+}
 
 .submit-btn {
   background: #ffd700;
@@ -1971,4 +1971,4 @@ details[open] .faq-icon {
     width: 60px;
     height: 60px;
   }
-}
+} */
