@@ -1289,7 +1289,7 @@ details[open] .faq-icon {
   line-height: 1.6;
 }
 
-.contact-form {
+/* .contact-form {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -1310,7 +1310,7 @@ details[open] .faq-icon {
 .contact-form textarea:focus {
   border-color: #ffd700;
   outline: none;
-}
+} */
 
 .submit-btn {
   background: #ffd700;
