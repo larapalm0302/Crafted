@@ -303,315 +303,7 @@ function crafted_friends_enqueue_assets()
 }
 add_action('wp_enqueue_scripts', 'crafted_friends_enqueue_assets');
 
-// --- Admin Scripts (voor alle CPT's) ---
-function crafted_admin_scripts($hook)
-{
-    global $post;
-    $allowed_types = ['programma', 'school', 'organisatie', 'ambassadeur', 'livestream'];
-    $is_footer_page = (isset($_GET['page']) && $_GET['page'] === 'crafted-footer');
 
-    if ($is_footer_page || (($hook === 'post.php' || $hook === 'post-new.php') && $post && in_array($post->post_type, $allowed_types))) {
-        wp_enqueue_media();
-    }
-}
-add_action('admin_enqueue_scripts', 'crafted_admin_scripts');
-
-function crafted_admin_footer_scripts()
-{
-    global $post;
-    $allowed_types = ['programma', 'school', 'organisatie', 'ambassadeur', 'livestream'];
-    $is_footer_page = (isset($_GET['page']) && $_GET['page'] === 'crafted-footer');
-
-    if (!$is_footer_page && (!$post || !in_array($post->post_type, $allowed_types)))
-        return;
-    ?>
-<script>
-jQuery(document).ready(function($) {
-    $('.upload-image-btn').on('click', function(e) {
-        e.preventDefault();
-        var btn = $(this);
-        var frame = wp.media({
-            title: 'Selecteer afbeelding',
-            button: {
-                text: 'Gebruik deze afbeelding'
-            },
-            multiple: false
-        });
-        frame.on('select', function() {
-            var attachment = frame.state().get('selection').first().toJSON();
-            var targetId = btn.data('target');
-            var previewId = btn.data('preview');
-            $('#' + targetId).val(attachment.id);
-            $('#' + previewId).html('<img src="' + attachment.sizes.medium.url + '" style="max-height: 150px; width: auto; border-radius: 8px;">');
-            btn.next('.remove-image-btn').show();
-        });
-        frame.open();
-    });
-    $('.remove-image-btn').on('click', function(e) {
-        e.preventDefault();
-        var targetId = $(this).data('target');
-        var previewId = $(this).data('preview');
-        $('#' + targetId).val('');
-        $('#' + previewId).html('');
-        $(this).hide();
-    });
-});
-</script>
-<?php
-}
-add_action('admin_footer', 'crafted_admin_footer_scripts');
-
-// --- Nieuwe Custom Post Types ---
-function crafted_register_extra_cpts()
-{
-    // School
-    register_post_type('school', [
-        'labels' => ['name' => 'Scholen', 'singular_name' => 'School', 'add_new_item' => 'Nieuwe School'],
-        'public' => true,
-        'menu_icon' => 'dashicons-welcome-learn-more',
-        'supports' => ['title', 'editor', 'thumbnail'],
-    ]);
-    // Organisatie
-    register_post_type('organisatie', [
-        'labels' => ['name' => 'Organisaties', 'singular_name' => 'Organisatie', 'add_new_item' => 'Nieuwe Organisatie'],
-        'public' => true,
-        'menu_icon' => 'dashicons-groups',
-        'supports' => ['title', 'editor', 'thumbnail'],
-    ]);
-    // Ambassadeur
-    register_post_type('ambassadeur', [
-        'labels' => ['name' => 'Ambassadeurs', 'singular_name' => 'Ambassadeur', 'add_new_item' => 'Nieuwe Ambassadeur'],
-        'public' => true,
-        'menu_icon' => 'dashicons-businessman',
-        'supports' => ['title', 'thumbnail'],
-    ]);
-    // Livestream
-    register_post_type('livestream', [
-        'labels' => [
-            'name' => 'Livestream',
-            'singular_name' => 'Livestream',
-            'add_new_item' => 'Nieuwe Livestream Instellen',
-            'edit_item' => 'Livestream Bewerken'
-        ],
-        'public' => true,
-        'menu_icon' => 'dashicons-video-alt3',
-        'supports' => ['title'],
-        'show_in_rest' => true,
-    ]);
-}
-add_action('init', 'crafted_register_extra_cpts');
-
-// --- Meta Boxes voor alle CPT's ---
-function crafted_add_extra_meta_boxes()
-{
-    add_meta_box('school_details', 'School Details & Afbeelding', 'school_meta_callback', 'school', 'normal', 'high');
-    add_meta_box('organisatie_details', 'Organisatie Afbeelding', 'organisatie_meta_callback', 'organisatie', 'normal', 'high');
-    add_meta_box('ambassadeur_details', 'Ambassadeur Details & Afbeelding', 'ambassadeur_meta_callback', 'ambassadeur', 'normal', 'high');
-    add_meta_box('livestream_details', 'Livestream Configuratie', 'livestream_meta_callback', 'livestream', 'normal', 'high');
-}
-add_action('add_meta_boxes', 'crafted_add_extra_meta_boxes');
-
-// --- Helper Function voor Image Upload ---
-function crafted_render_image_field($meta_key, $post_id, $label)
-{
-    if ($post_id === 0) {
-        $image_id = get_option($meta_key);
-    } else {
-        $image_id = get_post_meta($post_id, $meta_key, true);
-    }
-
-    $image_url = $image_id ? wp_get_attachment_image_url($image_id, 'medium') : '';
-    ?>
-<p><strong><?= $label ?></strong></p>
-<div id="<?= $meta_key ?>_preview" style="margin-bottom: 10px;">
-    <?php if ($image_url): ?><img src="<?= esc_url($image_url) ?>"
-         style="max-width: 200px; height: auto; border-radius: 8px;"><?php endif; ?>
-</div>
-<input type="hidden" name="<?= $meta_key ?>" id="<?= $meta_key ?>" value="<?= esc_attr($image_id) ?>">
-<button type="button" class="button upload-image-btn" data-target="<?= $meta_key ?>"
-        data-preview="<?= $meta_key ?>_preview">Afbeelding kiezen</button>
-<button type="button" class="button remove-image-btn" data-target="<?= $meta_key ?>"
-        data-preview="<?= $meta_key ?>_preview" style="<?= $image_id ? '' : 'display:none;' ?>">Verwijderen</button>
-<?php
-}
-
-// --- Meta Box Callbacks ---
-function school_meta_callback($post)
-{
-    wp_nonce_field('crafted_save_meta', 'crafted_meta_nonce');
-    $subtitle = get_post_meta($post->ID, 'school_subtitle', true);
-    $link = get_post_meta($post->ID, 'school_link', true);
-    $icon_url = get_post_meta($post->ID, 'school_icon_url', true);
-
-    echo '<p><label>Subtitel:</label><br><input type="text" name="school_subtitle" value="' . esc_attr($subtitle) . '" style="width:100%"></p>';
-    echo '<p><label>Link:</label><br><input type="text" name="school_link" value="' . esc_attr($link) . '" style="width:100%"></p>';
-    echo '<p><label>Icoon URL (voor overlay):</label><br><input type="text" name="school_icon_url" value="' . esc_attr($icon_url) . '" style="width:100%" placeholder="https://..."></p>';
-    crafted_render_image_field('school_image', $post->ID, 'School Hoofdafbeelding');
-}
-
-function organisatie_meta_callback($post)
-{
-    wp_nonce_field('crafted_save_meta', 'crafted_meta_nonce');
-    crafted_render_image_field('organisatie_image', $post->ID, 'Organisatie Logo/Afbeelding');
-}
-
-function ambassadeur_meta_callback($post)
-{
-    wp_nonce_field('crafted_save_meta', 'crafted_meta_nonce');
-    $quote = get_post_meta($post->ID, 'ambassadeur_quote', true);
-    echo '<p><label>Quote:</label><br><textarea name="ambassadeur_quote" style="width:100%" rows="3">' . esc_textarea($quote) . '</textarea></p>';
-    crafted_render_image_field('ambassadeur_image', $post->ID, 'Ambassadeur Foto');
-}
-
-function livestream_meta_callback($post)
-{
-    wp_nonce_field('crafted_save_meta', 'crafted_meta_nonce');
-    $video_url = get_post_meta($post->ID, 'ls_video_url', true);
-    $back_url = get_post_meta($post->ID, 'ls_back_url', true);
-    $channel_name = get_post_meta($post->ID, 'ls_channel_name', true);
-    $is_live = get_post_meta($post->ID, 'ls_is_live', true);
-    ?>
-<p><strong>Livestream Configuratie</strong></p>
-<p>
-    <label>
-        <input type="checkbox" name="ls_is_live" value="1" <?php checked($is_live, '1'); ?>>
-        <strong>Is dit een LIVE stream?</strong> (Toont LIVE icoon)
-    </label>
-</p>
-<p>
-    <label>YouTube Link (Video URL):</label><br>
-    <input type="text" name="ls_video_url" value="<?= esc_attr($video_url) ?>" style="width:100%" placeholder="https://youtube.com/watch?v=...">
-</p>
-<p>
-    <label>Kanaal Naam:</label><br>
-    <input type="text" name="ls_channel_name" value="<?= esc_attr($channel_name) ?>" style="width:100%" placeholder="Bijv. CRAFTED TV">
-</p>
-<?php crafted_render_image_field('ls_logo_url_id', $post->ID, 'Kanaal Logo (Rond plaatje):'); ?>
-<p>
-    <label>Terugknop URL:</label><br>
-    <input type="text" name="ls_back_url" value="<?= esc_attr($back_url) ?>" style="width:100%" placeholder="/">
-</p>
-<?php
-}
-
-// --- Save Extra Meta Data ---
-function crafted_save_extra_meta_data($post_id)
-{
-    if (!isset($_POST['crafted_meta_nonce']) || !wp_verify_nonce($_POST['crafted_meta_nonce'], 'crafted_save_meta'))
-        return;
-    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE)
-        return;
-    if (!current_user_can('edit_post', $post_id))
-        return;
-
-    // Text Fields
-    $text_fields = [
-        'school_subtitle', 'school_link', 'school_icon_url',
-        'ambassadeur_quote',
-        'ls_video_url', 'ls_channel_name', 'ls_back_url'
-    ];
-    foreach ($text_fields as $field) {
-        if (isset($_POST[$field]))
-            update_post_meta($post_id, $field, sanitize_text_field($_POST[$field]));
-    }
-
-    // Checkbox
-    update_post_meta($post_id, 'ls_is_live', isset($_POST['ls_is_live']) ? '1' : '0');
-
-    // Image Fields
-    $image_fields = ['school_image', 'organisatie_image', 'ambassadeur_image', 'ls_logo_url_id'];
-    foreach ($image_fields as $field) {
-        if (isset($_POST[$field]))
-            update_post_meta($post_id, $field, absint($_POST[$field]));
-    }
-}
-add_action('save_post', 'crafted_save_extra_meta_data');
-
-// --- Footer Menu Pagina ---
-function crafted_footer_menu()
-{
-    add_menu_page('Footer Opties', 'Footer Opties', 'manage_options', 'crafted-footer', 'crafted_footer_page', 'dashicons-layout', 31);
-}
-add_action('admin_menu', 'crafted_footer_menu');
-
-function crafted_footer_page()
-{
-    echo '<div class="wrap"><h1>Footer Instellingen</h1><form method="post" action="options.php">';
-    settings_fields('crafted_footer_group');
-    do_settings_sections('crafted_footer');
-    submit_button();
-    echo '</form></div>';
-}
-
-// --- Footer Settings ---
-function crafted_footer_settings_init()
-{
-    add_settings_section('crafted_footer_section', 'Footer Instellingen', '__return_false', 'crafted_footer');
-
-    // Social Media
-    register_setting('crafted_footer_group', 'crafted_social_insta');
-    register_setting('crafted_footer_group', 'crafted_social_linkedin');
-    register_setting('crafted_footer_group', 'crafted_social_tiktok');
-    register_setting('crafted_footer_group', 'crafted_social_youtube');
-
-    add_settings_field('crafted_social_insta', 'Instagram URL', 'crafted_social_insta_cb', 'crafted_footer', 'crafted_footer_section');
-    add_settings_field('crafted_social_linkedin', 'LinkedIn URL', 'crafted_social_linkedin_cb', 'crafted_footer', 'crafted_footer_section');
-    add_settings_field('crafted_social_tiktok', 'TikTok URL', 'crafted_social_tiktok_cb', 'crafted_footer', 'crafted_footer_section');
-    add_settings_field('crafted_social_youtube', 'YouTube URL', 'crafted_social_youtube_cb', 'crafted_footer', 'crafted_footer_section');
-
-    // Quick Links Buttons
-    for ($i = 1; $i <= 4; $i++) {
-        register_setting('crafted_footer_group', "crafted_footer_btn_{$i}_text");
-        register_setting('crafted_footer_group', "crafted_footer_btn_{$i}_url");
-        add_settings_field(
-            "crafted_footer_btn_{$i}",
-            "Button $i (Text & URL)",
-            function () use ($i) { crafted_footer_btn_cb($i); },
-            'crafted_footer',
-            'crafted_footer_section'
-        );
-    }
-
-    // Sponsors (20 slots)
-    add_settings_section('crafted_footer_sponsors_section', 'Sponsoren (Handmatig)', '__return_false', 'crafted_footer');
-    for ($j = 1; $j <= 20; $j++) {
-        register_setting('crafted_footer_group', "crafted_footer_sponsor_{$j}_img");
-        register_setting('crafted_footer_group', "crafted_footer_sponsor_{$j}_url");
-        add_settings_field(
-            "crafted_footer_sponsor_{$j}",
-            "Sponsor $j",
-            function () use ($j) {
-                crafted_render_image_field("crafted_footer_sponsor_{$j}_img", 0, "Logo");
-                $url_val = get_option("crafted_footer_sponsor_{$j}_url");
-                echo '<p style="margin-top:10px;"><label>Website URL:</label><br>';
-                echo '<input type="text" name="crafted_footer_sponsor_' . $j . '_url" value="' . esc_attr($url_val) . '" class="regular-text" placeholder="https://..."></p><hr>';
-            },
-            'crafted_footer',
-            'crafted_footer_sponsors_section'
-        );
-    }
-}
-add_action('admin_init', 'crafted_footer_settings_init');
-
-// --- Social Media Callbacks ---
-function crafted_social_insta_cb() {
-    echo '<input type="text" name="crafted_social_insta" value="' . esc_attr(get_option('crafted_social_insta')) . '" class="regular-text" placeholder="https://instagram.com/...">';
-}
-function crafted_social_linkedin_cb() {
-    echo '<input type="text" name="crafted_social_linkedin" value="' . esc_attr(get_option('crafted_social_linkedin')) . '" class="regular-text" placeholder="https://linkedin.com/...">';
-}
-function crafted_social_tiktok_cb() {
-    echo '<input type="text" name="crafted_social_tiktok" value="' . esc_attr(get_option('crafted_social_tiktok')) . '" class="regular-text" placeholder="https://tiktok.com/...">';
-}
-function crafted_social_youtube_cb() {
-    echo '<input type="text" name="crafted_social_youtube" value="' . esc_attr(get_option('crafted_social_youtube')) . '" class="regular-text" placeholder="https://youtube.com/...">';
-}
-function crafted_footer_btn_cb($i) {
-    $text = get_option("crafted_footer_btn_{$i}_text", "Knop $i");
-    $url = get_option("crafted_footer_btn_{$i}_url", "#");
-    echo '<input type="text" name="crafted_footer_btn_' . $i . '_text" value="' . esc_attr($text) . '" placeholder="Tekst" style="margin-right:10px;">';
-    echo '<input type="text" name="crafted_footer_btn_' . $i . '_url" value="' . esc_attr($url) . '" placeholder="URL" class="regular-text">';
-}
 
 // NIEUWS POST TYPE
 
@@ -1110,3 +802,430 @@ function validate_required_fields($post_id, $post, $update) {
     }
 }
 add_action('save_post', 'validate_required_fields', 10, 3);
+
+// ============================================================
+// KOPIEER ALLES HIERONDER NAAR HET EINDE VAN functions.php
+// ============================================================
+
+// --- Theme Setup ---
+function crafted_theme_setup()
+{
+    add_theme_support('post-thumbnails');
+}
+add_action('after_setup_theme', 'crafted_theme_setup');
+
+// --- Admin Scripts (voor alle CPT's) ---
+function crafted_admin_scripts($hook)
+{
+    global $post;
+    $allowed_types = ['programma', 'school', 'organisatie', 'ambassadeur', 'livestream'];
+    $is_footer_page = (isset($_GET['page']) && $_GET['page'] === 'crafted-footer');
+
+    if ($is_footer_page || (($hook === 'post.php' || $hook === 'post-new.php') && $post && in_array($post->post_type, $allowed_types))) {
+        wp_enqueue_media();
+    }
+}
+add_action('admin_enqueue_scripts', 'crafted_admin_scripts');
+
+function crafted_admin_footer_scripts()
+{
+    global $post;
+    $allowed_types = ['programma', 'school', 'organisatie', 'ambassadeur', 'livestream'];
+    $is_footer_page = (isset($_GET['page']) && $_GET['page'] === 'crafted-footer');
+
+    if (!$is_footer_page && (!$post || !in_array($post->post_type, $allowed_types)))
+        return;
+    ?>
+    <script>
+        jQuery(document).ready(function ($) {
+            $('.upload-image-btn').on('click', function (e) {
+                e.preventDefault();
+                var btn = $(this);
+                var frame = wp.media({
+                    title: 'Selecteer afbeelding',
+                    button: { text: 'Gebruik deze afbeelding' },
+                    multiple: false
+                });
+                frame.on('select', function () {
+                    var attachment = frame.state().get('selection').first().toJSON();
+                    var targetId = btn.data('target');
+                    var previewId = btn.data('preview');
+                    $('#' + targetId).val(attachment.id);
+                    $('#' + previewId).html('<img src="' + attachment.sizes.medium.url + '" style="max-height: 150px; width: auto; border-radius: 8px;">');
+                    btn.next('.remove-image-btn').show();
+                });
+                frame.open();
+            });
+            $('.remove-image-btn').on('click', function (e) {
+                e.preventDefault();
+                var targetId = $(this).data('target');
+                var previewId = $(this).data('preview');
+                $('#' + targetId).val('');
+                $('#' + previewId).html('');
+                $(this).hide();
+            });
+        });
+    </script>
+    <?php
+}
+add_action('admin_footer', 'crafted_admin_footer_scripts');
+
+// --- Nieuwe Custom Post Types ---
+function crafted_register_extra_cpts()
+{
+    // School
+    register_post_type('school', [
+        'labels' => ['name' => 'Scholen', 'singular_name' => 'School', 'add_new_item' => 'Nieuwe School'],
+        'public' => true,
+        'menu_icon' => 'dashicons-welcome-learn-more',
+        'supports' => ['title', 'editor', 'thumbnail'],
+    ]);
+    // Organisatie
+    register_post_type('organisatie', [
+        'labels' => ['name' => 'Organisaties', 'singular_name' => 'Organisatie', 'add_new_item' => 'Nieuwe Organisatie'],
+        'public' => true,
+        'menu_icon' => 'dashicons-groups',
+        'supports' => ['title', 'editor', 'thumbnail'],
+    ]);
+    // Ambassadeur
+    register_post_type('ambassadeur', [
+        'labels' => ['name' => 'Ambassadeurs', 'singular_name' => 'Ambassadeur', 'add_new_item' => 'Nieuwe Ambassadeur'],
+        'public' => true,
+        'menu_icon' => 'dashicons-businessman',
+        'supports' => ['title', 'thumbnail'],
+    ]);
+    // Livestream
+    register_post_type('livestream', [
+        'labels' => [
+            'name' => 'Livestream',
+            'singular_name' => 'Livestream',
+            'add_new_item' => 'Nieuwe Livestream Instellen',
+            'edit_item' => 'Livestream Bewerken'
+        ],
+        'public' => true,
+        'menu_icon' => 'dashicons-video-alt3',
+        'supports' => ['title'],
+        'show_in_rest' => true,
+    ]);
+}
+add_action('init', 'crafted_register_extra_cpts');
+
+// --- Meta Boxes voor alle CPT's ---
+function crafted_add_extra_meta_boxes()
+{
+    add_meta_box('school_details', 'School Details & Afbeelding', 'school_meta_callback', 'school', 'normal', 'high');
+    add_meta_box('organisatie_details', 'Organisatie Afbeelding', 'organisatie_meta_callback', 'organisatie', 'normal', 'high');
+    add_meta_box('ambassadeur_details', 'Ambassadeur Details & Afbeelding', 'ambassadeur_meta_callback', 'ambassadeur', 'normal', 'high');
+    add_meta_box('livestream_details', 'Livestream Configuratie', 'livestream_meta_callback', 'livestream', 'normal', 'high');
+}
+add_action('add_meta_boxes', 'crafted_add_extra_meta_boxes');
+
+// --- Helper Function voor Image Upload ---
+function crafted_render_image_field($meta_key, $post_id, $label)
+{
+    if ($post_id === 0) {
+        $image_id = get_option($meta_key);
+    } else {
+        $image_id = get_post_meta($post_id, $meta_key, true);
+    }
+
+    $image_url = $image_id ? wp_get_attachment_image_url($image_id, 'medium') : '';
+    ?>
+    <p><strong><?= $label ?></strong></p>
+    <div id="<?= $meta_key ?>_preview" style="margin-bottom: 10px;">
+        <?php if ($image_url): ?><img src="<?= esc_url($image_url) ?>"
+                style="max-width: 200px; height: auto; border-radius: 8px;"><?php endif; ?>
+    </div>
+    <input type="hidden" name="<?= $meta_key ?>" id="<?= $meta_key ?>" value="<?= esc_attr($image_id) ?>">
+    <button type="button" class="button upload-image-btn" data-target="<?= $meta_key ?>"
+        data-preview="<?= $meta_key ?>_preview">Afbeelding kiezen</button>
+    <button type="button" class="button remove-image-btn" data-target="<?= $meta_key ?>"
+        data-preview="<?= $meta_key ?>_preview" style="<?= $image_id ? '' : 'display:none;' ?>">Verwijderen</button>
+    <?php
+}
+
+// --- Meta Box Callbacks ---
+function school_meta_callback($post)
+{
+    wp_nonce_field('crafted_save_meta', 'crafted_meta_nonce');
+    $subtitle = get_post_meta($post->ID, 'school_subtitle', true);
+    $link = get_post_meta($post->ID, 'school_link', true);
+    $icon_url = get_post_meta($post->ID, 'school_icon_url', true);
+    $extended_info = get_post_meta($post->ID, 'school_extended_info', true);
+
+    // CSS Styling for the Admin Meta Box
+    echo '<style>
+        .crafted-admin-box { background: #f9f9f9; border-left: 4px solid #C25A95; padding: 15px 20px; margin-bottom: 20px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .crafted-admin-box h4 { margin-top: 0; color: #773570; font-size: 16px; margin-bottom: 10px; border-bottom: 1px solid #ddd; padding-bottom: 8px; }
+        .crafted-admin-field { margin-bottom: 15px; }
+        .crafted-admin-field label { font-weight: 600; display: block; margin-bottom: 5px; color: #333; }
+        .crafted-admin-field input.widefat { border: 1px solid #ccc; padding: 6px 10px; border-radius: 4px; }
+        .crafted-admin-field .description { font-size: 12px; color: #666; font-style: italic; display: block; margin-top: 4px;}
+    </style>';
+
+    echo '<div style="padding-top: 10px;">';
+
+    // SECTION 1: Text & Pop-up
+    echo '<div class="crafted-admin-box">';
+    echo '<h4>1. Tekst & Pop-up Inhoud</h4>';
+
+    echo '<div class="crafted-admin-field">';
+    echo '<label>School Subtitel:</label>';
+    echo '<input type="text" name="school_subtitle" value="' . esc_attr($subtitle) . '" class="widefat" placeholder="Bijv. MBO College of Vakgebied">';
+    echo '</div>';
+
+    echo '<div class="crafted-admin-field" style="margin-top: 20px;">';
+    echo '<label>Uitgebreide Info (Verschijnt in de Pop-up):</label>';
+    echo '<span class="description">Als je hier tekst instelt, verandert de "Meer informatie" knop aan de voorkant in een pop-up venster.</span><br>';
+    wp_editor($extended_info, 'school_extended_info', array(
+        'media_buttons' => true,
+        'textarea_rows' => 12,
+        'teeny' => false
+    ));
+    echo '</div>';
+
+    echo '</div>'; // End SECTION 1
+
+    // SECTION 2: Links
+    echo '<div class="crafted-admin-box">';
+    echo '<h4>2. Externe Links (Website & Knoppen)</h4>';
+
+    echo '<div class="crafted-admin-field">';
+    echo '<label>Referentie Website Link (URL):</label>';
+    echo '<input type="url" name="school_link" value="' . esc_attr($link) . '" class="widefat" placeholder="https://www.voorbeeldschool.nl">';
+    echo '<span class="description">Als er géén pop-up tekst is, is dit de hoofdknop. Anders komt deze als extra knop ónderin de pop-up te staan.</span>';
+    echo '</div>';
+    echo '</div>';
+
+    // SECTION 3: Afbeeldingen
+    echo '<div class="crafted-admin-box" style="border-left-color: #773570;">';
+    echo '<h4>3. Afbeeldingen & Icoontjes</h4>';
+
+    echo '<div class="crafted-admin-field">';
+    echo '<label>Icoon URL (klein logo over de foto in het raster):</label>';
+    echo '<input type="text" name="school_icon_url" value="' . esc_attr($icon_url) . '" class="widefat" placeholder="https://...bestand.png">';
+    echo '<span class="description">Optioneel: Plak hier een complete media URL voor het extra vignet/logo linksboven de school in het overzicht.</span>';
+    echo '</div>';
+
+    echo '<div class="crafted-admin-field" style="margin-top: 20px; padding-top: 10px; border-top: 1px dashed #ccc;">';
+    crafted_render_image_field('school_image', $post->ID, 'School Hoofdafbeelding (Vervangt het standaard uitgelichte bestand)');
+    echo '</div>';
+    echo '</div>';
+
+    echo '</div>'; // End wrapper
+}
+
+function organisatie_meta_callback($post)
+{
+    wp_nonce_field('crafted_save_meta', 'crafted_meta_nonce');
+    crafted_render_image_field('organisatie_image', $post->ID, 'Organisatie Logo/Afbeelding');
+}
+
+function ambassadeur_meta_callback($post)
+{
+    wp_nonce_field('crafted_save_meta', 'crafted_meta_nonce');
+    $quote = get_post_meta($post->ID, 'ambassadeur_quote', true);
+    echo '<p><label>Quote:</label><br><textarea name="ambassadeur_quote" style="width:100%" rows="3">' . esc_textarea($quote) . '</textarea></p>';
+    crafted_render_image_field('ambassadeur_image', $post->ID, 'Ambassadeur Foto');
+}
+
+function livestream_meta_callback($post)
+{
+    wp_nonce_field('crafted_save_meta', 'crafted_meta_nonce');
+    $video_url = get_post_meta($post->ID, 'ls_video_url', true);
+    $back_url = get_post_meta($post->ID, 'ls_back_url', true);
+    $channel_name = get_post_meta($post->ID, 'ls_channel_name', true);
+    $is_live = get_post_meta($post->ID, 'ls_is_live', true);
+
+    // Reusing the CSS from School (just to be safe it always loads)
+    echo '<style>
+        .crafted-admin-box { background: #f9f9f9; border-left: 4px solid #C25A95; padding: 15px 20px; margin-bottom: 20px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .crafted-admin-box h4 { margin-top: 0; color: #773570; font-size: 16px; margin-bottom: 15px; border-bottom: 1px solid #ddd; padding-bottom: 8px; }
+        .crafted-admin-field { margin-bottom: 15px; }
+        .crafted-admin-field label { font-weight: 600; display: block; margin-bottom: 5px; color: #333; }
+        .crafted-admin-field input.widefat { border: 1px solid #ccc; padding: 6px 10px; border-radius: 4px; }
+        .crafted-admin-field .description { font-size: 12px; color: #666; font-style: italic; display: block; margin-top: 4px;}
+        .ls-live-badge { display:inline-block; background: #e00; color: #fff; border-radius: 3px; padding: 2px 6px; font-weight: bold; font-size: 11px; margin-left:10px; }
+    </style>';
+
+    echo '<div style="padding-top: 10px;">';
+
+    // SECTION 1: Status & Setup
+    echo '<div class="crafted-admin-box">';
+    echo '<h4>1. Status & Video Bron</h4>';
+
+    echo '<div class="crafted-admin-field" style="background:#fff; padding:10px; border:1px solid #ddd; border-radius:4px;">';
+    echo '<label style="cursor:pointer;">';
+    echo '<input type="checkbox" name="ls_is_live" value="1" ' . checked($is_live, '1', false) . '>';
+    echo '<span style="font-size:14px; margin-left:5px;"><strong>Staat de stream momenteel LIVE?</strong></span>';
+    echo '<span class="ls-live-badge">LIVE</span>';
+    echo '</label>';
+    echo '<span class="description" style="margin-left: 24px;">Vink dit aan om het knipperende rode LIVE icoontje en rode randen op de website te activeren.</span>';
+    echo '</div>';
+
+    echo '<div class="crafted-admin-field" style="margin-top:20px;">';
+    echo '<label>YouTube Link (Video URL):</label>';
+    echo '<input type="text" name="ls_video_url" value="' . esc_attr($video_url) . '" class="widefat" placeholder="https://youtube.com/watch?v=...">';
+    echo '<span class="description">Plak hier de volledige YouTube link. Het systeem haalt de speler er automatisch uit.</span>';
+    echo '</div>';
+    echo '</div>'; // End SECTION 1
+
+    // SECTION 2: Branding
+    echo '<div class="crafted-admin-box" style="border-left-color: #773570;">';
+    echo '<h4>2. Kanaal & Navigatie</h4>';
+
+    echo '<div class="crafted-admin-field">';
+    echo '<label>Kanaal Naam (Weergegeven onder de videotitel):</label>';
+    echo '<input type="text" name="ls_channel_name" value="' . esc_attr($channel_name) . '" class="widefat" placeholder="Bijv. CRAFTED TV">';
+    echo '</div>';
+
+    echo '<div class="crafted-admin-field" style="margin-top:20px; padding-top:10px; border-top:1px dashed #ccc;">';
+    crafted_render_image_field('ls_logo_url_id', $post->ID, 'Kanaal Logo (Wordt rond weergegeven naast de naam)');
+    echo '</div>';
+
+    echo '<div class="crafted-admin-field" style="margin-top:20px; padding-top:10px; border-top:1px dashed #ccc;">';
+    echo '<label>Terugknop URL (Linksboven de livestream):</label>';
+    echo '<input type="text" name="ls_back_url" value="' . esc_attr($back_url) . '" class="widefat" placeholder="/">';
+    echo '<span class="description">Zet hier "/" neer om bezoekers naar de homepage terug te sturen, of vul een specifieke link in.</span>';
+    echo '</div>';
+
+    echo '</div>'; // End SECTION 2
+
+    echo '</div>'; // End wrapper
+}
+
+// --- Save Extra Meta Data ---
+function crafted_save_extra_meta_data($post_id)
+{
+    if (!isset($_POST['crafted_meta_nonce']) || !wp_verify_nonce($_POST['crafted_meta_nonce'], 'crafted_save_meta'))
+        return;
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE)
+        return;
+    if (!current_user_can('edit_post', $post_id))
+        return;
+
+    // Text Fields
+    $text_fields = [
+        'school_subtitle',
+        'school_link',
+        'school_icon_url',
+        'ambassadeur_quote',
+        'ls_video_url',
+        'ls_channel_name',
+        'ls_back_url'
+    ];
+    foreach ($text_fields as $field) {
+        if (isset($_POST[$field]))
+            update_post_meta($post_id, $field, sanitize_text_field($_POST[$field]));
+    }
+
+    // Specially handle the rich text editor for extended info since it has HTML
+    if (isset($_POST['school_extended_info'])) {
+        update_post_meta($post_id, 'school_extended_info', wp_kses_post($_POST['school_extended_info']));
+    }
+
+    // Checkbox
+    update_post_meta($post_id, 'ls_is_live', isset($_POST['ls_is_live']) ? '1' : '0');
+
+    // Image Fields
+    $image_fields = ['school_image', 'organisatie_image', 'ambassadeur_image', 'ls_logo_url_id'];
+    foreach ($image_fields as $field) {
+        if (isset($_POST[$field]))
+            update_post_meta($post_id, $field, absint($_POST[$field]));
+    }
+}
+add_action('save_post', 'crafted_save_extra_meta_data');
+
+// --- Footer Menu Pagina ---
+function crafted_footer_menu()
+{
+    add_menu_page('Footer Opties', 'Footer Opties', 'manage_options', 'crafted-footer', 'crafted_footer_page', 'dashicons-layout', 31);
+}
+add_action('admin_menu', 'crafted_footer_menu');
+
+function crafted_footer_page()
+{
+    echo '<div class="wrap"><h1>Footer Instellingen</h1><form method="post" action="options.php">';
+    settings_fields('crafted_footer_group');
+    do_settings_sections('crafted_footer');
+    submit_button();
+    echo '</form></div>';
+}
+
+// --- Footer Settings ---
+function crafted_footer_settings_init()
+{
+    add_settings_section('crafted_footer_section', 'Footer Instellingen', '__return_false', 'crafted_footer');
+
+    // Social Media
+    register_setting('crafted_footer_group', 'crafted_social_insta');
+    register_setting('crafted_footer_group', 'crafted_social_linkedin');
+    register_setting('crafted_footer_group', 'crafted_social_tiktok');
+    register_setting('crafted_footer_group', 'crafted_social_youtube');
+
+    add_settings_field('crafted_social_insta', 'Instagram URL', 'crafted_social_insta_cb', 'crafted_footer', 'crafted_footer_section');
+    add_settings_field('crafted_social_linkedin', 'LinkedIn URL', 'crafted_social_linkedin_cb', 'crafted_footer', 'crafted_footer_section');
+    add_settings_field('crafted_social_tiktok', 'TikTok URL', 'crafted_social_tiktok_cb', 'crafted_footer', 'crafted_footer_section');
+    add_settings_field('crafted_social_youtube', 'YouTube URL', 'crafted_social_youtube_cb', 'crafted_footer', 'crafted_footer_section');
+
+    // Quick Links Buttons
+    for ($i = 1; $i <= 4; $i++) {
+        register_setting('crafted_footer_group', "crafted_footer_btn_{$i}_text");
+        register_setting('crafted_footer_group', "crafted_footer_btn_{$i}_url");
+        add_settings_field(
+            "crafted_footer_btn_{$i}",
+            "Button $i (Text & URL)",
+            function () use ($i) {
+                crafted_footer_btn_cb($i);
+            },
+            'crafted_footer',
+            'crafted_footer_section'
+        );
+    }
+
+    // Sponsors (20 slots)
+    add_settings_section('crafted_footer_sponsors_section', 'Sponsoren (Handmatig)', '__return_false', 'crafted_footer');
+    for ($j = 1; $j <= 20; $j++) {
+        register_setting('crafted_footer_group', "crafted_footer_sponsor_{$j}_img");
+        register_setting('crafted_footer_group', "crafted_footer_sponsor_{$j}_url");
+        add_settings_field(
+            "crafted_footer_sponsor_{$j}",
+            "Sponsor $j",
+            function () use ($j) {
+                crafted_render_image_field("crafted_footer_sponsor_{$j}_img", 0, "Logo");
+                $url_val = get_option("crafted_footer_sponsor_{$j}_url");
+                echo '<p style="margin-top:10px;"><label>Website URL:</label><br>';
+                echo '<input type="text" name="crafted_footer_sponsor_' . $j . '_url" value="' . esc_attr($url_val) . '" class="regular-text" placeholder="https://..."></p><hr>';
+            },
+            'crafted_footer',
+            'crafted_footer_sponsors_section'
+        );
+    }
+}
+add_action('admin_init', 'crafted_footer_settings_init');
+
+// --- Social Media Callbacks ---
+function crafted_social_insta_cb()
+{
+    echo '<input type="text" name="crafted_social_insta" value="' . esc_attr(get_option('crafted_social_insta')) . '" class="regular-text" placeholder="https://instagram.com/...">';
+}
+function crafted_social_linkedin_cb()
+{
+    echo '<input type="text" name="crafted_social_linkedin" value="' . esc_attr(get_option('crafted_social_linkedin')) . '" class="regular-text" placeholder="https://linkedin.com/...">';
+}
+function crafted_social_tiktok_cb()
+{
+    echo '<input type="text" name="crafted_social_tiktok" value="' . esc_attr(get_option('crafted_social_tiktok')) . '" class="regular-text" placeholder="https://tiktok.com/...">';
+}
+function crafted_social_youtube_cb()
+{
+    echo '<input type="text" name="crafted_social_youtube" value="' . esc_attr(get_option('crafted_social_youtube')) . '" class="regular-text" placeholder="https://youtube.com/...">';
+}
+function crafted_footer_btn_cb($i)
+{
+    $text = get_option("crafted_footer_btn_{$i}_text", "Knop $i");
+    $url = get_option("crafted_footer_btn_{$i}_url", "#");
+    echo '<input type="text" name="crafted_footer_btn_' . $i . '_text" value="' . esc_attr($text) . '" placeholder="Tekst" style="margin-right:10px;">';
+    echo '<input type="text" name="crafted_footer_btn_' . $i . '_url" value="' . esc_attr($url) . '" placeholder="URL" class="regular-text">';
+}
+

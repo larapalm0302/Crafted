@@ -51,6 +51,7 @@ function crafted_get_image_url($post_id, $meta_key, $size = 'medium')
                     $subtitle = get_post_meta(get_the_ID(), 'school_subtitle', true);
                     $link = get_post_meta(get_the_ID(), 'school_link', true);
                     $icon_url = get_post_meta(get_the_ID(), 'school_icon_url', true);
+                    $extended_info = get_post_meta(get_the_ID(), 'school_extended_info', true);
                     $desc = get_the_content();
 
                     $thumb = crafted_get_image_url(get_the_ID(), 'school_image', 'medium-large');
@@ -68,7 +69,21 @@ function crafted_get_image_url($post_id, $meta_key, $size = 'medium')
                             <h3><?= get_the_title() ?></h3>
                             <?php if ($subtitle): ?><h4><?= esc_html($subtitle) ?></h4><?php endif; ?>
                             <?php if ($desc): ?><div class="school-desc"><?= wp_kses_post($desc) ?></div><?php endif; ?>
-                            <?php if ($link): ?><a class="crafted-button" href="<?= esc_url($link) ?>">Meer informatie</a><?php endif; ?>
+                            
+                            <?php if (!empty($extended_info)): ?>
+                                <!-- Show Modal Button if there is extended info -->
+                                <button class="crafted-button crafted-school-modal-btn">Meer informatie</button>
+                                <!-- Hidden payload for JS to read -->
+                                <div class="school-payload-data" style="display:none;">
+                                    <div class="sp-title"><?= esc_html(get_the_title()) ?></div>
+                                    <div class="sp-image"><?= esc_url($thumb) ?></div>
+                                    <div class="sp-content"><?= wp_kses_post($extended_info) ?></div>
+                                    <?php if ($link): ?><div class="sp-link"><?= esc_url($link) ?></div><?php endif; ?>
+                                </div>
+                            <?php elseif ($link): ?>
+                                <!-- Fallback to old external link behavior if no extended info -->
+                                <a class="crafted-button" href="<?= esc_url($link) ?>" target="_blank">Meer informatie</a>
+                            <?php endif; ?>
                         </div>
                     </div>
             <?php endwhile;
@@ -162,5 +177,89 @@ function crafted_get_image_url($post_id, $meta_key, $size = 'medium')
     </div>
 
 </div>
+
+<!-- The School Modal -->
+<div id="crafted-school-modal" class="crafted-modal-overlay">
+    <div class="crafted-modal-box">
+        <button class="crafted-modal-close" aria-label="Sluiten">&times;</button>
+        <div class="crafted-modal-header-img">
+            <img id="modal-school-img" src="" alt="School Header">
+        </div>
+        <div class="crafted-modal-body">
+            <h2 id="modal-school-title">School Titel</h2>
+            <div id="modal-school-content" class="modal-formatted-content"></div>
+            <a id="modal-school-link" class="crafted-button modal-external-btn" href="#" target="_blank" style="display:none; margin-top:20px;">Meer info? Klik deze knop</a>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('crafted-school-modal');
+    // Ensure modal exists to avoid errors on pages without schools
+    if (!modal) return;
+    
+    const closeBtn = document.querySelector('.crafted-modal-close');
+    const modalImg = document.getElementById('modal-school-img');
+    const modalTitle = document.getElementById('modal-school-title');
+    const modalContent = document.getElementById('modal-school-content');
+    const modalLink = document.getElementById('modal-school-link');
+
+    // Open Modal
+    document.querySelectorAll('.crafted-school-modal-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const payload = this.nextElementSibling;
+            if (!payload) return;
+            
+            const title = payload.querySelector('.sp-title')?.innerHTML || '';
+            const image = payload.querySelector('.sp-image')?.innerHTML || '';
+            const content = payload.querySelector('.sp-content')?.innerHTML || '';
+            const link = payload.querySelector('.sp-link')?.innerHTML || '';
+
+            modalTitle.innerHTML = title;
+            modalContent.innerHTML = content;
+            
+            if (image) {
+                modalImg.src = image;
+                modalImg.style.display = 'block';
+            } else {
+                modalImg.style.display = 'none';
+            }
+
+            if (link) {
+                modalLink.href = link;
+                modalLink.style.display = 'inline-block';
+            } else {
+                modalLink.style.display = 'none';
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent background scroll
+        });
+    });
+
+    // Close Modal
+    function closeModal() {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    if(closeBtn) closeBtn.addEventListener('click', closeModal);
+    
+    // Close on overlay click
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+});
+</script>
 
 <?php get_footer(); ?>
