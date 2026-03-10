@@ -5,7 +5,7 @@ get_header();
 
 <main class="credits-page">
     <section class="credits-hero">
-        <p class="credits-kicker">CRAFTED</p>
+        <p class="credits-kicker notranslate">CRAFTED</p>
         <h1>Credits</h1>
         <p class="credits-intro">Dit project is gemaakt door een team studenten met oog voor concept, design en development.</p>
     </section>
@@ -14,10 +14,10 @@ get_header();
         <article class="credits-card">
             <h2>Developers</h2>
             <ul class="credits-list">
-                <li>Nick Verbruggen</li>
-                <li>Stan Hoenselaars</li>
-                <li>Lara Palm</li>
-                <li>Nik Rasa</li>
+                <li class="notranslate">Nick Verbruggen</li>
+                <li class="notranslate">Stan Hoenselaars</li>
+                <li class="notranslate">Lara Palm</li>
+                <li class="notranslate">Nik Rasa</li>
             </ul>
         </article>
 

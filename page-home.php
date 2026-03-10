@@ -7,7 +7,7 @@ get_header();
 
 <main>
    <div class="div1">
-    <p>What Awaits You</p>
+    <p class="notranslate">What Awaits You</p>
     <div class="div2">
     </div>
    </div>
