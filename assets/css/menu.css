@@ -1,4 +1,4 @@
-html:has(menu:not(.menu-invisible)) {
+body:has(menu:not(.menu-invisible)) {
     overflow: hidden;
 
     * :not(menu, menu *) {
