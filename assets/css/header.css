@@ -8,6 +8,7 @@
 
 body {
   font-family: "Roboto", sans-serif;
+  overflow-x: hidden;
 }
 
 #header {
@@ -28,7 +29,6 @@ body {
 #header::before {
   content: "";
   background: linear-gradient(180deg, rgba(123, 55, 125, 1) 0%, rgba(233, 129, 140, 1) 100%);
-  box-shadow: 0px 2px 8px 5px rgba(233, 129, 140, 1);
   width: 100%;
   height: 100%;
   position: absolute;
@@ -46,9 +46,11 @@ body {
   line-height: normal;
   letter-spacing: 0;
   grid-area: text;
+  transform: translateY(48px);
   transition:
     font-size 1s ease,
-    text-shadow 1s ease;
+    text-shadow 1s ease,
+    transform 1s ease;
 }
 
 .header-buttons {
@@ -275,6 +277,7 @@ body:has(menu:not(.menu-invisible)) .header-logo {
 body:has(menu:not(.menu-invisible)) .crafted-text {
   font-size: 48px;
   text-shadow: -6px -2px 0px #4f2e5b;
+  transform: translateY(0);
 }
 
 .invisible {
@@ -360,10 +363,6 @@ body:has(menu:not(.menu-invisible)) .crafted-text {
     grid-template-areas: "logo text buttons";
     gap: 8px;
     padding: 12px 0;
-  }
-
-  #header::before {
-    box-shadow: 0px 1px 6px 3px rgba(233, 129, 140, 0.7);
   }
 
   .header-logo {
@@ -477,6 +476,7 @@ body:has(menu:not(.menu-invisible)) .crafted-text {
 
     .crafted-text {
       font-size: 30px;
+      transform: translateY(0);
     }
 
     .menu-button {
