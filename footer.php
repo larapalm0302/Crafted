@@ -128,6 +128,11 @@
             </div>
         </div>
 
+        <div class="footer-bottom-bar">
+            <p class="footer-copyright">&copy; <?php echo date('Y'); ?> CRAFTED</p>
+            <a href="<?php echo esc_url(get_permalink(get_page_by_path('credits'))); ?>" class="footer-credits-link">Credits</a>
+        </div>
+
     </div>
 
     <!-- Wave SVG Animation (Moved Outside Wrapper) -->
@@ -148,6 +153,32 @@
 </footer>
 
 <?php wp_footer(); ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var link = document.querySelector('.footer-credits-link');
+  if (!link) return;
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    var href = this.href;
+    var rect = this.getBoundingClientRect();
+    var cx = rect.left + rect.width / 2;
+    var cy = rect.top + rect.height / 2;
+    for (var i = 0; i < 10; i++) {
+      var dot = document.createElement('span');
+      dot.style.cssText = 'position:fixed;width:6px;height:6px;border-radius:50%;pointer-events:none;z-index:9999;left:' + cx + 'px;top:' + cy + 'px;background:' + ['#773570','#C25A95','#E27391','#FFEA99','#F5A986'][i % 5];
+      var angle = (i / 10) * Math.PI * 2;
+      var dist = 40 + Math.random() * 50;
+      var tx = Math.cos(angle) * dist;
+      var ty = Math.sin(angle) * dist;
+      dot.animate([{transform:'translate(0,0) scale(1)',opacity:1},{transform:'translate('+tx+'px,'+ty+'px) scale(0)',opacity:0}],{duration:600,easing:'cubic-bezier(0.22,1,0.36,1)'});
+      document.body.appendChild(dot);
+      setTimeout(function(d){d.remove();},650,dot);
+    }
+    this.classList.add('clicked');
+    setTimeout(function() { window.location.href = href; }, 800);
+  });
+});
+</script>
 </body>
 
 </html>

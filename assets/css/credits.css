@@ -1,0 +1,187 @@
+@import url("https://fonts.googleapis.com/css2?family=Krona+One&family=Roboto:wght@400;500;700;900&display=swap");
+
+html {
+  margin-top: 0 !important;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+header {
+  background: rgba(233, 129, 140, 1) !important;
+}
+
+.credits-page {
+  --credits-purple: #77357c;
+  --credits-pink: #e9818c;
+  --credits-yellow: #ffea99;
+  --credits-deep: #4f2e5b;
+  --credits-text: #3f2549;
+  --credits-white: rgba(255, 255, 255, 0.9);
+  flex: 1;
+  background: linear-gradient(180deg, rgba(233, 129, 140, 1) 0%, rgba(233, 129, 140, 1) 22%, rgba(233, 129, 140, 0) 52%), linear-gradient(135deg, #e27391 0%, #f5a986 40%, #f1d29a 100%);
+  padding: clamp(20px, 4vw, 26px) 0 0 0;
+  font-family: "Roboto", "Segoe UI", sans-serif;
+  color: var(--credits-text);
+  height: 100%;
+}
+
+.credits-hero {
+  /* max-width: 760px;
+  margin: 0 auto 36px; */
+  text-align: center;
+  opacity: 0;
+  transform: translateY(16px);
+  animation: creditsReveal 650ms ease forwards;
+}
+
+.credits-kicker {
+  font-size: 0.82rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--credits-yellow);
+  text-shadow: -2px 2px 0 rgba(79, 46, 91, 0.55);
+  font-weight: 700;
+  /* margin-bottom: 14px; */
+}
+
+.credits-hero h1 {
+  font-family: "Krona One", "Roboto", sans-serif;
+  font-size: clamp(2rem, 7vw, 4rem);
+  line-height: 1.05;
+  color: var(--credits-yellow);
+  text-shadow: -8px -3px 0 var(--credits-deep);
+  /* margin-bottom: 16px; */
+}
+
+.credits-intro {
+  margin: 0 auto;
+  max-width: 630px;
+  font-size: clamp(1rem, 2vw, 1.1rem);
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 500;
+}
+
+.credits-grid {
+  max-width: 1080px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(16px, 3vw, 28px);
+  width: clamp(280px, 60%, 1080px);
+}
+
+.credits-card {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.22) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 22px;
+  padding: clamp(20px, 4vw, 34px);
+  box-shadow: 0 14px 34px rgba(79, 46, 91, 0.25);
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  transform: translateY(20px);
+  animation: creditsReveal 650ms ease forwards;
+}
+
+.credits-card:nth-child(2) {
+  animation-delay: 120ms;
+}
+
+.credits-card h2 {
+  font-family: "Krona One", "Roboto", sans-serif;
+  font-size: clamp(1.35rem, 3vw, 2rem);
+  color: var(--credits-yellow);
+  text-shadow: -3px -1px 0 rgba(79, 46, 91, 0.65);
+  margin-bottom: 20px;
+}
+
+.credits-list {
+  list-style: none;
+  display: grid;
+  gap: 11px;
+}
+
+.credits-list li {
+  background: var(--credits-white);
+  border: 2px solid rgba(119, 53, 124, 0.2);
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--credits-deep);
+  box-shadow: 0 4px 0 rgba(119, 53, 124, 0.3);
+}
+
+.credits-tools li {
+  background: linear-gradient(135deg, #ffea99 0%, #ffd97f 100%);
+}
+
+@keyframes creditsReveal {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 900px) {
+  .credits-grid {
+    grid-template-columns: 1fr;
+    width: clamp(260px, 70%, 600px);
+  }
+}
+
+@media (max-width: 768px) {
+  .credits-page {
+    padding: clamp(16px, 3vw, 32px) clamp(12px, 2vw, 24px);
+  }
+
+  .credits-grid {
+    width: clamp(260px, 80%, 600px);
+  }
+
+  .credits-hero h1 {
+    font-size: clamp(1.8rem, 6vw, 3rem);
+    text-shadow: -6px -2px 0 var(--credits-deep);
+  }
+}
+
+@media (max-width: 640px) {
+  .credits-card {
+    border-radius: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .credits-page {
+    padding: clamp(12px, 2vw, 24px) clamp(10px, 2vw, 20px);
+  }
+
+  .credits-hero {
+    margin-bottom: 24px;
+  }
+
+  .credits-hero h1 {
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
+    text-shadow: -4px -2px 0 var(--credits-deep);
+  }
+
+  .credits-grid {
+    width: 90%;
+    gap: 12px;
+  }
+
+  .credits-card {
+    padding: clamp(16px, 3vw, 24px);
+  }
+}
