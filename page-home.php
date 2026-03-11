@@ -2,10 +2,75 @@
 /*
 Template Name: Home Page
 */
-get_header(); 
+get_header();
+
+// Fetch Admin Settings
+$video_url = get_option('crafted_home_video_url');
+$image_id = get_option('crafted_home_image_id');
+$bg_image_url = $image_id ? wp_get_attachment_image_url($image_id, 'full') : get_template_directory_uri() . '/assets/images/bg-placeholder.jpg';
+
+// Fetch Carousel Texts (Defaults if empty)
+$text1 = get_option('crafted_home_carousel_1') ?: '18 juni';
+$text2 = get_option('crafted_home_carousel_2') ?: 'Klokgebouw Eindhoven';
+$text3 = get_option('crafted_home_carousel_3') ?: 'Gratis Entree';
 ?>
 
-<main>
+<!-- ==============================================
+     SPLASH SCREEN / HERO SECTION (100vh)
+     ============================================== -->
+<section class="crafted-hero-section hero">
+    <!-- Dynamic Background -->
+    <div class="hero-bg-media">
+        <?php if (!empty($video_url)): ?>
+            <video src="<?= esc_url($video_url) ?>" autoplay loop muted playsinline></video>
+        <?php else: ?>
+            <div class="hero-bg-image" style="background-image: url('<?= esc_url($bg_image_url) ?>');"></div>
+        <?php endif; ?>
+        <div class="hero-bg-overlay"></div>
+    </div>
+
+    <!-- Hero Content (Matches original front-page.php structure) -->
+    <div class="hero-content">
+        <h1 class="site-title">CRAFTED</h1>
+        <p>Voor studenten, door studenten</p>
+    </div>
+
+    <!-- Dynamic Info Bar -->
+    <div class="info-bar info-bar-carousel">
+        <div class="carousel-track">
+            <!-- First Set -->
+            <span class="carousel-item"><?= esc_html($text1) ?></span>
+            <span class="carousel-item"><?= esc_html($text2) ?></span>
+            <span class="carousel-item"><?= esc_html($text3) ?></span>
+            <!-- Set 2 -->
+            <span class="carousel-item"><?= esc_html($text1) ?></span>
+            <span class="carousel-item"><?= esc_html($text2) ?></span>
+            <span class="carousel-item"><?= esc_html($text3) ?></span>
+            <!-- Set 3 -->
+            <span class="carousel-item"><?= esc_html($text1) ?></span>
+            <span class="carousel-item"><?= esc_html($text2) ?></span>
+            <span class="carousel-item"><?= esc_html($text3) ?></span>
+            <!-- Set 4 -->
+            <span class="carousel-item"><?= esc_html($text1) ?></span>
+            <span class="carousel-item"><?= esc_html($text2) ?></span>
+            <span class="carousel-item"><?= esc_html($text3) ?></span>
+            <!-- Set 5 -->
+            <span class="carousel-item"><?= esc_html($text1) ?></span>
+            <span class="carousel-item"><?= esc_html($text2) ?></span>
+            <span class="carousel-item"><?= esc_html($text3) ?></span>
+        </div>
+    </div>
+
+    <!-- Down Arrow Button -->
+    <button class="home-button hero-scroll-down" aria-label="Scroll naar beneden">
+        <svg fill="currentColor" viewBox="0 0 24 24" width="24" height="24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+    </button>
+</section>
+
+<!-- ==============================================
+     MAIN CONTENT (Scrolled Target)
+     ============================================== -->
+<main id="main-content">
    <div class="div1">
     <p>What Awaits You</p>
     <div class="div2">
@@ -78,7 +143,7 @@ get_header();
 
          <div class="address-card">
            <div class="address-header">
-             <span class="address-icon">📍</span>
+             <span class="address-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></span>
              <div>
                <p class="address-title">Adres</p>
                <p class="address-text">Klokgebouw 50<br>5617 AB Eindhoven</p>
@@ -96,7 +161,7 @@ get_header();
 
          <div class="buurt-grid">
            <div class="buurt-card">
-             <div class="buurt-icon">🍴</div>
+             <div class="buurt-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M21 5V4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v1c0 3.75 2.44 6.94 5.92 8.35L6 20H4v2h16v-2h-2l-2.92-6.65C18.56 11.94 21 8.75 21 5zM8 4h8v1c0 2.21-1.79 4-4 4s-4-1.79-4-4V4z"/></svg></div>
              <div>
                <p class="buurt-title">Biergarten Eindhoven</p>
                <p class="buurt-sub">Bar & terras</p>
@@ -104,7 +169,7 @@ get_header();
              </div>
            </div>
            <div class="buurt-card">
-             <div class="buurt-icon">🍹</div>
+             <div class="buurt-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M21 5V4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v1c0 3.75 2.44 6.94 5.92 8.35L6 20H4v2h16v-2h-2l-2.92-6.65C18.56 11.94 21 8.75 21 5zM8 4h8v1c0 2.21-1.79 4-4 4s-4-1.79-4-4V4z"/></svg></div>
              <div>
                <p class="buurt-title">Ketelhuis Strijp-S</p>
                <p class="buurt-sub">Bar</p>
@@ -112,7 +177,7 @@ get_header();
              </div>
            </div>
            <div class="buurt-card">
-             <div class="buurt-icon">🍽️</div>
+             <div class="buurt-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z"/></svg></div>
              <div>
                <p class="buurt-title">STR’EAT Bars & kitchens</p>
                <p class="buurt-sub">Restaurant</p>
@@ -120,7 +185,7 @@ get_header();
              </div>
            </div>
            <div class="buurt-card">
-             <div class="buurt-icon">🏨</div>
+             <div class="buurt-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M7 13c1.66 0 3-1.34 3-3S8.66 7 7 7s-3 1.34-3 3 1.34 3 3 3zm12-6h-8v7H3V5H1v15h2v-3h18v3h2v-9c0-2.21-1.79-4-4-4z"/></svg></div>
              <div>
                <p class="buurt-title">Hotel Crown</p>
                <p class="buurt-sub">Comfortabel overnachten</p>
@@ -128,7 +193,7 @@ get_header();
              </div>
            </div>
            <div class="buurt-card">
-             <div class="buurt-icon">🚆</div>
+             <div class="buurt-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-4 0-8 .5-8 4v9.5C4 17.43 5.57 19 7.5 19L6 20.5v.5h12v-.5L16.5 19c1.93 0 3.5-1.57 3.5-3.5V6c0-3.5-3.58-4-8-4zM7.5 17c-.83 0-1.5-.67-1.5-1.5S6.67 14 7.5 14s1.5.67 1.5 1.5S8.33 17 7.5 17zm3.5-7H6V6h5v4zm4 0h-5V6h5v4zm1.5 7c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg></div>
              <div>
                <p class="buurt-title">NS Station Eindhoven</p>
                <p class="buurt-sub">Trein & bus verbindingen</p>
@@ -136,7 +201,7 @@ get_header();
              </div>
            </div>
            <div class="buurt-card">
-             <div class="buurt-icon">🅿️</div>
+             <div class="buurt-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M13.2 11H10V7h3.2c1.1 0 2 .9 2 2s-.9 2-2 2zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.2 11H10v4H8V5h5.2c2.21 0 4 1.79 4 4s-1.79 4-4 4z"/></svg></div>
              <div>
                <p class="buurt-title">Parkeergarage P1</p>
                <p class="buurt-sub">24/7 beschikbaar</p>
@@ -160,5 +225,32 @@ get_header();
      </div>
    </section>
 </main>
+
+<!-- JavaScript voor Smooth Scrolling -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const scrollBtn = document.querySelector('.hero-scroll-down');
+    const target = document.getElementById('main-content');
+    
+    if(scrollBtn && target) {
+        scrollBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            target.scrollIntoView({ behavior: 'smooth' });
+        });
+    }
+
+    // Controleer of we voorbij de hero sectie zijn gescrolld (100vh)
+    function checkHeaderSticky() {
+        if (window.scrollY >= window.innerHeight - 5) {
+            document.body.classList.add('header-stuck');
+        } else {
+            document.body.classList.remove('header-stuck');
+        }
+    }
+    window.addEventListener('scroll', checkHeaderSticky);
+    window.addEventListener('resize', checkHeaderSticky);
+    checkHeaderSticky(); // Voer ook één keer uit bij laden
+});
+</script>
 
 <?php get_footer(); ?>

@@ -127,7 +127,7 @@
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  color: #773570;
+  color: #77357c !important;
   transition: all 0.3s ease;
   box-shadow: 0 4px 10px rgba(119, 53, 112, 0.1);
 }
@@ -135,14 +135,19 @@
 .social-circle-btn:hover {
   background: #fff;
   transform: scale(1.15) translateY(-3px);
-  color: #C25A95;
+  color: #C25A95 !important;
   box-shadow: 0 6px 15px rgba(119, 53, 112, 0.2);
 }
 
-.social-circle-btn .dashicons {
+.social-circle-btn .dashicons,
+.social-circle-btn svg {
   font-size: 26px;
   width: 26px;
   height: 26px;
+}
+
+.social-circle-btn svg path {
+  stroke: currentColor;
 }
 
 .footer-sponsors-section {

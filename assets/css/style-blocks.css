@@ -2308,7 +2308,7 @@ details[open] .faq-icon {
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  color: #773570;
+  color: #77357c !important;
   transition: all 0.3s ease;
   box-shadow: 0 4px 10px rgba(119, 53, 112, 0.1);
 }
@@ -2316,14 +2316,19 @@ details[open] .faq-icon {
 .social-circle-btn:hover {
   background: #fff;
   transform: scale(1.15) translateY(-3px);
-  color: #C25A95;
+  color: #C25A95 !important;
   box-shadow: 0 6px 15px rgba(119, 53, 112, 0.2);
 }
 
-.social-circle-btn .dashicons {
+.social-circle-btn .dashicons,
+.social-circle-btn svg {
   font-size: 26px;
   width: 26px;
   height: 26px;
+}
+
+.social-circle-btn svg path {
+  stroke: currentColor;
 }
 
 .footer-sponsors-section {
@@ -2865,5 +2870,239 @@ details[open] .faq-icon {
     }
     .crafted-modal-body h2 {
         font-size: 1.5rem;
+    }
+}
+
+/* ==============================================
+   HOME PAGE HERO CONTENT (100vh Splash)
+   ============================================== */
+
+/* Fix header alignment on the home page natively by stacking correctly */
+
+/* Reorder the header to sit BELOW the hero section on the home page natively */
+body.home, body.front-page, body.page-template-page-home {
+    display: flex;
+    flex-direction: column;
+}
+
+body.home #header, body.front-page #header, body.page-template-page-home #header {
+    order: 2;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 1001;
+}
+
+/* Hide the Menu buttons until the header is actually sticky at the top */
+body.home:not(.header-stuck) #header .menu-button,
+body.front-page:not(.header-stuck) #header .menu-button,
+body.page-template-page-home:not(.header-stuck) #header .menu-button {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-10px);
+}
+
+body.home #header .menu-button,
+body.front-page #header .menu-button,
+body.page-template-page-home #header .menu-button {
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+body.home .crafted-hero-section, body.front-page .crafted-hero-section, body.page-template-page-home .crafted-hero-section {
+    order: 1;
+}
+
+body.home #main-content, body.front-page #main-content, body.page-template-page-home #main-content {
+    order: 3;
+}
+body.home footer, body.front-page footer, body.page-template-page-home footer {
+    order: 4;
+}
+
+.crafted-hero-section {
+    position: relative;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    height: 100vh;
+    min-height: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    overflow: hidden;
+    z-index: 10;
+}
+
+/* Background element */
+.hero-bg-media {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -2;
+}
+.hero-bg-media video,
+.hero-bg-media .hero-bg-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.hero-bg-image {
+    background-size: cover;
+    background-position: center;
+}
+.hero-bg-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: -1;
+}
+
+/* Hero Content Matching Original Design */
+.hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    color: white;
+    max-width: 800px;
+    padding: 20px;
+    margin-bottom: 60px; /* Space for the info bar to not overlap text */
+}
+
+.hero-content .site-title {
+    color: #ffea99;
+    text-shadow: -10px -4px 0 #4f2e5b;
+    font-family: "Krona One", sans-serif;
+    font-size: clamp(40px, 10vw, 120px);
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    margin: 0;
+}
+
+.hero-content p {
+    font-size: clamp(18px, 4vw, 28px);
+    color: #FFEA99;
+    margin-bottom: 40px;
+    font-family: 'Arial', sans-serif;
+    animation: slideInUp 0.8s ease-out 0.2s both;
+}
+
+/* The Info Bar exactly like original, but as an infinite scrolling carousel */
+.info-bar {
+    position: absolute;
+    bottom: 100px;
+    left: 0;
+    right: 0;
+    background: #FFEA99;
+    color: #4F2E5B;
+    padding: 20px 0; /* Removing side padding to allow full edge-to-edge scroll */
+    font-size: 24px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    font-family: 'Roboto', sans-serif;
+    z-index: 3;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.carousel-track {
+    display: inline-flex;
+    align-items: center;
+    animation: scrollInfoBar 20s linear infinite;
+    width: max-content;
+}
+
+.info-bar span.carousel-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.info-bar span.carousel-item::after {
+    content: '✧';
+    margin-left: 15px;
+    margin-right: 15px;
+    color: #4F2E5B;
+    font-weight: normal;
+}
+
+.info-bar:hover .carousel-track {
+    animation-play-state: paused;
+}
+
+@keyframes scrollInfoBar {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-20%); /* Scroll exactly one fifth (one set out of 5) */
+    }
+}
+
+/* Down Arrow Button exactly like original */
+.hero-scroll-down {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #FFEA99;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000;
+    transition: 0.3s ease;
+}
+
+.hero-scroll-down:hover {
+    background-color: #FFD700;
+    transform: translateX(-50%) translateY(-5px);
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mobile Adjustments for Home Hero */
+@media screen and (max-width: 768px) {
+    .info-bar {
+        font-size: 16px;
+        padding: 15px 0;
+        bottom: 80px;
+    }
+    
+    .info-bar span.carousel-item::after {
+        margin-left: 15px;
+        margin-right: 15px;
+    }
+    
+    .hero-content {
+        margin-bottom: 80px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .info-bar {
+        font-size: 14px;
+        bottom: 70px;
+        padding: 10px 0;
     }
 }

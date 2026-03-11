@@ -45,12 +45,18 @@ body {
     font-weight: 400; */
   line-height: normal;
   letter-spacing: 0;
-  grid-area: text;
-  transform: translateY(48px);
   transition:
     font-size 1s ease,
     text-shadow 1s ease,
     transform 1s ease;
+}
+
+.countdown-timer {
+  grid-area: text;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .header-buttons {
@@ -436,8 +442,9 @@ body:has(menu:not(.menu-invisible)) .crafted-text {
     font-size: 22px;
     width: 10px;
     margin-bottom: 12px;
+  }
 
-    body:has(menu:not(.menu-invisible)) .header-logo {
+  body:has(menu:not(.menu-invisible)) .header-logo {
       width: 55px;
       height: 55px;
     }
@@ -453,12 +460,16 @@ body:has(menu:not(.menu-invisible)) .crafted-text {
 
   @media screen and (max-width: 480px) {
     #header {
-      height: 100px;
+      height: auto;
+      min-height: 110px;
       gap: 6px;
       padding: 10px 0;
       grid-template-columns: 1fr;
-      grid-template-rows: 1fr auto;
-      grid-template-areas: "text" "buttons";
+      grid-template-rows: auto auto;
+      grid-template-areas: 
+        "text" 
+        "buttons";
+      align-content: center;
     }
 
     .header-logo {
@@ -553,4 +564,3 @@ body:has(menu:not(.menu-invisible)) .crafted-text {
       gap: 4px;
     }
   }
-}

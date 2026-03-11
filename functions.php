@@ -296,7 +296,7 @@ function crafted_friends_enqueue_assets()
 {
     wp_enqueue_style('crafted-main-style', get_template_directory_uri() . '/style.css');
     wp_enqueue_style('crafted-footer-style', get_template_directory_uri() . '/assets/css/footer.css', [], '1.0');
-    if (is_page('livestream') || is_page_template('page-livestream.php') || is_page('crafted-friends') || is_page_template('page-crafted-friends.php')) {
+    if (is_front_page() || is_page_template('page-home.php') || is_page('livestream') || is_page_template('page-livestream.php') || is_page('crafted-friends') || is_page_template('page-crafted-friends.php')) {
         wp_enqueue_style('crafted-livestream-style', get_template_directory_uri() . '/assets/css/style-blocks.css', [], '3.0');
     }
     wp_enqueue_script('crafted-carousel', get_template_directory_uri() . '/assets/js/carousel.js', [], '1.0', true);
@@ -1135,6 +1135,96 @@ function crafted_save_extra_meta_data($post_id)
     }
 }
 add_action('save_post', 'crafted_save_extra_meta_data');
+
+// --- Home Menu Pagina ---
+function crafted_home_menu()
+{
+    add_menu_page('Home Opties', 'Home Opties', 'manage_options', 'crafted-home', 'crafted_home_page', 'dashicons-admin-home', 30);
+}
+add_action('admin_menu', 'crafted_home_menu');
+
+function crafted_home_page()
+{
+    wp_enqueue_media(); // Ensure WP media uploader script is loaded
+    echo '<div class="wrap"><h1>Home Pagina Instellingen</h1><form method="post" action="options.php">';
+    settings_fields('crafted_home_group');
+    do_settings_sections('crafted_home');
+    submit_button();
+    echo '</form></div>';
+}
+
+// --- Home Settings ---
+function crafted_home_settings_init()
+{
+    // Hero Sectie Background
+    add_settings_section('crafted_home_hero_section', 'Hero Achtergrond (Video of Afbeelding)', '__return_false', 'crafted_home');
+
+    // Video URL (has priority over image if filled)
+    register_setting('crafted_home_group', 'crafted_home_video_url');
+    add_settings_field('crafted_home_video_url', 'Achtergrond Video URL (.mp4)', function () {
+        $val = get_option('crafted_home_video_url');
+        echo '<input type="url" name="crafted_home_video_url" value="' . esc_attr($val) . '" class="regular-text" placeholder="https://.../video.mp4" style="width: 100%; max-width: 600px;">';
+        echo '<p class="description">Optioneel. Plak hier een directe link naar een .mp4 video. (Laat leeg om de afbeelding hieronder te gebruiken)</p>';
+    }, 'crafted_home', 'crafted_home_hero_section');
+
+    // Image Upload
+    register_setting('crafted_home_group', 'crafted_home_image_id');
+    add_settings_field('crafted_home_image_id', 'Fallback Achtergrond Afbeelding', function () {
+        $image_id = get_option('crafted_home_image_id');
+        $image_url = $image_id ? wp_get_attachment_image_url($image_id, 'medium') : '';
+        ?>
+        <div class="crafted-home-image-preview" style="margin-bottom:10px;">
+            <img src="<?php echo esc_url($image_url); ?>" style="max-width:300px; display:<?php echo $image_id ? 'block' : 'none'; ?>; border:1px solid #ccc; padding:2px;" />
+        </div>
+        <input type="hidden" name="crafted_home_image_id" id="crafted_home_image_id" value="<?php echo esc_attr($image_id); ?>" />
+        <button type="button" class="button" id="crafted_home_image_upload_btn">Afbeelding Selecteren</button>
+        <button type="button" class="button button-link-delete" id="crafted_home_image_remove_btn" style="display:<?php echo $image_id ? 'inline-block' : 'none'; ?>; color: #a00;">Verwijderen</button>
+
+        <script>
+        jQuery(document).ready(function($){
+            var mediaUploader;
+            $('#crafted_home_image_upload_btn').click(function(e) {
+                e.preventDefault();
+                if (mediaUploader) {
+                    mediaUploader.open();
+                    return;
+                }
+                mediaUploader = wp.media({
+                    title: 'Kies Achtergrond Afbeelding',
+                    button: { text: 'Gebruik deze afbeelding' },
+                    multiple: false
+                });
+                mediaUploader.on('select', function() {
+                    var attachment = mediaUploader.state().get('selection').first().toJSON();
+                    $('#crafted_home_image_id').val(attachment.id);
+                    $('.crafted-home-image-preview img').attr('src', attachment.url).show();
+                    $('#crafted_home_image_remove_btn').show();
+                });
+                mediaUploader.open();
+            });
+            $('#crafted_home_image_remove_btn').click(function(e) {
+                e.preventDefault();
+                $('#crafted_home_image_id').val('');
+                $('.crafted-home-image-preview img').hide().attr('src', '');
+                $(this).hide();
+            });
+        });
+        </script>
+        <?php
+    }, 'crafted_home', 'crafted_home_hero_section');
+
+    // Info Balk Caroussel
+    add_settings_section('crafted_home_carousel_section', 'Info Balk Caroussel', '__return_false', 'crafted_home');
+
+    for ($i = 1; $i <= 3; $i++) {
+        register_setting('crafted_home_group', "crafted_home_carousel_{$i}");
+        add_settings_field("crafted_home_carousel_{$i}", "Caroussel Tekst $i", function () use ($i) {
+            $val = get_option("crafted_home_carousel_{$i}");
+            echo '<input type="text" name="crafted_home_carousel_' . $i . '" value="' . esc_attr($val) . '" class="regular-text">';
+        }, 'crafted_home', 'crafted_home_carousel_section');
+    }
+}
+add_action('admin_init', 'crafted_home_settings_init');
 
 // --- Footer Menu Pagina ---
 function crafted_footer_menu()

@@ -1,6 +1,4 @@
 html:has(menu:not(.menu-invisible)) {
-    overflow: hidden;
-
     * :not(menu, menu *) {
         pointer-events: none;
         user-select: none;
@@ -21,8 +19,8 @@ menu {
     backdrop-filter: blur(8px) brightness(0.75);
     transition:
         opacity 0.5s ease,
-            visibility 0s linear 0s,
-            backdrop-filter 0.5s ease;
+        visibility 0s linear 0s,
+        backdrop-filter 0.5s ease;
     display: grid;
     grid-template-columns: 40% 1fr 40%;
     grid-template-rows: 20% 1fr;
@@ -42,8 +40,8 @@ menu.menu-invisible {
     opacity: 0;
     transition:
         opacity 0.5s ease,
-            visibility 0s linear 0.5s,
-            backdrop-filter 0.5s ease;
+        visibility 0s linear 0.5s,
+        backdrop-filter 0.5s ease;
     visibility: hidden;
 }
 
@@ -144,19 +142,8 @@ menu.menu-invisible {
 }
 
 .socials .social-image-container {
-    padding: 12px;
-    background: #ffea99;
-    border-radius: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     opacity: 0;
-}
-
-.socials svg {
-    width: 50px;
-    height: 50px;
-    color: #4f2e5b;
+    margin: 0;
 }
 
 .social-image-container.appear {
@@ -198,9 +185,10 @@ menu.menu-invisible {
         text-shadow: -5px -1.5px 0px #4f2e5b;
     }
 
-        .info {
-            max-width: 450px;
-        }
+    .info {
+        max-width: 450px;
+    }
+
     .timer {
         flex-wrap: wrap;
         gap: 12px;
@@ -259,15 +247,6 @@ menu.menu-invisible {
         gap: 15px;
         flex-wrap: wrap;
         justify-content: center;
-    }
-
-    .socials .social-image-container {
-        padding: 10px;
-    }
-
-    .socials svg {
-        width: 40px;
-        height: 40px;
     }
 }
 
@@ -346,11 +325,11 @@ menu.menu-invisible {
         height: 40px;
         border: none;
         cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .menu-buttons .menu-button:active {
-            transform: scale(0.95);
+        transition: all 0.3s ease;
+    }
+
+    .menu-buttons .menu-button:active {
+        transform: scale(0.95);
     }
 
     .menu-buttons .menu-button.largeW {
@@ -384,83 +363,70 @@ menu.menu-invisible {
         justify-content: center;
         flex-wrap: wrap;
     }
-
-    .socials .social-image-container {
-        padding: 8px;
-    }
-
-    .socials svg {
-        width: 30px;
-        height: 30px;
-    }
 }
 
 @media screen and (max-width: 480px) {
     menu {
-        padding: 16px;
-            gap: 20px;
-        }
-    
-        .menu-header {
-            gap: 12px;
-        }
+        padding: 20px 15px;
+        gap: 15px;
+        grid-template-rows: auto auto auto;
+        justify-content: center;
+        align-content: start;
+        overflow-y: auto;
+    }
+
+    .menu-header {
+        gap: 10px;
+        margin-top: 10px;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+    }
 
     .menu-header .crafted-text {
-        font-size: 24px;
+        font-size: 28px;
         text-shadow: -3px -1px 0px #4f2e5b;
     }
 
     .timer {
-        display: none;
-    }
-
-    .timercounter {
-        width: 60px;
-        height: 45px;
-        font-size: 20px;
-    }
-
-    .timer-label {
-        font-size: 8px;
-    }
-
-    .timer .divider {
-        font-size: 16px;
-        width: 10px;
-        margin-bottom: 12px;
+        display: none !important;
     }
 
     .menu-buttons {
-        max-width: 280px;
-        gap: 6px;
+        max-width: 100%;
+        width: 100%;
+        gap: 8px;
+        justify-self: center;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(3, auto);
     }
 
     .menu-buttons .menu-button {
-        font-size: 9px;
-        padding: 6px 4px;
-        height: 35px;
-        min-height: 35px;
+        font-size: 11px;
+        padding: 10px 5px;
+        height: 45px;
+        min-height: 45px;
+        width: 100%;
+    }
+
+    .info-container {
+        width: 100%;
+        gap: 15px;
     }
 
     .info {
-        min-height: 130px;
-        padding: 12px;
+        min-height: auto;
+        padding: 15px;
+        width: 100%;
+        max-width: 100%;
     }
 
     .info p {
-        font-size: 12px;
+        font-size: 13px;
+        line-height: 1.4;
     }
 
     .socials {
         gap: 8px;
-    }
-
-    .socials .social-image-container {
-        padding: 6px;
-    }
-
-    .socials svg {
-        width: 25px;
-        height: 25px;
     }
 }

@@ -27,7 +27,7 @@
         </div>
         <div class="countdown-timer flex">
             <div class="crafted-text">CRAFTED</div>
-            <div class="timer <?php echo is_front_page() ? 'home-page' : 'timer-invisible'; ?>">
+            <div class="timer <?php echo (is_front_page() || is_page_template('page-home.php')) ? 'home-page' : 'timer-invisible'; ?>">
                 <div class="timerelement">
                     <div id="days" class="timercounter">162</div>
                     <div class="timer-label">dagen</div>
