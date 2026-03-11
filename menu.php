@@ -1,15 +1,15 @@
  <menu class="menu-invisible">
      <div class="menu-buttons">
-         <button class="menu-button largeW" delay="0.15s" onclick="window.location.href='/'">Home</button>
-         <button class="menu-button largeW" delay="0.30s" onclick="window.location.href='/nieuws'">Nieuws</button>
-         <button class="menu-button largeW" delay="0.45s" onclick="window.location.href='/contact'">Contact</button>
-         <button class="menu-button largeW largeH" delay="0.60s" onclick="window.location.href='/crafted-friends'">
+         <button class="menu-button largeW notranslate" delay="0.15s" onclick="window.location.href='/'" data-nl="Home" data-en="Home">Home</button>
+         <button class="menu-button largeW notranslate" delay="0.30s" onclick="window.location.href='/nieuws'" data-nl="Nieuws" data-en="News">Nieuws</button>
+         <button class="menu-button largeW notranslate" delay="0.45s" onclick="window.location.href='/contact'" data-nl="Contact" data-en="Contact">Contact</button>
+         <button class="menu-button largeW largeH notranslate" delay="0.60s" onclick="window.location.href='/crafted-friends'">
              Crafted<br>
              <span class="smallFont">&</span><br>
              Friends
          </button>
-         <button class="menu-button largeW" delay="0.75s" onclick="window.location.href='/tickets'">Tickets</button>
-         <button class="menu-button largeW" delay="0.90s" onclick="window.location.href='/programma'">Programma</button>
+         <button class="menu-button largeW notranslate" delay="0.75s" onclick="window.location.href='/tickets'" data-nl="Tickets" data-en="Tickets">Tickets</button>
+         <button class="menu-button largeW notranslate" delay="0.90s" onclick="window.location.href='/programma'" data-nl="Programma" data-en="Program">Programma</button>
      </div>
      <div class="info-container">
          <div class="info">

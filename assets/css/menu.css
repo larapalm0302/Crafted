@@ -1,4 +1,6 @@
 html:has(menu:not(.menu-invisible)) {
+    overflow: hidden;
+
     * :not(menu, menu *) {
         pointer-events: none;
         user-select: none;

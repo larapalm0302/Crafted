@@ -72,7 +72,7 @@ $text3 = get_option('crafted_home_carousel_3') ?: 'Gratis Entree';
      ============================================== -->
 <main id="main-content">
    <div class="div1">
-    <p>What Awaits You</p>
+    <p class="notranslate">What Awaits You</p>
     <div class="div2">
     </div>
    </div>

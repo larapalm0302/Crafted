@@ -7,7 +7,7 @@ get_header();
     <div class="container">
         <div class="content-wrapper">
             <div class="left-section">
-                <h1>Summa fashion show</h1>
+                <h1 class="notranslate">Summa fashion show</h1>
 
                 <p>Welkom bij de jaarlijkse CRAFTED Fashion Show! Een spetterend evenement waar creativiteit, mode en talent samenkomen. Onze getalenteerde studenten presenteren hun unieke ontwerpen op de catwalk.</p>
 

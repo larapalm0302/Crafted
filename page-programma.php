@@ -33,7 +33,7 @@ wp_reset_postdata();
 ?>
 
 <main class="program-page">
-    <h1 class="program-title">Programma crafted 2026</h1>
+    <h1 class="program-title notranslate">Programma crafted 2026</h1>
 
     <?php foreach ($grouped_items as $time_slot => $items): ?>
     <div class="day-section">

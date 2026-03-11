@@ -17,7 +17,7 @@ function crafted_get_image_url($post_id, $meta_key, $size = 'medium')
 
     <!-- HERO / TITLE -->
     <div style="text-align: center; padding: 40px 20px;">
-        <h2 style="font-family:'Inter',sans-serif; font-size: 3rem; color: #7b377d; margin-bottom: 20px; font-weight:700;">Crafted And Friends</h2>
+        <h2 class="notranslate" style="font-family:'Inter',sans-serif; font-size: 3rem; color: #7b377d; margin-bottom: 20px; font-weight:700;">Crafted And Friends</h2>
     </div>
 
     <!-- WIE / WAT (Yellow Block) -->
