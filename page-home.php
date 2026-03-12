@@ -4,22 +4,16 @@ Template Name: Home Page
 */
 get_header();
 
-// Fetch Admin Settings
 $video_url = get_option('crafted_home_video_url');
 $image_id = get_option('crafted_home_image_id');
 $bg_image_url = $image_id ? wp_get_attachment_image_url($image_id, 'full') : get_template_directory_uri() . '/assets/images/bg-placeholder.jpg';
 
-// Fetch Carousel Texts (Defaults if empty)
 $text1 = get_option('crafted_home_carousel_1') ?: '18 juni';
 $text2 = get_option('crafted_home_carousel_2') ?: 'Klokgebouw Eindhoven';
 $text3 = get_option('crafted_home_carousel_3') ?: 'Gratis Entree';
 ?>
 
-<!-- ==============================================
-     SPLASH SCREEN / HERO SECTION (100vh)
-     ============================================== -->
 <section class="crafted-hero-section hero">
-    <!-- Dynamic Background -->
     <div class="hero-bg-media">
         <?php if (!empty($video_url)): ?>
             <video src="<?= esc_url($video_url) ?>" autoplay loop muted playsinline></video>
@@ -29,47 +23,36 @@ $text3 = get_option('crafted_home_carousel_3') ?: 'Gratis Entree';
         <div class="hero-bg-overlay"></div>
     </div>
 
-    <!-- Hero Content (Matches original front-page.php structure) -->
     <div class="hero-content">
         <h1 class="site-title notranslate">CRAFTED</h1>
         <p>Voor studenten, door studenten</p>
     </div>
 
-    <!-- Dynamic Info Bar -->
     <div class="info-bar info-bar-carousel">
         <div class="carousel-track">
-            <!-- First Set -->
             <span class="carousel-item"><?= esc_html($text1) ?></span>
             <span class="carousel-item"><?= esc_html($text2) ?></span>
             <span class="carousel-item"><?= esc_html($text3) ?></span>
-            <!-- Set 2 -->
             <span class="carousel-item"><?= esc_html($text1) ?></span>
             <span class="carousel-item"><?= esc_html($text2) ?></span>
             <span class="carousel-item"><?= esc_html($text3) ?></span>
-            <!-- Set 3 -->
             <span class="carousel-item"><?= esc_html($text1) ?></span>
             <span class="carousel-item"><?= esc_html($text2) ?></span>
             <span class="carousel-item"><?= esc_html($text3) ?></span>
-            <!-- Set 4 -->
             <span class="carousel-item"><?= esc_html($text1) ?></span>
             <span class="carousel-item"><?= esc_html($text2) ?></span>
             <span class="carousel-item"><?= esc_html($text3) ?></span>
-            <!-- Set 5 -->
             <span class="carousel-item"><?= esc_html($text1) ?></span>
             <span class="carousel-item"><?= esc_html($text2) ?></span>
             <span class="carousel-item"><?= esc_html($text3) ?></span>
         </div>
     </div>
 
-    <!-- Down Arrow Button -->
     <button class="home-button hero-scroll-down" aria-label="Scroll naar beneden">
         <svg fill="currentColor" viewBox="0 0 24 24" width="24" height="24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
     </button>
 </section>
 
-<!-- ==============================================
-     MAIN CONTENT (Scrolled Target)
-     ============================================== -->
 <main id="main-content">
    <div class="div1">
     <p class="notranslate">What Awaits You</p>
@@ -77,7 +60,6 @@ $text3 = get_option('crafted_home_carousel_3') ?: 'Gratis Entree';
     </div>
    </div>
 
-   <!-- What Awaits You Cards Section -->
    <section class="awaits-section">
      <div class="cards-container">
        <?php
@@ -105,7 +87,6 @@ $text3 = get_option('crafted_home_carousel_3') ?: 'Gratis Entree';
      </div>
    </section>
 
-   <!-- Nieuws Section -->
    <section class="nieuws-section">
      <div class="nieuws-container">
        <div class="nieuws-content">
@@ -138,7 +119,6 @@ $text3 = get_option('crafted_home_carousel_3') ?: 'Gratis Entree';
      </div>
    </section>
 
-   <!-- Locatie & In de buurt Section -->
    <section class="locatie-section">
      <div class="locatie-container">
        <div class="locatie-column">
@@ -231,7 +211,6 @@ $text3 = get_option('crafted_home_carousel_3') ?: 'Gratis Entree';
        </div>
      </div>
    
-    <!-- Plattegrond Section -->
     <?php
     $plat_title = get_option('crafted_home_plattegrond_titel', 'Plattegrond');
     $plat_text  = get_option('crafted_home_plattegrond_tekst', '');
@@ -241,7 +220,6 @@ $text3 = get_option('crafted_home_carousel_3') ?: 'Gratis Entree';
         $plat_img_src = wp_get_attachment_image_url($plat_img_id, 'full');
     }
     
-    // Only render the whole section if there's at least a title or image
     if (!empty($plat_title) || !empty($plat_img_src) || !empty($plat_text)) :
     ?>
     <section class="plattegrond-section">
@@ -287,7 +265,6 @@ $text3 = get_option('crafted_home_carousel_3') ?: 'Gratis Entree';
     <?php endif; ?>
 </main>
 
-<!-- JavaScript voor Smooth Scrolling -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const scrollBtn = document.querySelector('.hero-scroll-down');
@@ -300,7 +277,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Controleer of we voorbij de hero sectie zijn gescrolld (100vh)
     function checkHeaderSticky() {
         if (window.scrollY >= window.innerHeight - 5) {
             document.body.classList.add('header-stuck');

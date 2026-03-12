@@ -1,13 +1,10 @@
-<!-- FOOTER -->
 <footer class="crafted-footer">
     <div class="footer-gradient-bg"></div>
 
     <div class="footer-content-wrapper">
 
-        <!-- TOP SECTION: Quick Links & Socials -->
         <div class="footer-top">
 
-            <!-- LEFT: Quick Links -->
             <div class="footer-links-section">
                 <h3>Quick Links</h3>
                 <div class="footer-buttons-grid">
@@ -21,7 +18,6 @@
                         ?>
                     <a href="<?= esc_url($url) ?>" class="footer-glass-btn">
                         <div class="btn-icon-box">
-                            <!-- Using Dashicons -->
                             <span class="dashicons <?= esc_attr($icon_class) ?>"></span>
                         </div>
                         <span class="btn-text"><?= esc_html($text) ?></span>
@@ -30,7 +26,6 @@
                 </div>
             </div>
 
-            <!-- RIGHT: Socials -->
             <div class="footer-socials-section">
                 <h3>Volg ons</h3>
                 <p>Deel je ervaring met <strong>#CRAFTED</strong></p>
@@ -68,14 +63,12 @@
 
         </div>
 
-        <!-- BOTTOM SECTION: Sponsors Marquee -->
         <div class="footer-sponsors-section">
             <h3 class="sponsors-title">Met dank aan onze partners</h3>
 
             <div class="marquee-wrapper">
                 <div class="marquee-content">
                     <?php
-                    // Check for Manual Sponsors (1-20)
                     $manual_sponsors = [];
                     for ($j = 1; $j <= 20; $j++) {
                         $img_id = get_option("crafted_footer_sponsor_{$j}_img");
@@ -96,10 +89,8 @@
                     $final_items = [];
 
                     if (!empty($manual_sponsors)) {
-                        // Use Manual Sponsors
                         $final_items = $manual_sponsors;
                     } else {
-                        // Fallback to CPT
                         $orgs = new WP_Query([
                             'post_type' => 'organisatie',
                             'posts_per_page' => -1,
@@ -126,9 +117,7 @@
                         }
                     }
 
-                    // Duplicate items for infinite scroll
                     if (count($final_items) > 0) {
-                        // Ensure enough items for smooth scroll
                         $display_items = $final_items;
                         while (count($display_items) < 10) {
                             $display_items = array_merge($display_items, $final_items);
@@ -148,7 +137,6 @@
 
     </div>
 
-    <!-- Wave SVG Animation (Moved Outside Wrapper) -->
     <div class="footer-wave-container">
         <svg class="footer-wave-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1077 59"
              preserveAspectRatio="none">

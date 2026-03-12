@@ -3,7 +3,6 @@
 Template Name: Coming Soon / Countdown Pagina
 */
 
-// Fetch Admin Settings for background
 $video_url = get_option('crafted_home_video_url');
 $image_id = get_option('crafted_home_image_id');
 $bg_image_url = $image_id ? wp_get_attachment_image_url($image_id, 'full') : get_template_directory_uri() . '/assets/images/bg-placeholder.jpg';
@@ -15,10 +14,8 @@ $bg_image_url = $image_id ? wp_get_attachment_image_url($image_id, 'full') : get
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="<?php echo get_template_directory_uri(); ?>/assets/images/logo.png">
     
-    <!-- Using same base styling as home page for the background -->
     <link rel="stylesheet" href="<?php echo esc_url(get_template_directory_uri() . '/assets/css/index.css'); ?>">
     
-    <!-- We inline some specific styles to make the timer massive and central -->
     <style>
         body, html {
             margin: 0;
@@ -279,7 +276,6 @@ $bg_image_url = $image_id ? wp_get_attachment_image_url($image_id, 'full') : get
     </style>
     
     <?php
-    // Expose specific Coming Soon timer settings to JavaScript
     $timer_date = get_option('crafted_cs_timer_date', '2026-06-18T00:00:00');
     $expired_text = get_option('crafted_cs_expired_text', 'Kijk de livestream');
     $expired_url = get_option('crafted_cs_expired_url', '/livestream');
@@ -295,10 +291,8 @@ $bg_image_url = $image_id ? wp_get_attachment_image_url($image_id, 'full') : get
     <?php wp_head(); ?>
 </head>
 <body <?php body_class(); ?>>
-    <!-- hidden translate element -->
     <div id="google_translate_element" style="display:none"></div>
 
-    <!-- Standalone Language Button -->
     <div class="cs-lang-container">
         <button id="cs-language-picker" class="menu-button notranslate">
             <img src="<?php echo get_template_directory_uri(); ?>/assets/images/Globe.png" alt="Taal">
@@ -306,7 +300,6 @@ $bg_image_url = $image_id ? wp_get_attachment_image_url($image_id, 'full') : get
         </button>
     </div>
 
-    <!-- Dynamic Background -->
     <?php if (!empty($video_url)): ?>
         <video class="coming-soon-bg" src="<?= esc_url($video_url) ?>" autoplay loop muted playsinline></video>
     <?php else: ?>
@@ -314,7 +307,6 @@ $bg_image_url = $image_id ? wp_get_attachment_image_url($image_id, 'full') : get
     <?php endif; ?>
     <div class="coming-soon-overlay"></div>
 
-    <!-- Content -->
     <div class="coming-soon-wrapper">
         <img class="cs-logo" src="<?php echo get_template_directory_uri(); ?>/assets/images/Logo.png" alt="Crafted Logo">
         
@@ -327,7 +319,6 @@ $bg_image_url = $image_id ? wp_get_attachment_image_url($image_id, 'full') : get
         <h1 class="cs-title notranslate" data-nl="<?= esc_attr($title_nl) ?>" data-en="<?= esc_attr($title_en) ?>"><?= esc_html($title_nl) ?></h1>
         <p class="cs-subtitle notranslate" data-nl="<?= esc_attr($sub_nl) ?>" data-en="<?= esc_attr($sub_en) ?>"><?= esc_html($sub_nl) ?></p>
 
-        <!-- Big Timer -->
         <div id="cs-countdown-container" class="cs-timer">
             <div class="cs-timerelement">
                 <div id="cs-days" class="cs-timercounter">00</div>
@@ -351,7 +342,6 @@ $bg_image_url = $image_id ? wp_get_attachment_image_url($image_id, 'full') : get
         </div>
     </div>
 
-    <!-- Standalone Timer Script for this page -->
     <script>
         function updateBigCountdown() {
             if (!window.craftedTimerSettings) return;
@@ -371,7 +361,6 @@ $bg_image_url = $image_id ? wp_get_attachment_image_url($image_id, 'full') : get
             if (distance < 0) {
                 const container = document.getElementById('cs-countdown-container');
                 if (container) {
-                    // Replaced with livestream link, style overriden to center it nicely
                     container.style.background = 'transparent';
                     container.style.border = 'none';
                     container.style.boxShadow = 'none';
@@ -405,7 +394,6 @@ $bg_image_url = $image_id ? wp_get_attachment_image_url($image_id, 'full') : get
         });
     </script>
     
-    <!-- Translation Script Logic -->
     <script>
         function googleTranslateElementInit(){
             new google.translate.TranslateElement({
