@@ -132,7 +132,7 @@
 
         <div class="footer-bottom-bar">
             <p class="footer-copyright">&copy; <?php echo date('Y'); ?> CRAFTED</p>
-            <a href="<?php echo esc_url(get_permalink(get_page_by_path('credits'))); ?>" class="footer-credits-link">Credits</a>
+            <a href="/credits" class="footer-credits-link">Credits</a>
         </div>
 
     </div>

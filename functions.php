@@ -1399,6 +1399,31 @@ jQuery(document).ready(function($) {
     }, 'crafted_home', 'crafted_home_locatie_section');
 
     // =============================================
+    // CONTACT SETTINGS
+    // =============================================
+    add_settings_section('crafted_home_contact_section', '📞 Contact Instellingen', function () {
+        echo '<p>Beheer de contactinformatie en de contactformulierinstellingen.</p>';
+    }, 'crafted_home');
+
+    register_setting('crafted_home_group', 'crafted_home_contact_email');
+    add_settings_field('crafted_home_contact_email', 'Email', function () {
+        $val = get_option('crafted_home_contact_email', '');
+        echo '<input type="email" name="crafted_home_contact_email" value="' . esc_attr($val) . '" class="regular-text" placeholder="info@example.com">';
+    }, 'crafted_home', 'crafted_home_contact_section');
+
+    register_setting('crafted_home_group', 'crafted_home_contact_telefoon');
+    add_settings_field('crafted_home_contact_telefoon', 'TelefoonNummer', function () {
+        $val = get_option('crafted_home_contact_telefoon', '');
+        echo '<input type="tel" name="crafted_home_contact_telefoon" value="' . esc_attr($val) . '" class="regular-text" placeholder="+31 6 00000000">';
+    }, 'crafted_home', 'crafted_home_contact_section');
+
+    register_setting('crafted_home_group', 'crafted_home_contact_url');
+    add_settings_field('crafted_home_contact_url', 'Contact Url', function () {
+        $val = get_option('crafted_home_contact_url', '#');
+        echo '<input type="text" name="crafted_home_contact_url" value="' . esc_attr($val) . '" class="regular-text" placeholder="/contact">';
+    }, 'crafted_home', 'crafted_home_contact_section');
+
+    // =============================================
     // IN DE BUURT WIDGETS (max 8)
     // =============================================
     add_settings_section('crafted_home_buurt_section', '🏘️ In de buurt (max 8)', function () {
