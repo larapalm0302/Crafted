@@ -286,7 +286,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     window.addEventListener('scroll', checkHeaderSticky);
     window.addEventListener('resize', checkHeaderSticky);
-    checkHeaderSticky(); // Voer ook één keer uit bij laden
+    checkHeaderSticky();
 });
 </script>
 
