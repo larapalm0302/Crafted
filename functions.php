@@ -44,69 +44,69 @@ function programma_meta_box_callback($post)
     $image_id = get_post_meta($post->ID, 'programma_image', true);
     $image_url = $image_id ? wp_get_attachment_image_url($image_id, 'medium') : '';
     ?>
-    <table class="form-table">
-        <th><label for="start_time">Starttijd</label></th>
-        <td><input type="time" name="start_time" id="start_time" value="<?php echo esc_attr($start_time); ?>"></td>
-        </tr>
-        <tr>
-            <th><label for="end_time">Eindtijd</label></th>
-            <td><input type="time" name="end_time" id="end_time" value="<?php echo esc_attr($end_time); ?>"></td>
-        </tr>
-        <tr>
-            <th><label for="description">Beschrijving</label></th>
-            <td><textarea name="description" id="description" rows="4"
-                    style="width: 100%;"><?php echo esc_textarea($description); ?></textarea></td>
-        </tr>
-        <tr>
-            <th><label>Afbeelding</label></th>
-            <td>
-                <div id="programma-image-preview" style="margin-bottom: 10px;">
-                    <?php if ($image_url): ?>
-                        <img src="<?php echo esc_url($image_url); ?>"
-                            style="max-width: 200px; height: auto; border-radius: 8px;">
-                    <?php endif; ?>
-                </div>
-                <input type="hidden" name="programma_image" id="programma_image" value="<?php echo esc_attr($image_id); ?>">
-                <button type="button" class="button" id="upload-image-btn">Afbeelding uploaden</button>
-                <button type="button" class="button" id="remove-image-btn"
+<table class="form-table">
+    <th><label for="start_time">Starttijd</label></th>
+    <td><input type="time" name="start_time" id="start_time" value="<?php echo esc_attr($start_time); ?>"></td>
+    </tr>
+    <tr>
+        <th><label for="end_time">Eindtijd</label></th>
+        <td><input type="time" name="end_time" id="end_time" value="<?php echo esc_attr($end_time); ?>"></td>
+    </tr>
+    <tr>
+        <th><label for="description">Beschrijving</label></th>
+        <td><textarea name="description" id="description" rows="4"
+                      style="width: 100%;"><?php echo esc_textarea($description); ?></textarea></td>
+    </tr>
+    <tr>
+        <th><label>Afbeelding</label></th>
+        <td>
+            <div id="programma-image-preview" style="margin-bottom: 10px;">
+                <?php if ($image_url): ?>
+                <img src="<?php echo esc_url($image_url); ?>"
+                     style="max-width: 200px; height: auto; border-radius: 8px;">
+                <?php endif; ?>
+            </div>
+            <input type="hidden" name="programma_image" id="programma_image" value="<?php echo esc_attr($image_id); ?>">
+            <button type="button" class="button" id="upload-image-btn">Afbeelding uploaden</button>
+            <button type="button" class="button" id="remove-image-btn"
                     style="<?php echo $image_id ? '' : 'display:none;'; ?>">Verwijderen</button>
-            </td>
-        </tr>
-    </table>
+        </td>
+    </tr>
+</table>
 
-    <script>
-        jQuery(document).ready(function ($) {
-            var frame;
-            $('#upload-image-btn').on('click', function (e) {
-                e.preventDefault();
-                if (frame) {
-                    frame.open();
-                    return;
-                }
-                frame = wp.media({
-                    title: 'Selecteer afbeelding',
-                    button: {
-                        text: 'Gebruik deze afbeelding'
-                    },
-                    multiple: false
-                });
-                frame.on('select', function () {
-                    var attachment = frame.state().get('selection').first().toJSON();
-                    $('#programma_image').val(attachment.id);
-                    $('#programma-image-preview').html('<img src="' + attachment.sizes.medium.url + '" style="max-width: 200px; height: auto; border-radius: 8px;">');
-                    $('#remove-image-btn').show();
-                });
-                frame.open();
-            });
-            $('#remove-image-btn').on('click', function (e) {
-                e.preventDefault();
-                $('#programma_image').val('');
-                $('#programma-image-preview').html('');
-                $(this).hide();
-            });
+<script>
+jQuery(document).ready(function($) {
+    var frame;
+    $('#upload-image-btn').on('click', function(e) {
+        e.preventDefault();
+        if (frame) {
+            frame.open();
+            return;
+        }
+        frame = wp.media({
+            title: 'Selecteer afbeelding',
+            button: {
+                text: 'Gebruik deze afbeelding'
+            },
+            multiple: false
         });
-    </script>
-    <?php
+        frame.on('select', function() {
+            var attachment = frame.state().get('selection').first().toJSON();
+            $('#programma_image').val(attachment.id);
+            $('#programma-image-preview').html('<img src="' + attachment.sizes.medium.url + '" style="max-width: 200px; height: auto; border-radius: 8px;">');
+            $('#remove-image-btn').show();
+        });
+        frame.open();
+    });
+    $('#remove-image-btn').on('click', function(e) {
+        e.preventDefault();
+        $('#programma_image').val('');
+        $('#programma-image-preview').html('');
+        $(this).hide();
+    });
+});
+</script>
+<?php
 }
 
 function programma_save_meta($post_id)
@@ -290,17 +290,17 @@ add_action('admin_menu', 'crafted_contact_menu');
 function crafted_contact_page()
 {
     ?>
-    <div class="wrap">
-        <h1>Contact Informatie</h1>
-        <form method="post" action="options.php">
-            <?php
+<div class="wrap">
+    <h1>Contact Informatie</h1>
+    <form method="post" action="options.php">
+        <?php
             settings_fields('crafted_contact');
             do_settings_sections('crafted_contact');
             submit_button();
             ?>
-        </form>
-    </div>
-    <?php
+    </form>
+</div>
+<?php
 }
 
 function add_styles()
@@ -382,67 +382,67 @@ function nieuws_meta_box_callback($post)
         $datetime = date_i18n('l j F, H:i');
     }
     ?>
-    <table class="form-table">
-        <tr>
-            <th><label for="description">Beschrijving <span style="color:red;">*</span></label></th>
-            <td><textarea name="description" id="description" rows="4"
-                    style="width: 100%;"><?php echo esc_textarea($description); ?></textarea></td>
-        </tr>
-        <tr>
-            <th><label>Afbeelding <span style="color:red;">*</span></label></th>
-            <td>
-                <div id="nieuws-image-preview" style="margin-bottom: 10px;">
-                    <?php if ($image_url): ?>
-                        <img src="<?php echo esc_url($image_url); ?>"
-                            style="max-width: 200px; height: auto; border-radius: 8px;">
-                    <?php endif; ?>
-                </div>
-                <input type="hidden" name="nieuws_image" id="nieuws_image" value="<?php echo esc_attr($image_id); ?>">
-                <button type="button" class="button" id="upload-image-btn">Afbeelding uploaden</button>
-                <button type="button" class="button" id="remove-image-btn"
+<table class="form-table">
+    <tr>
+        <th><label for="description">Beschrijving <span style="color:red;">*</span></label></th>
+        <td><textarea name="description" id="description" rows="4"
+                      style="width: 100%;"><?php echo esc_textarea($description); ?></textarea></td>
+    </tr>
+    <tr>
+        <th><label>Afbeelding <span style="color:red;">*</span></label></th>
+        <td>
+            <div id="nieuws-image-preview" style="margin-bottom: 10px;">
+                <?php if ($image_url): ?>
+                <img src="<?php echo esc_url($image_url); ?>"
+                     style="max-width: 200px; height: auto; border-radius: 8px;">
+                <?php endif; ?>
+            </div>
+            <input type="hidden" name="nieuws_image" id="nieuws_image" value="<?php echo esc_attr($image_id); ?>">
+            <button type="button" class="button" id="upload-image-btn">Afbeelding uploaden</button>
+            <button type="button" class="button" id="remove-image-btn"
                     style="<?php echo $image_id ? '' : 'display:none;'; ?>">Verwijderen</button>
-            </td>
-        </tr>
-        <tr>
-            <th><label for="raw_nieuws_date">Datum & Tijd</label></th>
-            <td><input type="datetime-local" name="raw_nieuws_date" id="raw_nieuws_date"
-                    value="<?php echo esc_attr($rawdatetime); ?>"></td>
-        </tr>
-    </table>
+        </td>
+    </tr>
+    <tr>
+        <th><label for="raw_nieuws_date">Datum & Tijd</label></th>
+        <td><input type="datetime-local" name="raw_nieuws_date" id="raw_nieuws_date"
+                   value="<?php echo esc_attr($rawdatetime); ?>"></td>
+    </tr>
+</table>
 
-    <script>
-        jQuery(document).ready(function ($) {
-            var frame;
-            $('#upload-image-btn').on('click', function (e) {
-                e.preventDefault();
-                if (frame) {
-                    frame.open();
-                    return;
-                }
-                frame = wp.media({
-                    title: 'Selecteer afbeelding',
-                    button: {
-                        text: 'Gebruik deze afbeelding'
-                    },
-                    multiple: false
-                });
-                frame.on('select', function () {
-                    var attachment = frame.state().get('selection').first().toJSON();
-                    $('#nieuws_image').val(attachment.id);
-                    $('#nieuws-image-preview').html('<img src="' + attachment.sizes.medium.url + '" style="max-width: 200px; height: auto; border-radius: 8px;">');
-                    $('#remove-image-btn').show();
-                });
-                frame.open();
-            });
-            $('#remove-image-btn').on('click', function (e) {
-                e.preventDefault();
-                $('#nieuws_image').val('');
-                $('#nieuws-image-preview').html('');
-                $(this).hide();
-            });
+<script>
+jQuery(document).ready(function($) {
+    var frame;
+    $('#upload-image-btn').on('click', function(e) {
+        e.preventDefault();
+        if (frame) {
+            frame.open();
+            return;
+        }
+        frame = wp.media({
+            title: 'Selecteer afbeelding',
+            button: {
+                text: 'Gebruik deze afbeelding'
+            },
+            multiple: false
         });
-    </script>
-    <?php
+        frame.on('select', function() {
+            var attachment = frame.state().get('selection').first().toJSON();
+            $('#nieuws_image').val(attachment.id);
+            $('#nieuws-image-preview').html('<img src="' + attachment.sizes.medium.url + '" style="max-width: 200px; height: auto; border-radius: 8px;">');
+            $('#remove-image-btn').show();
+        });
+        frame.open();
+    });
+    $('#remove-image-btn').on('click', function(e) {
+        e.preventDefault();
+        $('#nieuws_image').val('');
+        $('#nieuws-image-preview').html('');
+        $(this).hide();
+    });
+});
+</script>
+<?php
 }
 
 function nieuws_save_meta($post_id)
@@ -538,66 +538,66 @@ function teasers_meta_box_callback($post)
         $datetime = date_i18n('l j F, H:i');
     }
     ?>
-    <table class="form-table">
-        <tr>
-            <th><label for="description">Beschrijving <span style="color:red;">*</span></label></th>
-            <td><textarea name="description" id="description" rows="4"
-                    style="width: 100%;"><?php echo esc_textarea($description); ?></textarea></td>
-        </tr>
-        <tr>
-            <th><label>Afbeelding <span style="color:red;">*</span></label></th>
-            <td>
-                <div id="teasers-image-preview" style="margin-bottom: 10px;">
-                    <?php if ($image_url): ?>
-                        <img src="<?php echo esc_url($image_url); ?>"
-                            style="max-width: 200px; height: auto; border-radius: 8px;">
-                    <?php endif; ?>
-                </div>
-                <input type="hidden" name="teasers_image" id="teasers_image" value="<?php echo esc_attr($image_id); ?>">
-                <button type="button" class="button" id="upload-image-btn">Afbeelding uploaden</button>
-                <button type="button" class="button" id="remove-image-btn"
+<table class="form-table">
+    <tr>
+        <th><label for="description">Beschrijving <span style="color:red;">*</span></label></th>
+        <td><textarea name="description" id="description" rows="4"
+                      style="width: 100%;"><?php echo esc_textarea($description); ?></textarea></td>
+    </tr>
+    <tr>
+        <th><label>Afbeelding <span style="color:red;">*</span></label></th>
+        <td>
+            <div id="teasers-image-preview" style="margin-bottom: 10px;">
+                <?php if ($image_url): ?>
+                <img src="<?php echo esc_url($image_url); ?>"
+                     style="max-width: 200px; height: auto; border-radius: 8px;">
+                <?php endif; ?>
+            </div>
+            <input type="hidden" name="teasers_image" id="teasers_image" value="<?php echo esc_attr($image_id); ?>">
+            <button type="button" class="button" id="upload-image-btn">Afbeelding uploaden</button>
+            <button type="button" class="button" id="remove-image-btn"
                     style="<?php echo $image_id ? '' : 'display:none;'; ?>">Verwijderen</button>
-            </td>
-        </tr>
-        <tr>
-            <th><label for="raw_teasers_date">Datum & Tijd</label></th>
-            <td><input type="datetime-local" name="raw_teasers_date" id="raw_teasers_date"
-                    value="<?php echo esc_attr($rawdatetime); ?>"></td>
-        </tr>
-    </table>
-    <script>
-        jQuery(document).ready(function ($) {
-            var frame;
-            $('#upload-image-btn').on('click', function (e) {
-                e.preventDefault();
-                if (frame) {
-                    frame.open();
-                    return;
-                }
-                frame = wp.media({
-                    title: 'Selecteer afbeelding',
-                    button: {
-                        text: 'Gebruik deze afbeelding'
-                    },
-                    multiple: false
-                });
-                frame.on('select', function () {
-                    var attachment = frame.state().get('selection').first().toJSON();
-                    $('#teasers_image').val(attachment.id);
-                    $('#teasers-image-preview').html('<img src="' + attachment.sizes.medium.url + '" style="max-width: 200px; height: auto; border-radius: 8px;">');
-                    $('#remove-image-btn').show();
-                });
-                frame.open();
-            });
-            $('#remove-image-btn').on('click', function (e) {
-                e.preventDefault();
-                $('#teasers_image').val('');
-                $('#teasers-image-preview').html('');
-                $(this).hide();
-            });
+        </td>
+    </tr>
+    <tr>
+        <th><label for="raw_teasers_date">Datum & Tijd</label></th>
+        <td><input type="datetime-local" name="raw_teasers_date" id="raw_teasers_date"
+                   value="<?php echo esc_attr($rawdatetime); ?>"></td>
+    </tr>
+</table>
+<script>
+jQuery(document).ready(function($) {
+    var frame;
+    $('#upload-image-btn').on('click', function(e) {
+        e.preventDefault();
+        if (frame) {
+            frame.open();
+            return;
+        }
+        frame = wp.media({
+            title: 'Selecteer afbeelding',
+            button: {
+                text: 'Gebruik deze afbeelding'
+            },
+            multiple: false
         });
-    </script>
-    <?php
+        frame.on('select', function() {
+            var attachment = frame.state().get('selection').first().toJSON();
+            $('#teasers_image').val(attachment.id);
+            $('#teasers-image-preview').html('<img src="' + attachment.sizes.medium.url + '" style="max-width: 200px; height: auto; border-radius: 8px;">');
+            $('#remove-image-btn').show();
+        });
+        frame.open();
+    });
+    $('#remove-image-btn').on('click', function(e) {
+        e.preventDefault();
+        $('#teasers_image').val('');
+        $('#teasers-image-preview').html('');
+        $(this).hide();
+    });
+});
+</script>
+<?php
 }
 
 function teasers_save_meta($post_id)
@@ -692,67 +692,67 @@ function storylines_meta_box_callback($post)
         $datetime = date_i18n('l j F, H:i');
     }
     ?>
-    <table class="form-table">
-        <tr>
-            <th><label for="description">Beschrijving <span style="color:red;">*</span></label></th>
-            <td><textarea name="description" id="description" rows="4"
-                    style="width: 100%;"><?php echo esc_textarea($description); ?></textarea></td>
-        </tr>
-        <tr>
-            <th><label>Afbeelding <span style="color:red;">*</span></label></th>
-            <td>
-                <div id="storylines-image-preview" style="margin-bottom: 10px;">
-                    <?php if ($image_url): ?>
-                        <img src="<?php echo esc_url($image_url); ?>"
-                            style="max-width: 200px; height: auto; border-radius: 8px;">
-                    <?php endif; ?>
-                </div>
-                <input type="hidden" name="storylines_image" id="storylines_image"
-                    value="<?php echo esc_attr($image_id); ?>">
-                <button type="button" class="button" id="upload-image-btn">Afbeelding uploaden</button>
-                <button type="button" class="button" id="remove-image-btn"
+<table class="form-table">
+    <tr>
+        <th><label for="description">Beschrijving <span style="color:red;">*</span></label></th>
+        <td><textarea name="description" id="description" rows="4"
+                      style="width: 100%;"><?php echo esc_textarea($description); ?></textarea></td>
+    </tr>
+    <tr>
+        <th><label>Afbeelding <span style="color:red;">*</span></label></th>
+        <td>
+            <div id="storylines-image-preview" style="margin-bottom: 10px;">
+                <?php if ($image_url): ?>
+                <img src="<?php echo esc_url($image_url); ?>"
+                     style="max-width: 200px; height: auto; border-radius: 8px;">
+                <?php endif; ?>
+            </div>
+            <input type="hidden" name="storylines_image" id="storylines_image"
+                   value="<?php echo esc_attr($image_id); ?>">
+            <button type="button" class="button" id="upload-image-btn">Afbeelding uploaden</button>
+            <button type="button" class="button" id="remove-image-btn"
                     style="<?php echo $image_id ? '' : 'display:none;'; ?>">Verwijderen</button>
-            </td>
-        </tr>
-        <tr>
-            <th><label for="raw_storylines_date">Datum & Tijd</label></th>
-            <td><input type="datetime-local" name="raw_storylines_date" id="raw_storylines_date"
-                    value="<?php echo esc_attr($rawdatetime); ?>"></td>
-        </tr>
-    </table>
-    <script>
-        jQuery(document).ready(function ($) {
-            var frame;
-            $('#upload-image-btn').on('click', function (e) {
-                e.preventDefault();
-                if (frame) {
-                    frame.open();
-                    return;
-                }
-                frame = wp.media({
-                    title: 'Selecteer afbeelding',
-                    button: {
-                        text: 'Gebruik deze afbeelding'
-                    },
-                    multiple: false
-                });
-                frame.on('select', function () {
-                    var attachment = frame.state().get('selection').first().toJSON();
-                    $('#storylines_image').val(attachment.id);
-                    $('#storylines-image-preview').html('<img src="' + attachment.sizes.medium.url + '" style="max-width: 200px; height: auto; border-radius: 8px;">');
-                    $('#remove-image-btn').show();
-                });
-                frame.open();
-            });
-            $('#remove-image-btn').on('click', function (e) {
-                e.preventDefault();
-                $('#storylines_image').val('');
-                $('#storylines-image-preview').html('');
-                $(this).hide();
-            });
+        </td>
+    </tr>
+    <tr>
+        <th><label for="raw_storylines_date">Datum & Tijd</label></th>
+        <td><input type="datetime-local" name="raw_storylines_date" id="raw_storylines_date"
+                   value="<?php echo esc_attr($rawdatetime); ?>"></td>
+    </tr>
+</table>
+<script>
+jQuery(document).ready(function($) {
+    var frame;
+    $('#upload-image-btn').on('click', function(e) {
+        e.preventDefault();
+        if (frame) {
+            frame.open();
+            return;
+        }
+        frame = wp.media({
+            title: 'Selecteer afbeelding',
+            button: {
+                text: 'Gebruik deze afbeelding'
+            },
+            multiple: false
         });
-    </script>
-    <?php
+        frame.on('select', function() {
+            var attachment = frame.state().get('selection').first().toJSON();
+            $('#storylines_image').val(attachment.id);
+            $('#storylines-image-preview').html('<img src="' + attachment.sizes.medium.url + '" style="max-width: 200px; height: auto; border-radius: 8px;">');
+            $('#remove-image-btn').show();
+        });
+        frame.open();
+    });
+    $('#remove-image-btn').on('click', function(e) {
+        e.preventDefault();
+        $('#storylines_image').val('');
+        $('#storylines-image-preview').html('');
+        $(this).hide();
+    });
+});
+</script>
+<?php
 }
 
 function storylines_save_meta($post_id)
@@ -878,37 +878,39 @@ function crafted_admin_footer_scripts()
     if (!$is_footer_page && (!$post || !in_array($post->post_type, $allowed_types)))
         return;
     ?>
-    <script>
-        jQuery(document).ready(function ($) {
-            $('.upload-image-btn').on('click', function (e) {
-                e.preventDefault();
-                var btn = $(this);
-                var frame = wp.media({
-                    title: 'Selecteer afbeelding',
-                    button: { text: 'Gebruik deze afbeelding' },
-                    multiple: false
-                });
-                frame.on('select', function () {
-                    var attachment = frame.state().get('selection').first().toJSON();
-                    var targetId = btn.data('target');
-                    var previewId = btn.data('preview');
-                    $('#' + targetId).val(attachment.id);
-                    $('#' + previewId).html('<img src="' + attachment.sizes.medium.url + '" style="max-height: 150px; width: auto; border-radius: 8px;">');
-                    btn.next('.remove-image-btn').show();
-                });
-                frame.open();
-            });
-            $('.remove-image-btn').on('click', function (e) {
-                e.preventDefault();
-                var targetId = $(this).data('target');
-                var previewId = $(this).data('preview');
-                $('#' + targetId).val('');
-                $('#' + previewId).html('');
-                $(this).hide();
-            });
+<script>
+jQuery(document).ready(function($) {
+    $('.upload-image-btn').on('click', function(e) {
+        e.preventDefault();
+        var btn = $(this);
+        var frame = wp.media({
+            title: 'Selecteer afbeelding',
+            button: {
+                text: 'Gebruik deze afbeelding'
+            },
+            multiple: false
         });
-    </script>
-    <?php
+        frame.on('select', function() {
+            var attachment = frame.state().get('selection').first().toJSON();
+            var targetId = btn.data('target');
+            var previewId = btn.data('preview');
+            $('#' + targetId).val(attachment.id);
+            $('#' + previewId).html('<img src="' + attachment.sizes.medium.url + '" style="max-height: 150px; width: auto; border-radius: 8px;">');
+            btn.next('.remove-image-btn').show();
+        });
+        frame.open();
+    });
+    $('.remove-image-btn').on('click', function(e) {
+        e.preventDefault();
+        var targetId = $(this).data('target');
+        var previewId = $(this).data('preview');
+        $('#' + targetId).val('');
+        $('#' + previewId).html('');
+        $(this).hide();
+    });
+});
+</script>
+<?php
 }
 add_action('admin_footer', 'crafted_admin_footer_scripts');
 
@@ -973,17 +975,17 @@ function crafted_render_image_field($meta_key, $post_id, $label)
 
     $image_url = $image_id ? wp_get_attachment_image_url($image_id, 'medium') : '';
     ?>
-    <p><strong><?= $label ?></strong></p>
-    <div id="<?= $meta_key ?>_preview" style="margin-bottom: 10px;">
-        <?php if ($image_url): ?><img src="<?= esc_url($image_url) ?>"
-                style="max-width: 200px; height: auto; border-radius: 8px;"><?php endif; ?>
-    </div>
-    <input type="hidden" name="<?= $meta_key ?>" id="<?= $meta_key ?>" value="<?= esc_attr($image_id) ?>">
-    <button type="button" class="button upload-image-btn" data-target="<?= $meta_key ?>"
+<p><strong><?= $label ?></strong></p>
+<div id="<?= $meta_key ?>_preview" style="margin-bottom: 10px;">
+    <?php if ($image_url): ?><img src="<?= esc_url($image_url) ?>"
+         style="max-width: 200px; height: auto; border-radius: 8px;"><?php endif; ?>
+</div>
+<input type="hidden" name="<?= $meta_key ?>" id="<?= $meta_key ?>" value="<?= esc_attr($image_id) ?>">
+<button type="button" class="button upload-image-btn" data-target="<?= $meta_key ?>"
         data-preview="<?= $meta_key ?>_preview">Afbeelding kiezen</button>
-    <button type="button" class="button remove-image-btn" data-target="<?= $meta_key ?>"
+<button type="button" class="button remove-image-btn" data-target="<?= $meta_key ?>"
         data-preview="<?= $meta_key ?>_preview" style="<?= $image_id ? '' : 'display:none;' ?>">Verwijderen</button>
-    <?php
+<?php
 }
 
 // --- Meta Box Callbacks ---
@@ -1194,37 +1196,39 @@ function crafted_home_page()
     submit_button();
     echo '</form></div>';
     ?>
-    <script>
-        jQuery(document).ready(function ($) {
-            // Card image upload buttons
-            $('.crafted-card-upload-btn').on('click', function (e) {
-                e.preventDefault();
-                var btn = $(this);
-                var fieldId = btn.data('field');
-                var frame = wp.media({
-                    title: 'Selecteer kaart afbeelding',
-                    button: { text: 'Gebruik deze afbeelding' },
-                    multiple: false
-                });
-                frame.on('select', function () {
-                    var attachment = frame.state().get('selection').first().toJSON();
-                    $('#' + fieldId).val(attachment.id);
-                    var imgUrl = attachment.sizes && attachment.sizes.medium ? attachment.sizes.medium.url : attachment.url;
-                    $('#' + fieldId + '_preview').html('<img src="' + imgUrl + '" style="max-width:200px;height:auto;border-radius:8px;">');
-                    btn.siblings('.crafted-card-remove-btn').show();
-                });
-                frame.open();
-            });
-            $('.crafted-card-remove-btn').on('click', function (e) {
-                e.preventDefault();
-                var fieldId = $(this).data('field');
-                $('#' + fieldId).val('');
-                $('#' + fieldId + '_preview').html('');
-                $(this).hide();
-            });
+<script>
+jQuery(document).ready(function($) {
+    // Card image upload buttons
+    $('.crafted-card-upload-btn').on('click', function(e) {
+        e.preventDefault();
+        var btn = $(this);
+        var fieldId = btn.data('field');
+        var frame = wp.media({
+            title: 'Selecteer kaart afbeelding',
+            button: {
+                text: 'Gebruik deze afbeelding'
+            },
+            multiple: false
         });
-    </script>
-    <?php
+        frame.on('select', function() {
+            var attachment = frame.state().get('selection').first().toJSON();
+            $('#' + fieldId).val(attachment.id);
+            var imgUrl = attachment.sizes && attachment.sizes.medium ? attachment.sizes.medium.url : attachment.url;
+            $('#' + fieldId + '_preview').html('<img src="' + imgUrl + '" style="max-width:200px;height:auto;border-radius:8px;">');
+            btn.siblings('.crafted-card-remove-btn').show();
+        });
+        frame.open();
+    });
+    $('.crafted-card-remove-btn').on('click', function(e) {
+        e.preventDefault();
+        var fieldId = $(this).data('field');
+        $('#' + fieldId).val('');
+        $('#' + fieldId + '_preview').html('');
+        $(this).hide();
+    });
+});
+</script>
+<?php
 }
 
 // --- Home Settings ---
@@ -1247,47 +1251,49 @@ function crafted_home_settings_init()
         $image_id = get_option('crafted_home_image_id');
         $image_url = $image_id ? wp_get_attachment_image_url($image_id, 'medium') : '';
         ?>
-        <div class="crafted-home-image-preview" style="margin-bottom:10px;">
-            <img src="<?php echo esc_url($image_url); ?>"
-                style="max-width:300px; display:<?php echo $image_id ? 'block' : 'none'; ?>; border:1px solid #ccc; padding:2px;" />
-        </div>
-        <input type="hidden" name="crafted_home_image_id" id="crafted_home_image_id"
-            value="<?php echo esc_attr($image_id); ?>" />
-        <button type="button" class="button" id="crafted_home_image_upload_btn">Afbeelding Selecteren</button>
-        <button type="button" class="button button-link-delete" id="crafted_home_image_remove_btn"
-            style="display:<?php echo $image_id ? 'inline-block' : 'none'; ?>; color: #a00;">Verwijderen</button>
+<div class="crafted-home-image-preview" style="margin-bottom:10px;">
+    <img src="<?php echo esc_url($image_url); ?>"
+         style="max-width:300px; display:<?php echo $image_id ? 'block' : 'none'; ?>; border:1px solid #ccc; padding:2px;" />
+</div>
+<input type="hidden" name="crafted_home_image_id" id="crafted_home_image_id"
+       value="<?php echo esc_attr($image_id); ?>" />
+<button type="button" class="button" id="crafted_home_image_upload_btn">Afbeelding Selecteren</button>
+<button type="button" class="button button-link-delete" id="crafted_home_image_remove_btn"
+        style="display:<?php echo $image_id ? 'inline-block' : 'none'; ?>; color: #a00;">Verwijderen</button>
 
-        <script>
-            jQuery(document).ready(function ($) {
-                var mediaUploader;
-                $('#crafted_home_image_upload_btn').click(function (e) {
-                    e.preventDefault();
-                    if (mediaUploader) {
-                        mediaUploader.open();
-                        return;
-                    }
-                    mediaUploader = wp.media({
-                        title: 'Kies Achtergrond Afbeelding',
-                        button: { text: 'Gebruik deze afbeelding' },
-                        multiple: false
-                    });
-                    mediaUploader.on('select', function () {
-                        var attachment = mediaUploader.state().get('selection').first().toJSON();
-                        $('#crafted_home_image_id').val(attachment.id);
-                        $('.crafted-home-image-preview img').attr('src', attachment.url).show();
-                        $('#crafted_home_image_remove_btn').show();
-                    });
-                    mediaUploader.open();
-                });
-                $('#crafted_home_image_remove_btn').click(function (e) {
-                    e.preventDefault();
-                    $('#crafted_home_image_id').val('');
-                    $('.crafted-home-image-preview img').hide().attr('src', '');
-                    $(this).hide();
-                });
-            });
-        </script>
-        <?php
+<script>
+jQuery(document).ready(function($) {
+    var mediaUploader;
+    $('#crafted_home_image_upload_btn').click(function(e) {
+        e.preventDefault();
+        if (mediaUploader) {
+            mediaUploader.open();
+            return;
+        }
+        mediaUploader = wp.media({
+            title: 'Kies Achtergrond Afbeelding',
+            button: {
+                text: 'Gebruik deze afbeelding'
+            },
+            multiple: false
+        });
+        mediaUploader.on('select', function() {
+            var attachment = mediaUploader.state().get('selection').first().toJSON();
+            $('#crafted_home_image_id').val(attachment.id);
+            $('.crafted-home-image-preview img').attr('src', attachment.url).show();
+            $('#crafted_home_image_remove_btn').show();
+        });
+        mediaUploader.open();
+    });
+    $('#crafted_home_image_remove_btn').click(function(e) {
+        e.preventDefault();
+        $('#crafted_home_image_id').val('');
+        $('.crafted-home-image-preview img').hide().attr('src', '');
+        $(this).hide();
+    });
+});
+</script>
+<?php
     }, 'crafted_home', 'crafted_home_hero_section');
 
     // Info Balk Caroussel
@@ -1338,16 +1344,16 @@ function crafted_home_settings_init()
             $image_url = $image_id ? wp_get_attachment_image_url($image_id, 'medium') : '';
             $field_id = "crafted_home_card_{$i}_image";
             ?>
-            <div id="<?= $field_id ?>_preview" style="margin-bottom:10px;">
-                <?php if ($image_url): ?><img src="<?= esc_url($image_url) ?>"
-                        style="max-width:200px;height:auto;border-radius:8px;"><?php endif; ?>
-            </div>
-            <input type="hidden" name="<?= $field_id ?>" id="<?= $field_id ?>" value="<?= esc_attr($image_id) ?>">
-            <button type="button" class="button crafted-card-upload-btn" data-field="<?= $field_id ?>">Afbeelding
-                Selecteren</button>
-            <button type="button" class="button button-link-delete crafted-card-remove-btn" data-field="<?= $field_id ?>"
-                style="<?= $image_id ? '' : 'display:none;' ?>color:#a00;">Verwijderen</button>
-            <?php
+<div id="<?= $field_id ?>_preview" style="margin-bottom:10px;">
+    <?php if ($image_url): ?><img src="<?= esc_url($image_url) ?>"
+         style="max-width:200px;height:auto;border-radius:8px;"><?php endif; ?>
+</div>
+<input type="hidden" name="<?= $field_id ?>" id="<?= $field_id ?>" value="<?= esc_attr($image_id) ?>">
+<button type="button" class="button crafted-card-upload-btn" data-field="<?= $field_id ?>">Afbeelding
+    Selecteren</button>
+<button type="button" class="button button-link-delete crafted-card-remove-btn" data-field="<?= $field_id ?>"
+        style="<?= $image_id ? '' : 'display:none;' ?>color:#a00;">Verwijderen</button>
+<?php
         }, 'crafted_home', 'crafted_home_cards_section');
 
         // Button Link
@@ -1692,7 +1698,7 @@ function crafted_menu_settings_init()
         1 => ['nl' => 'Home', 'en' => 'Home', 'url' => '/'],
         2 => ['nl' => 'Nieuws', 'en' => 'News', 'url' => '/nieuws'],
         3 => ['nl' => 'Contact', 'en' => 'Contact', 'url' => '/contact'],
-        4 => ['nl' => 'Crafted<br><span class="smallFont">&</span><br>Friends', 'en' => '', 'url' => '/crafted-friends'],
+        4 => ['nl' => 'Crafted<span class="smallFont">&</span>Friends', 'en' => '', 'url' => '/crafted-friends'],
         5 => ['nl' => 'Tickets', 'en' => 'Tickets', 'url' => '/tickets'],
         6 => ['nl' => 'Programma', 'en' => 'Program', 'url' => '/programma'],
     ];
@@ -1753,36 +1759,38 @@ add_action('admin_init', 'crafted_menu_settings_init');
 function crafted_plattegrond_admin_scripts()
 {
     ?>
-    <script>
-        jQuery(document).ready(function ($) {
-            // Plattegrond Uploader
-            $('.crafted-upload-btn').on('click', function (e) {
-                e.preventDefault();
-                var button = $(this);
-                var target_id = button.data('target');
+<script>
+jQuery(document).ready(function($) {
+    // Plattegrond Uploader
+    $('.crafted-upload-btn').on('click', function(e) {
+        e.preventDefault();
+        var button = $(this);
+        var target_id = button.data('target');
 
-                var custom_uploader = wp.media({
-                    title: 'Kies een Afbeelding',
-                    button: { text: 'Gebruik deze Afbeelding' },
-                    multiple: false
-                }).on('select', function () {
-                    var attachment = custom_uploader.state().get('selection').first().toJSON();
-                    $('#' + target_id + '_id').val(attachment.id);
-                    $('#' + target_id + '_preview').attr('src', attachment.url).show();
-                }).open();
-            });
+        var custom_uploader = wp.media({
+            title: 'Kies een Afbeelding',
+            button: {
+                text: 'Gebruik deze Afbeelding'
+            },
+            multiple: false
+        }).on('select', function() {
+            var attachment = custom_uploader.state().get('selection').first().toJSON();
+            $('#' + target_id + '_id').val(attachment.id);
+            $('#' + target_id + '_preview').attr('src', attachment.url).show();
+        }).open();
+    });
 
-            // Verwijder knop
-            $('.crafted-remove-btn').on('click', function (e) {
-                e.preventDefault();
-                var button = $(this);
-                var target_id = button.data('target');
-                $('#' + target_id + '_id').val('');
-                $('#' + target_id + '_preview').attr('src', '').hide();
-            });
-        });
-    </script>
-    <?php
+    // Verwijder knop
+    $('.crafted-remove-btn').on('click', function(e) {
+        e.preventDefault();
+        var button = $(this);
+        var target_id = button.data('target');
+        $('#' + target_id + '_id').val('');
+        $('#' + target_id + '_preview').attr('src', '').hide();
+    });
+});
+</script>
+<?php
 }
 add_action('admin_footer', 'crafted_plattegrond_admin_scripts');
 
@@ -1853,4 +1861,3 @@ function crafted_cs_settings_init()
     }, 'crafted_cs', 'crafted_cs_text_section');
 }
 add_action('admin_init', 'crafted_cs_settings_init');
-

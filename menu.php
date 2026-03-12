@@ -6,7 +6,7 @@
              1 => ['nl' => 'Home', 'en' => 'Home', 'url' => '/'],
              2 => ['nl' => 'Nieuws', 'en' => 'News', 'url' => '/nieuws'],
              3 => ['nl' => 'Contact', 'en' => 'Contact', 'url' => '/contact'],
-             4 => ['nl' => 'Crafted<br><span class="smallFont">&</span><br>Friends', 'en' => '', 'url' => '/crafted-friends'],
+             4 => ['nl' => 'Crafted<span class="smallFont">&</span>Friends', 'en' => '', 'url' => '/crafted-friends'],
              5 => ['nl' => 'Tickets', 'en' => 'Tickets', 'url' => '/tickets'],
              6 => ['nl' => 'Programma', 'en' => 'Program', 'url' => '/programma'],
          ];
@@ -30,7 +30,7 @@
              $data_nl = (strip_tags($btn_nl) === $btn_nl) ? ' data-nl="' . esc_attr($btn_nl) . '"' : '';
              $data_en = !empty($btn_en) && (strip_tags($btn_en) === $btn_en) ? ' data-en="' . esc_attr($btn_en) . '"' : '';
          ?>
-         <button class="menu-button largeW<?= $extra_classes ?> notranslate" delay="<?= $delay ?>" onclick="window.location.href='<?= esc_url($btn_url) ?>'"<?= $data_nl ?><?= $data_en ?>>
+         <button class="menu-button largeW<?= $extra_classes ?> notranslate" delay="<?= $delay ?>" onclick="window.location.href='<?= esc_url($btn_url) ?>'" <?= $data_nl ?><?= $data_en ?>>
              <?php echo wp_kses_post($btn_nl); ?>
          </button>
          <?php endfor; ?>
