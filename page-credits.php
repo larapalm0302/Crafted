@@ -5,6 +5,7 @@ get_header();
 
 <main class="credits-page">
     <section class="credits-hero">
+        <a href="javascript:history.back()" class="footer-credits-link credits-back-btn">&#8592; Terug</a>
         <p class="credits-kicker notranslate">CRAFTED</p>
         <h1>Credits</h1>
         <p class="credits-intro">Dit project is gemaakt door een team studenten met oog voor concept, design en development.</p>

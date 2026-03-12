@@ -127,6 +127,33 @@ header {
   background: linear-gradient(135deg, #ffea99 0%, #ffd97f 100%);
 }
 
+.credits-back-btn {
+    position: fixed !important;
+    top: 1rem;
+    left: 1.25rem;
+    font-size: 0.9rem;
+    padding: 6px 12px;
+    z-index: 999;
+}
+
+@media (max-width: 768px) {
+    .credits-back-btn {
+        top: 0.6rem;
+        left: 0.75rem;
+        font-size: 0.8rem;
+        padding: 4px 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .credits-back-btn {
+        top: 0.5rem;
+        left: 0.5rem;
+        font-size: 0.75rem;
+        padding: 3px 8px;
+    }
+}
+
 @keyframes creditsReveal {
   to {
     opacity: 1;

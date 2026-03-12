@@ -16,9 +16,9 @@ $text3 = get_option('crafted_home_carousel_3') ?: 'Gratis Entree';
 <section class="crafted-hero-section hero">
     <div class="hero-bg-media">
         <?php if (!empty($video_url)): ?>
-            <video src="<?= esc_url($video_url) ?>" autoplay loop muted playsinline></video>
+        <video src="<?= esc_url($video_url) ?>" autoplay loop muted playsinline></video>
         <?php else: ?>
-            <div class="hero-bg-image" style="background-image: url('<?= esc_url($bg_image_url) ?>');"></div>
+        <div class="hero-bg-image" style="background-image: url('<?= esc_url($bg_image_url) ?>');"></div>
         <?php endif; ?>
         <div class="hero-bg-overlay"></div>
     </div>
@@ -49,20 +49,22 @@ $text3 = get_option('crafted_home_carousel_3') ?: 'Gratis Entree';
     </div>
 
     <button class="home-button hero-scroll-down" aria-label="Scroll naar beneden">
-        <svg fill="currentColor" viewBox="0 0 24 24" width="24" height="24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+        <svg fill="currentColor" viewBox="0 0 24 24" width="24" height="24">
+            <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
+        </svg>
     </button>
 </section>
 
 <main id="main-content">
-   <div class="div1">
-    <p class="notranslate">What Awaits You</p>
-    <div class="div2">
+    <div class="div1">
+        <p class="notranslate">What Awaits You</p>
+        <div class="div2">
+        </div>
     </div>
-   </div>
 
-   <section class="awaits-section">
-     <div class="cards-container">
-       <?php
+    <section class="awaits-section">
+        <div class="cards-container">
+            <?php
        $card_defaults = [
            1 => ['title' => 'Programma', 'desc' => 'State-of-the-art lighting, visuals, and production design create a multi-sensory journey like no other'],
            2 => ['title' => 'Tickets', 'desc' => 'World-class artists and emerging talents come together on multiple stages to create unforgettable moments'],
@@ -77,88 +79,90 @@ $text3 = get_option('crafted_home_carousel_3') ?: 'Gratis Entree';
            $card_image_url = $card_image_id ? wp_get_attachment_image_url($card_image_id, 'large') : $fallback_img;
            $card_link = get_option("crafted_home_card_{$i}_link", '#');
        ?>
-       <div class="card">
-         <div class="card-image" style="background-image: url('<?= esc_url($card_image_url) ?>');"></div>
-         <h3 class="card-title"><?= esc_html($card_title) ?></h3>
-         <p class="card-description"><?= esc_html($card_desc) ?></p>
-         <button class="card-button" onclick="window.location.href='<?= esc_url($card_link) ?>'">&#8594;</button>
-       </div>
-       <?php endfor; ?>
-     </div>
-   </section>
+            <div class="card">
+                <div class="card-image" style="background-image: url('<?= esc_url($card_image_url) ?>');"></div>
+                <h3 class="card-title"><?= esc_html($card_title) ?></h3>
+                <p class="card-description"><?= esc_html($card_desc) ?></p>
+                <button class="card-button" onclick="window.location.href='<?= esc_url($card_link) ?>'">&#8594;</button>
+            </div>
+            <?php endfor; ?>
+        </div>
+    </section>
 
-   <section class="nieuws-section">
-     <div class="nieuws-container">
-       <div class="nieuws-content">
-         <?php
+    <section class="nieuws-section">
+        <div class="nieuws-container">
+            <div class="nieuws-content">
+                <?php
          $nieuws_title = get_option('crafted_home_nieuws_title', 'Volg hier het laatste nieuws!');
          $nieuws_desc = get_option('crafted_home_nieuws_desc', 'Blijf op de hoogte met teasers, previews en andere interessante updates.');
          $nieuws_link = get_option('crafted_home_nieuws_link', '/nieuws');
          ?>
-         <h2 class="nieuws-title"><?= esc_html($nieuws_title) ?></h2>
-         <p class="nieuws-description"><?= esc_html($nieuws_desc) ?></p>
-         <a href="<?= esc_url($nieuws_link) ?>" class="nieuws-button">
-           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-             <path d="M3 3h14v14H3V3z" stroke="currentColor" stroke-width="2" fill="none"/>
-             <path d="M7 7h6M7 10h6M7 13h4" stroke="currentColor" stroke-width="1.5"/>
-           </svg>
-           Nieuws
-         </a>
-       </div>
-       <div class="nieuws-image-wrapper">
-         <div class="nieuws-image-border">
-           <?php
+                <h2 class="nieuws-title"><?= esc_html($nieuws_title) ?></h2>
+                <p class="nieuws-description"><?= esc_html($nieuws_desc) ?></p>
+                <a href="<?= esc_url($nieuws_link) ?>" class="nieuws-button">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 3h14v14H3V3z" stroke="currentColor" stroke-width="2" fill="none" />
+                        <path d="M7 7h6M7 10h6M7 13h4" stroke="currentColor" stroke-width="1.5" />
+                    </svg>
+                    Nieuws
+                </a>
+            </div>
+            <div class="nieuws-image-wrapper">
+                <div class="nieuws-image-border">
+                    <?php
            $nieuws_image_id = get_option('crafted_home_nieuws_image');
            $nieuws_image_url = $nieuws_image_id ? wp_get_attachment_image_url($nieuws_image_id, 'large') : 'https://via.placeholder.com/400x300?text=Nieuws+Foto';
            ?>
-           <div class="nieuws-image" style="background-image: url('<?= esc_url($nieuws_image_url) ?>');"></div>
-         </div>
-         <?php $nieuws_credit = get_option('crafted_home_nieuws_credit', 'Door Summa Marketing'); ?>
-         <p class="nieuws-credit"><?= esc_html($nieuws_credit) ?></p>
-       </div>
-     </div>
-   </section>
-
-   <section class="locatie-section">
-     <div class="locatie-container">
-       <div class="locatie-column">
-          <div class="section-heading">
-            <h2>Locatie</h2>
-            <span class="heading-underline"></span>
-          </div>
-
-          <div class="map-card">
-            <div class="map-embed">
-              <?php $maps_url = get_option('crafted_home_locatie_maps_url', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2250.1712848719576!2d5.454405376123775!3d51.44860461499746!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47c6d96b3a220f6b%3A0x3a0eb3741c513904!2sKlokgebouw%2C%20Eindhoven!5e1!3m2!1snl!2snl!4v1769778877889!5m2!1snl!2snl'); ?>
-              <iframe src="<?= esc_url($maps_url) ?>" width="600" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    <div class="nieuws-image" style="background-image: url('<?= esc_url($nieuws_image_url) ?>');"></div>
+                </div>
+                <?php $nieuws_credit = get_option('crafted_home_nieuws_credit', 'Door Summa Marketing'); ?>
+                <p class="nieuws-credit"><?= esc_html($nieuws_credit) ?></p>
             </div>
-          </div>
+        </div>
+    </section>
 
-          <div class="address-card">
-            <div class="address-header">
-              <span class="address-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></span>
-              <div>
-                <p class="address-title">Adres</p>
-                <?php
+    <section class="locatie-section">
+        <div class="locatie-container">
+            <div class="locatie-column">
+                <div class="section-heading">
+                    <h2>Locatie</h2>
+                    <span class="heading-underline"></span>
+                </div>
+
+                <div class="map-card">
+                    <div class="map-embed">
+                        <?php $maps_url = get_option('crafted_home_locatie_maps_url', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2250.1712848719576!2d5.454405376123775!3d51.44860461499746!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47c6d96b3a220f6b%3A0x3a0eb3741c513904!2sKlokgebouw%2C%20Eindhoven!5e1!3m2!1snl!2snl!4v1769778877889!5m2!1snl!2snl'); ?>
+                        <iframe src="<?= esc_url($maps_url) ?>" width="600" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+                </div>
+
+                <div class="address-card">
+                    <div class="address-header">
+                        <span class="address-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                            </svg></span>
+                        <div>
+                            <p class="address-title">Adres</p>
+                            <?php
                 $adres1 = get_option('crafted_home_locatie_adres_titel', 'Klokgebouw 50');
                 $adres2 = get_option('crafted_home_locatie_adres_tekst', '5617 AB Eindhoven');
                 ?>
-                <p class="address-text"><?= esc_html($adres1) ?><br><?= esc_html($adres2) ?></p>
-              </div>
+                            <p class="address-text"><?= esc_html($adres1) ?><br><?= esc_html($adres2) ?></p>
+                        </div>
+                    </div>
+                    <?php $route_url = get_option('crafted_home_locatie_route_url', '#'); ?>
+                    <a class="route-button" href="<?= esc_url($route_url) ?>">Routebeschrijving</a>
+                </div>
             </div>
-            <?php $route_url = get_option('crafted_home_locatie_route_url', '#'); ?>
-            <a class="route-button" href="<?= esc_url($route_url) ?>">Routebeschrijving</a>
-          </div>
-        </div>
 
-       <div class="buurt-column">
-         <div class="section-heading">
-           <h2>In de buurt</h2>
-           <span class="heading-underline"></span>
-         </div>
+            <div class="buurt-column">
+                <div class="section-heading">
+                    <h2>In de buurt</h2>
+                    <span class="heading-underline"></span>
+                </div>
 
-         <div class="buurt-grid">
-            <?php
+                <div class="buurt-grid">
+                    <?php
             $buurt_icons = [
                 'bar' => '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M21 5V4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v1c0 3.75 2.44 6.94 5.92 8.35L6 20H4v2h16v-2h-2l-2.92-6.65C18.56 11.94 21 8.75 21 5zM8 4h8v1c0 2.21-1.79 4-4 4s-4-1.79-4-4V4z"/></svg>',
                 'restaurant' => '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z"/></svg>',
@@ -186,32 +190,41 @@ $text3 = get_option('crafted_home_carousel_3') ?: 'Gratis Entree';
                 $b_icon = get_option("crafted_home_buurt_{$i}_icon", $def['icon']);
                 $icon_svg = isset($buurt_icons[$b_icon]) ? $buurt_icons[$b_icon] : $buurt_icons['overig'];
             ?>
-            <div class="buurt-card">
-              <div class="buurt-icon"><?= $icon_svg ?></div>
-              <div>
-                <p class="buurt-title"><?= esc_html($b_title) ?></p>
-                <p class="buurt-sub"><?= esc_html($b_sub) ?></p>
-                <p class="buurt-distance"><?= esc_html($b_dist) ?></p>
-              </div>
-            </div>
-            <?php endfor; ?>
-          </div>
+                    <div class="buurt-card">
+                        <div class="buurt-icon"><?= $icon_svg ?></div>
+                        <div>
+                            <p class="buurt-title"><?= esc_html($b_title) ?></p>
+                            <p class="buurt-sub"><?= esc_html($b_sub) ?></p>
+                            <p class="buurt-distance"><?= esc_html($b_dist) ?></p>
+                        </div>
+                    </div>
+                    <?php endfor; ?>
+                </div>
 
-<div class="contact-panel">
-           <div class="contact-text">
-             <h3>Heeft u vragen of andere opmerking?</h3>
-             <p>Kom in contact met ons! We helpen u graag verder.</p>
-           </div>
-           <div class="contact-actions">
-             <a class="contact-button" href="mailto:info@example.com">E-mail ons</a>
-             <a class="contact-button" href="tel:+31000000000">Bel ons</a>
-             <a class="contact-button" href="#">Formulier</a>
-           </div>
-         </div>
-       </div>
-     </div>
-   
-    <?php
+                <div class="contact-panel">
+                    <div class="contact-text">
+                        <h3>Heeft u vragen of andere opmerking?</h3>
+                        <p>Kom in contact met ons! We helpen u graag verder.</p>
+                    </div>
+                    <?php
+                    $contact_email = get_option('crafted_home_contact_email', '');
+                    $contact_telefoon = get_option('crafted_home_contact_telefoon', '');
+                    $contact_url = get_option('crafted_home_contact_url', '#');
+                    ?>
+                    <div class="contact-actions">
+                        <?php if ($contact_email): ?>
+                        <a class="contact-button" href="mailto:<?= esc_attr($contact_email) ?>">E-mail ons</a>
+                        <?php endif; ?>
+                        <?php if ($contact_telefoon): ?>
+                        <a class="contact-button" href="tel:<?= esc_attr($contact_telefoon) ?>">Bel ons</a>
+                        <?php endif; ?>
+                        <a class="contact-button" href="<?= esc_url($contact_url) ?>">Formulier</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <?php
     $plat_title = get_option('crafted_home_plattegrond_titel', 'Plattegrond');
     $plat_text  = get_option('crafted_home_plattegrond_tekst', '');
     $plat_img_id = get_option('crafted_home_plattegrond_img');
@@ -222,58 +235,60 @@ $text3 = get_option('crafted_home_carousel_3') ?: 'Gratis Entree';
     
     if (!empty($plat_title) || !empty($plat_img_src) || !empty($plat_text)) :
     ?>
-    <section class="plattegrond-section">
-        <div class="plattegrond-container<?= empty($plat_text) ? ' plattegrond-full' : ' plattegrond-split' ?>">
-            
-            <?php if (!empty($plat_text)) : ?>
-            <div class="plattegrond-content">
-                <?php if (!empty($plat_title)) : ?>
-                <div class="section-heading" style="text-align:left;">
-                    <h2><?= esc_html($plat_title) ?></h2>
-                    <span class="heading-underline"></span>
-                </div>
-                <?php endif; ?>
-                <div class="plattegrond-text">
-                    <?= wpautop(wp_kses_post($plat_text)) ?>
-                </div>
-            </div>
-            <?php endif; ?>
+        <section class="plattegrond-section">
+            <div class="plattegrond-container<?= empty($plat_text) ? ' plattegrond-full' : ' plattegrond-split' ?>">
 
-            <div class="plattegrond-visual">
-                <?php if (empty($plat_text) && !empty($plat_title)) : ?>
-                <div class="section-heading">
-                    <h2><?= esc_html($plat_title) ?></h2>
-                    <span class="heading-underline"></span>
+                <?php if (!empty($plat_text)) : ?>
+                <div class="plattegrond-content">
+                    <?php if (!empty($plat_title)) : ?>
+                    <div class="section-heading" style="text-align:left;">
+                        <h2><?= esc_html($plat_title) ?></h2>
+                        <span class="heading-underline"></span>
+                    </div>
+                    <?php endif; ?>
+                    <div class="plattegrond-text">
+                        <?= wpautop(wp_kses_post($plat_text)) ?>
+                    </div>
                 </div>
                 <?php endif; ?>
-                
-                <div class="map-card plattegrond-card">
-                    <?php if ($plat_img_src) : ?>
+
+                <div class="plattegrond-visual">
+                    <?php if (empty($plat_text) && !empty($plat_title)) : ?>
+                    <div class="section-heading">
+                        <h2><?= esc_html($plat_title) ?></h2>
+                        <span class="heading-underline"></span>
+                    </div>
+                    <?php endif; ?>
+
+                    <div class="map-card plattegrond-card">
+                        <?php if ($plat_img_src) : ?>
                         <a href="<?= esc_url($plat_img_src) ?>" target="_blank" title="Bekijk grote plattegrond">
                             <img src="<?= esc_url($plat_img_src) ?>" alt="Plattegrond" class="plattegrond-img">
                         </a>
-                    <?php else : ?>
+                        <?php else : ?>
                         <div class="plattegrond-placeholder">
                             <p>Geen plattegrond geselecteerd.</p>
                         </div>
-                    <?php endif; ?>
+                        <?php endif; ?>
+                    </div>
                 </div>
-            </div>
 
-        </div>
-    </section>
-    <?php endif; ?>
+            </div>
+        </section>
+        <?php endif; ?>
 </main>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const scrollBtn = document.querySelector('.hero-scroll-down');
     const target = document.getElementById('main-content');
-    
-    if(scrollBtn && target) {
+
+    if (scrollBtn && target) {
         scrollBtn.addEventListener('click', function(e) {
             e.preventDefault();
-            target.scrollIntoView({ behavior: 'smooth' });
+            target.scrollIntoView({
+                behavior: 'smooth'
+            });
         });
     }
 
