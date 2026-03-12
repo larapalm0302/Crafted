@@ -1,5 +1,6 @@
 <?php
-function register_programma_posttype() {
+function register_programma_posttype()
+{
     register_post_type('programma', [
         'labels' => [
             'name' => 'Programma',
@@ -20,7 +21,8 @@ function register_programma_posttype() {
 }
 add_action('init', 'register_programma_posttype');
 
-function programma_add_meta_boxes() {
+function programma_add_meta_boxes()
+{
     add_meta_box(
         'programma_details',
         'Programma Details',
@@ -32,78 +34,83 @@ function programma_add_meta_boxes() {
 }
 add_action('add_meta_boxes', 'programma_add_meta_boxes');
 
-function programma_meta_box_callback($post) {
+function programma_meta_box_callback($post)
+{
     wp_nonce_field('programma_save_meta', 'programma_meta_nonce');
-    
+
     $start_time = get_post_meta($post->ID, 'start_time', true);
     $end_time = get_post_meta($post->ID, 'end_time', true);
     $description = get_post_meta($post->ID, 'description', true);
     $image_id = get_post_meta($post->ID, 'programma_image', true);
     $image_url = $image_id ? wp_get_attachment_image_url($image_id, 'medium') : '';
     ?>
-<table class="form-table">
-    <th><label for="start_time">Starttijd</label></th>
-    <td><input type="time" name="start_time" id="start_time" value="<?php echo esc_attr($start_time); ?>"></td>
-    </tr>
-    <tr>
-        <th><label for="end_time">Eindtijd</label></th>
-        <td><input type="time" name="end_time" id="end_time" value="<?php echo esc_attr($end_time); ?>"></td>
-    </tr>
-    <tr>
-        <th><label for="description">Beschrijving</label></th>
-        <td><textarea name="description" id="description" rows="4" style="width: 100%;"><?php echo esc_textarea($description); ?></textarea></td>
-    </tr>
-    <tr>
-        <th><label>Afbeelding</label></th>
-        <td>
-            <div id="programma-image-preview" style="margin-bottom: 10px;">
-                <?php if ($image_url): ?>
-                <img src="<?php echo esc_url($image_url); ?>" style="max-width: 200px; height: auto; border-radius: 8px;">
-                <?php endif; ?>
-            </div>
-            <input type="hidden" name="programma_image" id="programma_image" value="<?php echo esc_attr($image_id); ?>">
-            <button type="button" class="button" id="upload-image-btn">Afbeelding uploaden</button>
-            <button type="button" class="button" id="remove-image-btn" style="<?php echo $image_id ? '' : 'display:none;'; ?>">Verwijderen</button>
-        </td>
-    </tr>
-</table>
+    <table class="form-table">
+        <th><label for="start_time">Starttijd</label></th>
+        <td><input type="time" name="start_time" id="start_time" value="<?php echo esc_attr($start_time); ?>"></td>
+        </tr>
+        <tr>
+            <th><label for="end_time">Eindtijd</label></th>
+            <td><input type="time" name="end_time" id="end_time" value="<?php echo esc_attr($end_time); ?>"></td>
+        </tr>
+        <tr>
+            <th><label for="description">Beschrijving</label></th>
+            <td><textarea name="description" id="description" rows="4"
+                    style="width: 100%;"><?php echo esc_textarea($description); ?></textarea></td>
+        </tr>
+        <tr>
+            <th><label>Afbeelding</label></th>
+            <td>
+                <div id="programma-image-preview" style="margin-bottom: 10px;">
+                    <?php if ($image_url): ?>
+                        <img src="<?php echo esc_url($image_url); ?>"
+                            style="max-width: 200px; height: auto; border-radius: 8px;">
+                    <?php endif; ?>
+                </div>
+                <input type="hidden" name="programma_image" id="programma_image" value="<?php echo esc_attr($image_id); ?>">
+                <button type="button" class="button" id="upload-image-btn">Afbeelding uploaden</button>
+                <button type="button" class="button" id="remove-image-btn"
+                    style="<?php echo $image_id ? '' : 'display:none;'; ?>">Verwijderen</button>
+            </td>
+        </tr>
+    </table>
 
-<script>
-jQuery(document).ready(function($) {
-    var frame;
-    $('#upload-image-btn').on('click', function(e) {
-        e.preventDefault();
-        if (frame) {
-            frame.open();
-            return;
-        }
-        frame = wp.media({
-            title: 'Selecteer afbeelding',
-            button: {
-                text: 'Gebruik deze afbeelding'
-            },
-            multiple: false
+    <script>
+        jQuery(document).ready(function ($) {
+            var frame;
+            $('#upload-image-btn').on('click', function (e) {
+                e.preventDefault();
+                if (frame) {
+                    frame.open();
+                    return;
+                }
+                frame = wp.media({
+                    title: 'Selecteer afbeelding',
+                    button: {
+                        text: 'Gebruik deze afbeelding'
+                    },
+                    multiple: false
+                });
+                frame.on('select', function () {
+                    var attachment = frame.state().get('selection').first().toJSON();
+                    $('#programma_image').val(attachment.id);
+                    $('#programma-image-preview').html('<img src="' + attachment.sizes.medium.url + '" style="max-width: 200px; height: auto; border-radius: 8px;">');
+                    $('#remove-image-btn').show();
+                });
+                frame.open();
+            });
+            $('#remove-image-btn').on('click', function (e) {
+                e.preventDefault();
+                $('#programma_image').val('');
+                $('#programma-image-preview').html('');
+                $(this).hide();
+            });
         });
-        frame.on('select', function() {
-            var attachment = frame.state().get('selection').first().toJSON();
-            $('#programma_image').val(attachment.id);
-            $('#programma-image-preview').html('<img src="' + attachment.sizes.medium.url + '" style="max-width: 200px; height: auto; border-radius: 8px;">');
-            $('#remove-image-btn').show();
-        });
-        frame.open();
-    });
-    $('#remove-image-btn').on('click', function(e) {
-        e.preventDefault();
-        $('#programma_image').val('');
-        $('#programma-image-preview').html('');
-        $(this).hide();
-    });
-});
-</script>
-<?php
+    </script>
+    <?php
 }
 
-function programma_save_meta($post_id) {
+function programma_save_meta($post_id)
+{
     if (!isset($_POST['programma_meta_nonce']) || !wp_verify_nonce($_POST['programma_meta_nonce'], 'programma_save_meta')) {
         return;
     }
@@ -120,14 +127,15 @@ function programma_save_meta($post_id) {
             update_post_meta($post_id, $field, sanitize_text_field($_POST[$field]));
         }
     }
-    
+
     if (isset($_POST['programma_image'])) {
         update_post_meta($post_id, 'programma_image', absint($_POST['programma_image']));
     }
 }
 add_action('save_post_programma', 'programma_save_meta');
 
-function programma_set_required_notice($message) {
+function programma_set_required_notice($message)
+{
     $user_id = get_current_user_id();
     if (!$user_id) {
         return;
@@ -135,7 +143,8 @@ function programma_set_required_notice($message) {
     set_transient('programma_required_notice_' . $user_id, $message, 60);
 }
 
-function programma_validate_required_fields($post_id, $post, $update) {
+function programma_validate_required_fields($post_id, $post, $update)
+{
     if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
         return;
     }
@@ -173,7 +182,8 @@ function programma_validate_required_fields($post_id, $post, $update) {
 }
 add_action('save_post_programma', 'programma_validate_required_fields', 20, 3);
 
-function programma_render_required_notice() {
+function programma_render_required_notice()
+{
     $user_id = get_current_user_id();
     if (!$user_id) {
         return;
@@ -187,7 +197,8 @@ function programma_render_required_notice() {
 }
 add_action('admin_notices', 'programma_render_required_notice');
 
-function programma_enqueue_admin_scripts($hook) {
+function programma_enqueue_admin_scripts($hook)
+{
     if ($hook === 'post.php' || $hook === 'post-new.php') {
         global $post;
         if ($post && $post->post_type === 'programma') {
@@ -197,25 +208,27 @@ function programma_enqueue_admin_scripts($hook) {
 }
 add_action('admin_enqueue_scripts', 'programma_enqueue_admin_scripts');
 
-function get_field($field, $post_id = null) {
+function get_field($field, $post_id = null)
+{
     if (!$post_id) {
         $post_id = get_the_ID();
     }
     return get_post_meta($post_id, $field, true);
 }
 
-function crafted_contact_settings_init() {
+function crafted_contact_settings_init()
+{
     register_setting('crafted_contact', 'crafted_contact_email');
     register_setting('crafted_contact', 'crafted_contact_phone');
     register_setting('crafted_contact', 'crafted_contact_address');
-    
+
     add_settings_section(
         'crafted_contact_section',
         'Contact Informatie',
         null,
         'crafted_contact'
     );
-    
+
     add_settings_field(
         'crafted_contact_email',
         'E-mailadres',
@@ -223,7 +236,7 @@ function crafted_contact_settings_init() {
         'crafted_contact',
         'crafted_contact_section'
     );
-    
+
     add_settings_field(
         'crafted_contact_phone',
         'Telefoonnummer',
@@ -231,7 +244,7 @@ function crafted_contact_settings_init() {
         'crafted_contact',
         'crafted_contact_section'
     );
-    
+
     add_settings_field(
         'crafted_contact_address',
         'Adres',
@@ -242,22 +255,26 @@ function crafted_contact_settings_init() {
 }
 add_action('admin_init', 'crafted_contact_settings_init');
 
-function crafted_contact_email_field() {
+function crafted_contact_email_field()
+{
     $value = get_option('crafted_contact_email', 'crafted@summacollege.nl');
     echo '<input type="email" name="crafted_contact_email" value="' . esc_attr($value) . '" class="regular-text">';
 }
 
-function crafted_contact_phone_field() {
+function crafted_contact_phone_field()
+{
     $value = get_option('crafted_contact_phone', 'Telefoonnummer hier');
     echo '<input type="text" name="crafted_contact_phone" value="' . esc_attr($value) . '" class="regular-text">';
 }
 
-function crafted_contact_address_field() {
+function crafted_contact_address_field()
+{
     $value = get_option('crafted_contact_address', 'Klokgebouw 50, 5617 AB Eindhoven');
     echo '<input type="text" name="crafted_contact_address" value="' . esc_attr($value) . '" class="regular-text">';
 }
 
-function crafted_contact_menu() {
+function crafted_contact_menu()
+{
     add_menu_page(
         'Contact Info',
         'Contact Info',
@@ -270,22 +287,24 @@ function crafted_contact_menu() {
 }
 add_action('admin_menu', 'crafted_contact_menu');
 
-function crafted_contact_page() {
+function crafted_contact_page()
+{
     ?>
-<div class="wrap">
-    <h1>Contact Informatie</h1>
-    <form method="post" action="options.php">
-        <?php
+    <div class="wrap">
+        <h1>Contact Informatie</h1>
+        <form method="post" action="options.php">
+            <?php
             settings_fields('crafted_contact');
             do_settings_sections('crafted_contact');
             submit_button();
             ?>
-    </form>
-</div>
-<?php
+        </form>
+    </div>
+    <?php
 }
 
-function add_styles() {
+function add_styles()
+{
     wp_enqueue_style('google-fonts', 'https://fonts.googleapis.com/css2?family=Krona+One&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 }
 
@@ -318,10 +337,10 @@ function register_nieuws_posttype()
             'edit_item' => 'Bewerk nieuwsbericht',
             'view_item' => 'Bekijk nieuwsbericht',
             'all_items' => 'Alle nieuwsberichten',
-            'menu_name'          => 'Nieuws',
-            'name_admin_bar'     => 'Nieuwsbericht',
-            'search_items'       => 'Zoek nieuws',
-            'not_found'          => 'Geen nieuws gevonden',
+            'menu_name' => 'Nieuws',
+            'name_admin_bar' => 'Nieuwsbericht',
+            'search_items' => 'Zoek nieuws',
+            'not_found' => 'Geen nieuws gevonden',
             'not_found_in_trash' => 'Geen nieuws gevonden in de prullenbak',
         ],
         'public' => true,
@@ -362,64 +381,68 @@ function nieuws_meta_box_callback($post)
     if (empty($datetime)) {
         $datetime = date_i18n('l j F, H:i');
     }
-?>
-<table class="form-table">
-    <tr>
-        <th><label for="description">Beschrijving <span style="color:red;">*</span></label></th>
-        <td><textarea name="description" id="description" rows="4" style="width: 100%;"><?php echo esc_textarea($description); ?></textarea></td>
-    </tr>
-    <tr>
-        <th><label>Afbeelding <span style="color:red;">*</span></label></th>
-        <td>
-            <div id="nieuws-image-preview" style="margin-bottom: 10px;">
-                <?php if ($image_url): ?>
-                <img src="<?php echo esc_url($image_url); ?>" style="max-width: 200px; height: auto; border-radius: 8px;">
-                <?php endif; ?>
-            </div>
-            <input type="hidden" name="nieuws_image" id="nieuws_image" value="<?php echo esc_attr($image_id); ?>">
-            <button type="button" class="button" id="upload-image-btn">Afbeelding uploaden</button>
-            <button type="button" class="button" id="remove-image-btn" style="<?php echo $image_id ? '' : 'display:none;'; ?>">Verwijderen</button>
-        </td>
-    </tr>
-    <tr>
-        <th><label for="raw_nieuws_date">Datum & Tijd</label></th>
-        <td><input type="datetime-local" name="raw_nieuws_date" id="raw_nieuws_date" value="<?php echo esc_attr($rawdatetime); ?>"></td>
-    </tr>
-</table>
+    ?>
+    <table class="form-table">
+        <tr>
+            <th><label for="description">Beschrijving <span style="color:red;">*</span></label></th>
+            <td><textarea name="description" id="description" rows="4"
+                    style="width: 100%;"><?php echo esc_textarea($description); ?></textarea></td>
+        </tr>
+        <tr>
+            <th><label>Afbeelding <span style="color:red;">*</span></label></th>
+            <td>
+                <div id="nieuws-image-preview" style="margin-bottom: 10px;">
+                    <?php if ($image_url): ?>
+                        <img src="<?php echo esc_url($image_url); ?>"
+                            style="max-width: 200px; height: auto; border-radius: 8px;">
+                    <?php endif; ?>
+                </div>
+                <input type="hidden" name="nieuws_image" id="nieuws_image" value="<?php echo esc_attr($image_id); ?>">
+                <button type="button" class="button" id="upload-image-btn">Afbeelding uploaden</button>
+                <button type="button" class="button" id="remove-image-btn"
+                    style="<?php echo $image_id ? '' : 'display:none;'; ?>">Verwijderen</button>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="raw_nieuws_date">Datum & Tijd</label></th>
+            <td><input type="datetime-local" name="raw_nieuws_date" id="raw_nieuws_date"
+                    value="<?php echo esc_attr($rawdatetime); ?>"></td>
+        </tr>
+    </table>
 
-<script>
-jQuery(document).ready(function($) {
-    var frame;
-    $('#upload-image-btn').on('click', function(e) {
-        e.preventDefault();
-        if (frame) {
-            frame.open();
-            return;
-        }
-        frame = wp.media({
-            title: 'Selecteer afbeelding',
-            button: {
-                text: 'Gebruik deze afbeelding'
-            },
-            multiple: false
+    <script>
+        jQuery(document).ready(function ($) {
+            var frame;
+            $('#upload-image-btn').on('click', function (e) {
+                e.preventDefault();
+                if (frame) {
+                    frame.open();
+                    return;
+                }
+                frame = wp.media({
+                    title: 'Selecteer afbeelding',
+                    button: {
+                        text: 'Gebruik deze afbeelding'
+                    },
+                    multiple: false
+                });
+                frame.on('select', function () {
+                    var attachment = frame.state().get('selection').first().toJSON();
+                    $('#nieuws_image').val(attachment.id);
+                    $('#nieuws-image-preview').html('<img src="' + attachment.sizes.medium.url + '" style="max-width: 200px; height: auto; border-radius: 8px;">');
+                    $('#remove-image-btn').show();
+                });
+                frame.open();
+            });
+            $('#remove-image-btn').on('click', function (e) {
+                e.preventDefault();
+                $('#nieuws_image').val('');
+                $('#nieuws-image-preview').html('');
+                $(this).hide();
+            });
         });
-        frame.on('select', function() {
-            var attachment = frame.state().get('selection').first().toJSON();
-            $('#nieuws_image').val(attachment.id);
-            $('#nieuws-image-preview').html('<img src="' + attachment.sizes.medium.url + '" style="max-width: 200px; height: auto; border-radius: 8px;">');
-            $('#remove-image-btn').show();
-        });
-        frame.open();
-    });
-    $('#remove-image-btn').on('click', function(e) {
-        e.preventDefault();
-        $('#nieuws_image').val('');
-        $('#nieuws-image-preview').html('');
-        $(this).hide();
-    });
-});
-</script>
-<?php
+    </script>
+    <?php
 }
 
 function nieuws_save_meta($post_id)
@@ -431,7 +454,8 @@ function nieuws_save_meta($post_id)
         return;
     }
     if (!current_user_can('edit_post', $post_id)) {
-        return;    }
+        return;
+    }
 
     if (isset($_POST['description'])) {
         update_post_meta($post_id, 'description', sanitize_textarea_field($_POST['description']));
@@ -454,14 +478,15 @@ function nieuws_save_meta($post_id)
         }
     }
     if (isset($_POST['raw_nieuws_date'])) {
-         update_post_meta($post_id, 'raw_nieuws_date', sanitize_text_field($_POST['raw_nieuws_date']));
+        update_post_meta($post_id, 'raw_nieuws_date', sanitize_text_field($_POST['raw_nieuws_date']));
     }
 }
 add_action('save_post_nieuws', 'nieuws_save_meta');
 
 // TEASERS POST TYPE
 
-function register_teasers_posttype() {
+function register_teasers_posttype()
+{
     register_post_type('teasers', [
         'labels' => [
             'name' => 'Teasers',
@@ -478,7 +503,7 @@ function register_teasers_posttype() {
             'not_found_in_trash' => 'Geen teasers gevonden in de prullenbak',
         ],
         'public' => true,
-       'has_archive' => false,
+        'has_archive' => false,
         // 'publicly_queryable' => false,
         'menu_icon' => 'dashicons-lightbulb',
         'supports' => ['title', 'thumbnail', 'excerpt'],
@@ -487,7 +512,8 @@ function register_teasers_posttype() {
 }
 add_action('init', 'register_teasers_posttype');
 
-function add_teasers_meta_boxes() {
+function add_teasers_meta_boxes()
+{
     add_meta_box(
         'teasers_details',
         'Teasers Details',
@@ -499,7 +525,8 @@ function add_teasers_meta_boxes() {
 }
 add_action('add_meta_boxes', 'add_teasers_meta_boxes');
 
-function teasers_meta_box_callback($post) {
+function teasers_meta_box_callback($post)
+{
     wp_nonce_field('teasers_save_meta', 'teasers_meta_nonce');
 
     $description = get_post_meta($post->ID, 'description', true);
@@ -510,66 +537,71 @@ function teasers_meta_box_callback($post) {
     if (empty($datetime)) {
         $datetime = date_i18n('l j F, H:i');
     }
-?>
-<table class="form-table">
-    <tr>
-        <th><label for="description">Beschrijving <span style="color:red;">*</span></label></th>
-        <td><textarea name="description" id="description" rows="4" style="width: 100%;"><?php echo esc_textarea($description); ?></textarea></td>
-    </tr>
-    <tr>
-        <th><label>Afbeelding <span style="color:red;">*</span></label></th>
-        <td>
-            <div id="teasers-image-preview" style="margin-bottom: 10px;">
-                <?php if ($image_url): ?>
-                <img src="<?php echo esc_url($image_url); ?>" style="max-width: 200px; height: auto; border-radius: 8px;">
-                <?php endif; ?>
-            </div>
-            <input type="hidden" name="teasers_image" id="teasers_image" value="<?php echo esc_attr($image_id); ?>">
-            <button type="button" class="button" id="upload-image-btn">Afbeelding uploaden</button>
-            <button type="button" class="button" id="remove-image-btn" style="<?php echo $image_id ? '' : 'display:none;'; ?>">Verwijderen</button>
-        </td>
-    </tr>
-    <tr>
-        <th><label for="raw_teasers_date">Datum & Tijd</label></th>
-        <td><input type="datetime-local" name="raw_teasers_date" id="raw_teasers_date" value="<?php echo esc_attr($rawdatetime); ?>"></td>
-    </tr>
-</table>
-<script>
-jQuery(document).ready(function($) {
-    var frame;
-    $('#upload-image-btn').on('click', function(e) {
-        e.preventDefault();
-        if (frame) {
-            frame.open();
-            return;
-        }
-        frame = wp.media({
-            title: 'Selecteer afbeelding',
-            button: {
-                text: 'Gebruik deze afbeelding'
-            },
-            multiple: false
+    ?>
+    <table class="form-table">
+        <tr>
+            <th><label for="description">Beschrijving <span style="color:red;">*</span></label></th>
+            <td><textarea name="description" id="description" rows="4"
+                    style="width: 100%;"><?php echo esc_textarea($description); ?></textarea></td>
+        </tr>
+        <tr>
+            <th><label>Afbeelding <span style="color:red;">*</span></label></th>
+            <td>
+                <div id="teasers-image-preview" style="margin-bottom: 10px;">
+                    <?php if ($image_url): ?>
+                        <img src="<?php echo esc_url($image_url); ?>"
+                            style="max-width: 200px; height: auto; border-radius: 8px;">
+                    <?php endif; ?>
+                </div>
+                <input type="hidden" name="teasers_image" id="teasers_image" value="<?php echo esc_attr($image_id); ?>">
+                <button type="button" class="button" id="upload-image-btn">Afbeelding uploaden</button>
+                <button type="button" class="button" id="remove-image-btn"
+                    style="<?php echo $image_id ? '' : 'display:none;'; ?>">Verwijderen</button>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="raw_teasers_date">Datum & Tijd</label></th>
+            <td><input type="datetime-local" name="raw_teasers_date" id="raw_teasers_date"
+                    value="<?php echo esc_attr($rawdatetime); ?>"></td>
+        </tr>
+    </table>
+    <script>
+        jQuery(document).ready(function ($) {
+            var frame;
+            $('#upload-image-btn').on('click', function (e) {
+                e.preventDefault();
+                if (frame) {
+                    frame.open();
+                    return;
+                }
+                frame = wp.media({
+                    title: 'Selecteer afbeelding',
+                    button: {
+                        text: 'Gebruik deze afbeelding'
+                    },
+                    multiple: false
+                });
+                frame.on('select', function () {
+                    var attachment = frame.state().get('selection').first().toJSON();
+                    $('#teasers_image').val(attachment.id);
+                    $('#teasers-image-preview').html('<img src="' + attachment.sizes.medium.url + '" style="max-width: 200px; height: auto; border-radius: 8px;">');
+                    $('#remove-image-btn').show();
+                });
+                frame.open();
+            });
+            $('#remove-image-btn').on('click', function (e) {
+                e.preventDefault();
+                $('#teasers_image').val('');
+                $('#teasers-image-preview').html('');
+                $(this).hide();
+            });
         });
-        frame.on('select', function() {
-            var attachment = frame.state().get('selection').first().toJSON();
-            $('#teasers_image').val(attachment.id);
-            $('#teasers-image-preview').html('<img src="' + attachment.sizes.medium.url + '" style="max-width: 200px; height: auto; border-radius: 8px;">');
-            $('#remove-image-btn').show();
-        });
-        frame.open();
-    });
-    $('#remove-image-btn').on('click', function(e) {
-        e.preventDefault();
-        $('#teasers_image').val('');
-        $('#teasers-image-preview').html('');
-        $(this).hide();
-    });
-});
-</script>
-<?php
+    </script>
+    <?php
 }
 
-function teasers_save_meta($post_id) {
+function teasers_save_meta($post_id)
+{
     if (!isset($_POST['teasers_meta_nonce']) || !wp_verify_nonce($_POST['teasers_meta_nonce'], 'teasers_save_meta')) {
         return;
     }
@@ -607,7 +639,8 @@ add_action('save_post_teasers', 'teasers_save_meta');
 // STORYLINES POST TYPE
 
 
-function register_storylines_posttype() {
+function register_storylines_posttype()
+{
     register_post_type('storylines', [
         'labels' => [
             'name' => 'Storylines',
@@ -633,7 +666,8 @@ function register_storylines_posttype() {
 }
 add_action('init', 'register_storylines_posttype');
 
-function add_storylines_meta_boxes() {
+function add_storylines_meta_boxes()
+{
     add_meta_box(
         'storylines_details',
         'Storylines Details',
@@ -645,7 +679,8 @@ function add_storylines_meta_boxes() {
 }
 add_action('add_meta_boxes', 'add_storylines_meta_boxes');
 
-function storylines_meta_box_callback($post) {
+function storylines_meta_box_callback($post)
+{
     wp_nonce_field('storylines_save_meta', 'storylines_meta_nonce');
 
     $description = get_post_meta($post->ID, 'description', true);
@@ -656,66 +691,72 @@ function storylines_meta_box_callback($post) {
     if (empty($datetime)) {
         $datetime = date_i18n('l j F, H:i');
     }
-?>
-<table class="form-table">
-    <tr>
-        <th><label for="description">Beschrijving <span style="color:red;">*</span></label></th>
-        <td><textarea name="description" id="description" rows="4" style="width: 100%;"><?php echo esc_textarea($description); ?></textarea></td>
-    </tr>
-    <tr>
-        <th><label>Afbeelding <span style="color:red;">*</span></label></th>
-        <td>
-            <div id="storylines-image-preview" style="margin-bottom: 10px;">
-                <?php if ($image_url): ?>
-                <img src="<?php echo esc_url($image_url); ?>" style="max-width: 200px; height: auto; border-radius: 8px;">
-                <?php endif; ?>
-            </div>
-            <input type="hidden" name="storylines_image" id="storylines_image" value="<?php echo esc_attr($image_id); ?>">
-            <button type="button" class="button" id="upload-image-btn">Afbeelding uploaden</button>
-            <button type="button" class="button" id="remove-image-btn" style="<?php echo $image_id ? '' : 'display:none;'; ?>">Verwijderen</button>
-        </td>
-    </tr>
-    <tr>
-        <th><label for="raw_storylines_date">Datum & Tijd</label></th>
-        <td><input type="datetime-local" name="raw_storylines_date" id="raw_storylines_date" value="<?php echo esc_attr($rawdatetime); ?>"></td>
-    </tr>
-</table>
-<script>
-jQuery(document).ready(function($) {
-    var frame;
-    $('#upload-image-btn').on('click', function(e) {
-        e.preventDefault();
-        if (frame) {
-            frame.open();
-            return;
-        }
-        frame = wp.media({
-            title: 'Selecteer afbeelding',
-            button: {
-                text: 'Gebruik deze afbeelding'
-            },
-            multiple: false
+    ?>
+    <table class="form-table">
+        <tr>
+            <th><label for="description">Beschrijving <span style="color:red;">*</span></label></th>
+            <td><textarea name="description" id="description" rows="4"
+                    style="width: 100%;"><?php echo esc_textarea($description); ?></textarea></td>
+        </tr>
+        <tr>
+            <th><label>Afbeelding <span style="color:red;">*</span></label></th>
+            <td>
+                <div id="storylines-image-preview" style="margin-bottom: 10px;">
+                    <?php if ($image_url): ?>
+                        <img src="<?php echo esc_url($image_url); ?>"
+                            style="max-width: 200px; height: auto; border-radius: 8px;">
+                    <?php endif; ?>
+                </div>
+                <input type="hidden" name="storylines_image" id="storylines_image"
+                    value="<?php echo esc_attr($image_id); ?>">
+                <button type="button" class="button" id="upload-image-btn">Afbeelding uploaden</button>
+                <button type="button" class="button" id="remove-image-btn"
+                    style="<?php echo $image_id ? '' : 'display:none;'; ?>">Verwijderen</button>
+            </td>
+        </tr>
+        <tr>
+            <th><label for="raw_storylines_date">Datum & Tijd</label></th>
+            <td><input type="datetime-local" name="raw_storylines_date" id="raw_storylines_date"
+                    value="<?php echo esc_attr($rawdatetime); ?>"></td>
+        </tr>
+    </table>
+    <script>
+        jQuery(document).ready(function ($) {
+            var frame;
+            $('#upload-image-btn').on('click', function (e) {
+                e.preventDefault();
+                if (frame) {
+                    frame.open();
+                    return;
+                }
+                frame = wp.media({
+                    title: 'Selecteer afbeelding',
+                    button: {
+                        text: 'Gebruik deze afbeelding'
+                    },
+                    multiple: false
+                });
+                frame.on('select', function () {
+                    var attachment = frame.state().get('selection').first().toJSON();
+                    $('#storylines_image').val(attachment.id);
+                    $('#storylines-image-preview').html('<img src="' + attachment.sizes.medium.url + '" style="max-width: 200px; height: auto; border-radius: 8px;">');
+                    $('#remove-image-btn').show();
+                });
+                frame.open();
+            });
+            $('#remove-image-btn').on('click', function (e) {
+                e.preventDefault();
+                $('#storylines_image').val('');
+                $('#storylines-image-preview').html('');
+                $(this).hide();
+            });
         });
-        frame.on('select', function() {
-            var attachment = frame.state().get('selection').first().toJSON();
-            $('#storylines_image').val(attachment.id);
-            $('#storylines-image-preview').html('<img src="' + attachment.sizes.medium.url + '" style="max-width: 200px; height: auto; border-radius: 8px;">');
-            $('#remove-image-btn').show();
-        });
-        frame.open();
-    });
-    $('#remove-image-btn').on('click', function(e) {
-        e.preventDefault();
-        $('#storylines_image').val('');
-        $('#storylines-image-preview').html('');
-        $(this).hide();
-    });
-});
-</script>
-<?php
+    </script>
+    <?php
 }
 
-function storylines_save_meta($post_id) {
+function storylines_save_meta($post_id)
+{
     if (!isset($_POST['storylines_meta_nonce']) || !wp_verify_nonce($_POST['storylines_meta_nonce'], 'storylines_save_meta')) {
         return;
     }
@@ -759,7 +800,7 @@ function upload_images_on_posts($hook)
         global $post;
         if ($post) {
             $args = array(
-                'public'   => true,
+                'public' => true,
                 '_builtin' => false
             );
             $custom_post_types = get_post_types($args);
@@ -771,7 +812,8 @@ function upload_images_on_posts($hook)
 }
 add_action('admin_enqueue_scripts', 'upload_images_on_posts');
 
-function validate_required_fields($post_id, $post, $update) {
+function validate_required_fields($post_id, $post, $update)
+{
     $required_post_types = ['nieuws', 'teasers', 'storylines'];
 
     if ($update && in_array($post->post_type, $required_post_types)) {
@@ -1145,12 +1187,44 @@ add_action('admin_menu', 'crafted_home_menu');
 
 function crafted_home_page()
 {
-    wp_enqueue_media(); // Ensure WP media uploader script is loaded
+    wp_enqueue_media();
     echo '<div class="wrap"><h1>Home Pagina Instellingen</h1><form method="post" action="options.php">';
     settings_fields('crafted_home_group');
     do_settings_sections('crafted_home');
     submit_button();
     echo '</form></div>';
+    ?>
+    <script>
+        jQuery(document).ready(function ($) {
+            // Card image upload buttons
+            $('.crafted-card-upload-btn').on('click', function (e) {
+                e.preventDefault();
+                var btn = $(this);
+                var fieldId = btn.data('field');
+                var frame = wp.media({
+                    title: 'Selecteer kaart afbeelding',
+                    button: { text: 'Gebruik deze afbeelding' },
+                    multiple: false
+                });
+                frame.on('select', function () {
+                    var attachment = frame.state().get('selection').first().toJSON();
+                    $('#' + fieldId).val(attachment.id);
+                    var imgUrl = attachment.sizes && attachment.sizes.medium ? attachment.sizes.medium.url : attachment.url;
+                    $('#' + fieldId + '_preview').html('<img src="' + imgUrl + '" style="max-width:200px;height:auto;border-radius:8px;">');
+                    btn.siblings('.crafted-card-remove-btn').show();
+                });
+                frame.open();
+            });
+            $('.crafted-card-remove-btn').on('click', function (e) {
+                e.preventDefault();
+                var fieldId = $(this).data('field');
+                $('#' + fieldId).val('');
+                $('#' + fieldId + '_preview').html('');
+                $(this).hide();
+            });
+        });
+    </script>
+    <?php
 }
 
 // --- Home Settings ---
@@ -1174,41 +1248,44 @@ function crafted_home_settings_init()
         $image_url = $image_id ? wp_get_attachment_image_url($image_id, 'medium') : '';
         ?>
         <div class="crafted-home-image-preview" style="margin-bottom:10px;">
-            <img src="<?php echo esc_url($image_url); ?>" style="max-width:300px; display:<?php echo $image_id ? 'block' : 'none'; ?>; border:1px solid #ccc; padding:2px;" />
+            <img src="<?php echo esc_url($image_url); ?>"
+                style="max-width:300px; display:<?php echo $image_id ? 'block' : 'none'; ?>; border:1px solid #ccc; padding:2px;" />
         </div>
-        <input type="hidden" name="crafted_home_image_id" id="crafted_home_image_id" value="<?php echo esc_attr($image_id); ?>" />
+        <input type="hidden" name="crafted_home_image_id" id="crafted_home_image_id"
+            value="<?php echo esc_attr($image_id); ?>" />
         <button type="button" class="button" id="crafted_home_image_upload_btn">Afbeelding Selecteren</button>
-        <button type="button" class="button button-link-delete" id="crafted_home_image_remove_btn" style="display:<?php echo $image_id ? 'inline-block' : 'none'; ?>; color: #a00;">Verwijderen</button>
+        <button type="button" class="button button-link-delete" id="crafted_home_image_remove_btn"
+            style="display:<?php echo $image_id ? 'inline-block' : 'none'; ?>; color: #a00;">Verwijderen</button>
 
         <script>
-        jQuery(document).ready(function($){
-            var mediaUploader;
-            $('#crafted_home_image_upload_btn').click(function(e) {
-                e.preventDefault();
-                if (mediaUploader) {
+            jQuery(document).ready(function ($) {
+                var mediaUploader;
+                $('#crafted_home_image_upload_btn').click(function (e) {
+                    e.preventDefault();
+                    if (mediaUploader) {
+                        mediaUploader.open();
+                        return;
+                    }
+                    mediaUploader = wp.media({
+                        title: 'Kies Achtergrond Afbeelding',
+                        button: { text: 'Gebruik deze afbeelding' },
+                        multiple: false
+                    });
+                    mediaUploader.on('select', function () {
+                        var attachment = mediaUploader.state().get('selection').first().toJSON();
+                        $('#crafted_home_image_id').val(attachment.id);
+                        $('.crafted-home-image-preview img').attr('src', attachment.url).show();
+                        $('#crafted_home_image_remove_btn').show();
+                    });
                     mediaUploader.open();
-                    return;
-                }
-                mediaUploader = wp.media({
-                    title: 'Kies Achtergrond Afbeelding',
-                    button: { text: 'Gebruik deze afbeelding' },
-                    multiple: false
                 });
-                mediaUploader.on('select', function() {
-                    var attachment = mediaUploader.state().get('selection').first().toJSON();
-                    $('#crafted_home_image_id').val(attachment.id);
-                    $('.crafted-home-image-preview img').attr('src', attachment.url).show();
-                    $('#crafted_home_image_remove_btn').show();
+                $('#crafted_home_image_remove_btn').click(function (e) {
+                    e.preventDefault();
+                    $('#crafted_home_image_id').val('');
+                    $('.crafted-home-image-preview img').hide().attr('src', '');
+                    $(this).hide();
                 });
-                mediaUploader.open();
             });
-            $('#crafted_home_image_remove_btn').click(function(e) {
-                e.preventDefault();
-                $('#crafted_home_image_id').val('');
-                $('.crafted-home-image-preview img').hide().attr('src', '');
-                $(this).hide();
-            });
-        });
         </script>
         <?php
     }, 'crafted_home', 'crafted_home_hero_section');
@@ -1223,6 +1300,234 @@ function crafted_home_settings_init()
             echo '<input type="text" name="crafted_home_carousel_' . $i . '" value="' . esc_attr($val) . '" class="regular-text">';
         }, 'crafted_home', 'crafted_home_carousel_section');
     }
+
+    // =============================================
+    // WHAT AWAITS YOU CARDS (3 cards)
+    // =============================================
+    add_settings_section('crafted_home_cards_section', '🎴 What Awaits You Kaarten', function () {
+        echo '<p>Beheer de 3 kaarten in de "What Awaits You" sectie. Elk kaart heeft een titel, beschrijving, afbeelding en knop-link.</p>';
+    }, 'crafted_home');
+
+    $card_defaults = [
+        1 => ['title' => 'Programma', 'desc' => 'State-of-the-art lighting, visuals, and production design create a multi-sensory journey like no other'],
+        2 => ['title' => 'Tickets', 'desc' => 'World-class artists and emerging talents come together on multiple stages to create unforgettable moments'],
+        3 => ['title' => 'Crafted & Friends', 'desc' => 'Dance until sunrise with cutting-edge electronic music from renowned DJs and producers from around the globe'],
+    ];
+
+    for ($i = 1; $i <= 3; $i++) {
+        $defaults = $card_defaults[$i];
+
+        // Title
+        register_setting('crafted_home_group', "crafted_home_card_{$i}_title");
+        add_settings_field("crafted_home_card_{$i}_title", "Kaart $i — Titel", function () use ($i, $defaults) {
+            $val = get_option("crafted_home_card_{$i}_title", $defaults['title']);
+            echo '<input type="text" name="crafted_home_card_' . $i . '_title" value="' . esc_attr($val) . '" class="regular-text" style="width:100%;max-width:400px;">';
+        }, 'crafted_home', 'crafted_home_cards_section');
+
+        // Description
+        register_setting('crafted_home_group', "crafted_home_card_{$i}_desc");
+        add_settings_field("crafted_home_card_{$i}_desc", "Kaart $i — Beschrijving", function () use ($i, $defaults) {
+            $val = get_option("crafted_home_card_{$i}_desc", $defaults['desc']);
+            echo '<textarea name="crafted_home_card_' . $i . '_desc" rows="3" style="width:100%;max-width:500px;">' . esc_textarea($val) . '</textarea>';
+        }, 'crafted_home', 'crafted_home_cards_section');
+
+        // Image
+        register_setting('crafted_home_group', "crafted_home_card_{$i}_image");
+        add_settings_field("crafted_home_card_{$i}_image", "Kaart $i — Afbeelding", function () use ($i) {
+            $image_id = get_option("crafted_home_card_{$i}_image");
+            $image_url = $image_id ? wp_get_attachment_image_url($image_id, 'medium') : '';
+            $field_id = "crafted_home_card_{$i}_image";
+            ?>
+            <div id="<?= $field_id ?>_preview" style="margin-bottom:10px;">
+                <?php if ($image_url): ?><img src="<?= esc_url($image_url) ?>"
+                        style="max-width:200px;height:auto;border-radius:8px;"><?php endif; ?>
+            </div>
+            <input type="hidden" name="<?= $field_id ?>" id="<?= $field_id ?>" value="<?= esc_attr($image_id) ?>">
+            <button type="button" class="button crafted-card-upload-btn" data-field="<?= $field_id ?>">Afbeelding
+                Selecteren</button>
+            <button type="button" class="button button-link-delete crafted-card-remove-btn" data-field="<?= $field_id ?>"
+                style="<?= $image_id ? '' : 'display:none;' ?>color:#a00;">Verwijderen</button>
+            <?php
+        }, 'crafted_home', 'crafted_home_cards_section');
+
+        // Button Link
+        register_setting('crafted_home_group', "crafted_home_card_{$i}_link");
+        add_settings_field("crafted_home_card_{$i}_link", "Kaart $i — Knop Link", function () use ($i) {
+            $val = get_option("crafted_home_card_{$i}_link", '#');
+            echo '<input type="text" name="crafted_home_card_' . $i . '_link" value="' . esc_attr($val) . '" class="regular-text" placeholder="/programma" style="width:100%;max-width:400px;">';
+            if ($i < 3)
+                echo '<hr style="margin-top:20px;border-color:#ddd;">';
+        }, 'crafted_home', 'crafted_home_cards_section');
+    }
+
+    // =============================================
+    // LOCATIE SETTINGS
+    // =============================================
+    add_settings_section('crafted_home_locatie_section', '📍 Locatie Instellingen', function () {
+        echo '<p>Beheer het adres, de Google Maps kaart en de routeknop.</p>';
+    }, 'crafted_home');
+
+    register_setting('crafted_home_group', 'crafted_home_locatie_adres_titel');
+    add_settings_field('crafted_home_locatie_adres_titel', 'Adres Regel 1', function () {
+        $val = get_option('crafted_home_locatie_adres_titel', 'Klokgebouw 50');
+        echo '<input type="text" name="crafted_home_locatie_adres_titel" value="' . esc_attr($val) . '" class="regular-text">';
+    }, 'crafted_home', 'crafted_home_locatie_section');
+
+    register_setting('crafted_home_group', 'crafted_home_locatie_adres_tekst');
+    add_settings_field('crafted_home_locatie_adres_tekst', 'Adres Regel 2', function () {
+        $val = get_option('crafted_home_locatie_adres_tekst', '5617 AB Eindhoven');
+        echo '<input type="text" name="crafted_home_locatie_adres_tekst" value="' . esc_attr($val) . '" class="regular-text">';
+    }, 'crafted_home', 'crafted_home_locatie_section');
+
+    register_setting('crafted_home_group', 'crafted_home_locatie_maps_url');
+    add_settings_field('crafted_home_locatie_maps_url', 'Google Maps Embed URL', function () {
+        $val = get_option('crafted_home_locatie_maps_url', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2250.1712848719576!2d5.454405376123775!3d51.44860461499746!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47c6d96b3a220f6b%3A0x3a0eb3741c513904!2sKlokgebouw%2C%20Eindhoven!5e1!3m2!1snl!2snl!4v1769778877889!5m2!1snl!2snl');
+        echo '<input type="url" name="crafted_home_locatie_maps_url" value="' . esc_attr($val) . '" style="width:100%;max-width:600px;">';
+        echo '<p class="description">Plak hier de volledige Google Maps embed URL (de src van de iframe).</p>';
+    }, 'crafted_home', 'crafted_home_locatie_section');
+
+    register_setting('crafted_home_group', 'crafted_home_locatie_route_url');
+    add_settings_field('crafted_home_locatie_route_url', 'Routebeschrijving Link', function () {
+        $val = get_option('crafted_home_locatie_route_url', '#');
+        echo '<input type="url" name="crafted_home_locatie_route_url" value="' . esc_attr($val) . '" class="regular-text" placeholder="https://maps.google.com/...">';
+    }, 'crafted_home', 'crafted_home_locatie_section');
+
+    // =============================================
+    // IN DE BUURT WIDGETS (max 8)
+    // =============================================
+    add_settings_section('crafted_home_buurt_section', '🏘️ In de buurt (max 8)', function () {
+        echo '<p>Voeg tot 8 "In de buurt" items toe. Alleen items met een ingevulde titel worden getoond op de website.</p>';
+    }, 'crafted_home');
+
+    $buurt_defaults = [
+        1 => ['title' => 'Biergarten Eindhoven', 'sub' => 'Bar & terras', 'dist' => '300m', 'icon' => 'bar'],
+        2 => ['title' => 'Ketelhuis Strijp-S', 'sub' => 'Bar', 'dist' => '300m', 'icon' => 'bar'],
+        3 => ['title' => "STR'EAT Bars & kitchens", 'sub' => 'Restaurant', 'dist' => '300m', 'icon' => 'restaurant'],
+        4 => ['title' => 'Hotel Crown', 'sub' => 'Comfortabel overnachten', 'dist' => '800m', 'icon' => 'hotel'],
+        5 => ['title' => 'NS Station Eindhoven', 'sub' => 'Trein & bus verbindingen', 'dist' => '1.2km', 'icon' => 'station'],
+        6 => ['title' => 'Parkeergarage P1', 'sub' => '24/7 beschikbaar', 'dist' => '150m', 'icon' => 'parkeren'],
+        7 => ['title' => '', 'sub' => '', 'dist' => '', 'icon' => 'overig'],
+        8 => ['title' => '', 'sub' => '', 'dist' => '', 'icon' => 'overig'],
+    ];
+
+    $icon_options = [
+        'bar' => '🍺 Bar',
+        'restaurant' => '🍴 Restaurant',
+        'hotel' => '🏨 Hotel',
+        'station' => '🚉 Station / OV',
+        'parkeren' => '🅿️ Parkeren',
+        'overig' => '📌 Overig',
+    ];
+
+    for ($i = 1; $i <= 8; $i++) {
+        $def = $buurt_defaults[$i];
+
+        register_setting('crafted_home_group', "crafted_home_buurt_{$i}_title");
+        register_setting('crafted_home_group', "crafted_home_buurt_{$i}_sub");
+        register_setting('crafted_home_group', "crafted_home_buurt_{$i}_dist");
+        register_setting('crafted_home_group', "crafted_home_buurt_{$i}_icon");
+
+        add_settings_field("crafted_home_buurt_{$i}", "Item $i", function () use ($i, $def, $icon_options) {
+            $title = get_option("crafted_home_buurt_{$i}_title", $def['title']);
+            $sub = get_option("crafted_home_buurt_{$i}_sub", $def['sub']);
+            $dist = get_option("crafted_home_buurt_{$i}_dist", $def['dist']);
+            $icon = get_option("crafted_home_buurt_{$i}_icon", $def['icon']);
+
+            echo '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">';
+            echo '<input type="text" name="crafted_home_buurt_' . $i . '_title" value="' . esc_attr($title) . '" placeholder="Titel" style="width:180px;">';
+            echo '<input type="text" name="crafted_home_buurt_' . $i . '_sub" value="' . esc_attr($sub) . '" placeholder="Subtitel" style="width:180px;">';
+            echo '<input type="text" name="crafted_home_buurt_' . $i . '_dist" value="' . esc_attr($dist) . '" placeholder="Afstand" style="width:80px;">';
+            echo '<select name="crafted_home_buurt_' . $i . '_icon">';
+            foreach ($icon_options as $key => $label) {
+                $selected = ($icon === $key) ? ' selected' : '';
+                echo '<option value="' . $key . '"' . $selected . '>' . $label . '</option>';
+            }
+            echo '</select>';
+            echo '</div>';
+        }, 'crafted_home', 'crafted_home_buurt_section');
+    }
+
+    // =============================================
+    // NIEUWS SECTIE
+    // =============================================
+    // --- Plattegrond Sectie ---
+    add_settings_section('crafted_home_plattegrond_section', '4. Plattegrond Sectie', function () {
+        echo '<p>Upload hier de plattegrond afbeelding. De titel en tekst zijn optioneel. Als je geen tekst invult, wordt de plattegrond gecentreerd over de volle breedte getoond.</p>';
+    }, 'crafted_home');
+
+    register_setting('crafted_home_group', 'crafted_home_plattegrond_titel');
+    register_setting('crafted_home_group', 'crafted_home_plattegrond_tekst');
+    register_setting('crafted_home_group', 'crafted_home_plattegrond_img');
+
+    add_settings_field('crafted_home_plattegrond_titel', 'Titel', function () {
+        $val = get_option('crafted_home_plattegrond_titel', 'Plattegrond');
+        echo '<input type="text" name="crafted_home_plattegrond_titel" value="' . esc_attr($val) . '" class="regular-text">';
+    }, 'crafted_home', 'crafted_home_plattegrond_section');
+
+    add_settings_field('crafted_home_plattegrond_tekst', 'Beschrijving', function () {
+        $val = get_option('crafted_home_plattegrond_tekst', '');
+        echo '<textarea name="crafted_home_plattegrond_tekst" rows="4" class="large-text" style="width:100%">' . esc_textarea($val) . '</textarea>';
+    }, 'crafted_home', 'crafted_home_plattegrond_section');
+
+    add_settings_field('crafted_home_plattegrond_img', 'Plattegrond Afbeelding', function () {
+        $img_id = get_option('crafted_home_plattegrond_img');
+        $img_src = '';
+        if ($img_id) {
+            $img_src = wp_get_attachment_image_url($img_id, 'large');
+        }
+        echo '<div style="margin-bottom:10px;">';
+        if ($img_src) {
+            echo '<img id="crafted_home_plattegrond_img_preview" src="' . esc_url($img_src) . '" style="max-width:300px; height:auto; display:block; border:1px solid #ccc; padding:5px; background:#fff;">';
+        } else {
+            echo '<img id="crafted_home_plattegrond_img_preview" src="" style="max-width:300px; height:auto; display:none; border:1px solid #ccc; padding:5px; background:#fff;">';
+        }
+        echo '</div>';
+        echo '<input type="hidden" id="crafted_home_plattegrond_img_id" name="crafted_home_plattegrond_img" value="' . esc_attr($img_id) . '">';
+        echo '<button type="button" class="button crafted-upload-btn" data-target="crafted_home_plattegrond_img">Selecteer Afbeelding</button>';
+        echo '<button type="button" class="button crafted-remove-btn" data-target="crafted_home_plattegrond_img" style="margin-left:5px;">Verwijder</button>';
+    }, 'crafted_home', 'crafted_home_plattegrond_section');
+
+    add_settings_section('crafted_home_nieuws_section', '📰 Nieuws Sectie', function () {
+        echo '<p>Beheer de "Volg hier het laatste nieuws" sectie op de homepage.</p>';
+    }, 'crafted_home');
+
+    register_setting('crafted_home_group', 'crafted_home_nieuws_title');
+    add_settings_field('crafted_home_nieuws_title', 'Titel', function () {
+        $val = get_option('crafted_home_nieuws_title', 'Volg hier het laatste nieuws!');
+        echo '<input type="text" name="crafted_home_nieuws_title" value="' . esc_attr($val) . '" class="regular-text" style="width:100%;max-width:400px;">';
+    }, 'crafted_home', 'crafted_home_nieuws_section');
+
+    register_setting('crafted_home_group', 'crafted_home_nieuws_desc');
+    add_settings_field('crafted_home_nieuws_desc', 'Beschrijving', function () {
+        $val = get_option('crafted_home_nieuws_desc', 'Blijf op de hoogte met teasers, previews en andere interessante updates.');
+        echo '<textarea name="crafted_home_nieuws_desc" rows="2" style="width:100%;max-width:500px;">' . esc_textarea($val) . '</textarea>';
+    }, 'crafted_home', 'crafted_home_nieuws_section');
+
+    register_setting('crafted_home_group', 'crafted_home_nieuws_link');
+    add_settings_field('crafted_home_nieuws_link', 'Knop Link', function () {
+        $val = get_option('crafted_home_nieuws_link', '/nieuws');
+        echo '<input type="text" name="crafted_home_nieuws_link" value="' . esc_attr($val) . '" class="regular-text" placeholder="/nieuws">';
+    }, 'crafted_home', 'crafted_home_nieuws_section');
+
+    register_setting('crafted_home_group', 'crafted_home_nieuws_image');
+    add_settings_field('crafted_home_nieuws_image', 'Afbeelding', function () {
+        $image_id = get_option('crafted_home_nieuws_image');
+        $image_url = $image_id ? wp_get_attachment_image_url($image_id, 'medium') : '';
+        $fid = 'crafted_home_nieuws_image';
+        echo '<div id="' . $fid . '_preview" style="margin-bottom:10px;">';
+        if ($image_url)
+            echo '<img src="' . esc_url($image_url) . '" style="max-width:200px;height:auto;border-radius:8px;">';
+        echo '</div>';
+        echo '<input type="hidden" name="' . $fid . '" id="' . $fid . '" value="' . esc_attr($image_id) . '">';
+        echo '<button type="button" class="button crafted-card-upload-btn" data-field="' . $fid . '">Afbeelding Selecteren</button>';
+        echo '<button type="button" class="button button-link-delete crafted-card-remove-btn" data-field="' . $fid . '" style="' . ($image_id ? '' : 'display:none;') . 'color:#a00;">Verwijderen</button>';
+    }, 'crafted_home', 'crafted_home_nieuws_section');
+
+    register_setting('crafted_home_group', 'crafted_home_nieuws_credit');
+    add_settings_field('crafted_home_nieuws_credit', 'Credit Tekst', function () {
+        $val = get_option('crafted_home_nieuws_credit', 'Door Summa Marketing');
+        echo '<input type="text" name="crafted_home_nieuws_credit" value="' . esc_attr($val) . '" class="regular-text" placeholder="Door ...">';
+    }, 'crafted_home', 'crafted_home_nieuws_section');
 }
 add_action('admin_init', 'crafted_home_settings_init');
 
@@ -1262,6 +1567,7 @@ function crafted_footer_settings_init()
     for ($i = 1; $i <= 4; $i++) {
         register_setting('crafted_footer_group', "crafted_footer_btn_{$i}_text");
         register_setting('crafted_footer_group', "crafted_footer_btn_{$i}_url");
+        register_setting('crafted_footer_group', "crafted_footer_btn_{$i}_icon");
         add_settings_field(
             "crafted_footer_btn_{$i}",
             "Button $i (Text & URL)",
@@ -1315,7 +1621,236 @@ function crafted_footer_btn_cb($i)
 {
     $text = get_option("crafted_footer_btn_{$i}_text", "Knop $i");
     $url = get_option("crafted_footer_btn_{$i}_url", "#");
-    echo '<input type="text" name="crafted_footer_btn_' . $i . '_text" value="' . esc_attr($text) . '" placeholder="Tekst" style="margin-right:10px;">';
-    echo '<input type="text" name="crafted_footer_btn_' . $i . '_url" value="' . esc_attr($url) . '" placeholder="URL" class="regular-text">';
+    $icon = get_option("crafted_footer_btn_{$i}_icon", "");
+
+    // Predefined list of useful Dashicons
+    $available_icons = [
+        '' => 'Standaard Icoon',
+        'dashicons-star-filled' => 'Ster',
+        'dashicons-heart' => 'Hartje',
+        'dashicons-location' => 'Locatie Pin',
+        'dashicons-calendar-alt' => 'Kalender',
+        'dashicons-tickets-alt' => 'Tickets',
+        'dashicons-groups' => 'Groep / Mensen',
+        'dashicons-format-audio' => 'Muziek / Audio',
+        'dashicons-camera' => 'Camera',
+        'dashicons-megaphone' => 'Megafoon',
+        'dashicons-email' => 'E-mail',
+        'dashicons-info' => 'Informatie (i)',
+        'dashicons-editor-help' => 'Vraagteken (?)'
+    ];
+
+    echo '<input type="text" name="crafted_footer_btn_' . $i . '_text" value="' . esc_attr($text) . '" placeholder="Tekst" style="margin-right:10px; width: 120px;">';
+    echo '<input type="text" name="crafted_footer_btn_' . $i . '_url" value="' . esc_attr($url) . '" placeholder="URL" class="regular-text" style="width: 200px; margin-right:10px;">';
+
+    // Dropdown for icons
+    echo '<select name="crafted_footer_btn_' . $i . '_icon" style="width: 150px;">';
+    foreach ($available_icons as $class => $label) {
+        $selected = selected($icon, $class, false);
+        echo '<option value="' . esc_attr($class) . '" ' . $selected . '>' . esc_html($label) . '</option>';
+    }
+    echo '</select>';
 }
+
+
+// =============================================
+// MENU OPTIES
+// =============================================
+function crafted_menu_menu()
+{
+    add_menu_page('Menu Opties', 'Menu Opties', 'manage_options', 'crafted-menu', 'crafted_menu_page', 'dashicons-menu', 32);
+}
+add_action('admin_menu', 'crafted_menu_menu');
+
+function crafted_menu_page()
+{
+    echo '<div class="wrap"><h1>Menu Instellingen</h1><form method="post" action="options.php">';
+    settings_fields('crafted_menu_group');
+    do_settings_sections('crafted_menu');
+    submit_button();
+    echo '</form></div>';
+}
+
+function crafted_menu_settings_init()
+{
+    // Info blok tekst
+    add_settings_section('crafted_menu_info_section', '1. Info Blok Tekst (Paarse vlak)', '__return_false', 'crafted_menu');
+
+    register_setting('crafted_menu_group', 'crafted_menu_info_text');
+    add_settings_field('crafted_menu_info_text', 'Info Tekst', function () {
+        $val = get_option('crafted_menu_info_text', 'Lorem ipsum dolor sit amet, .consectetur adipiscing elit. In nibh libero, feugiat ac laoreet ac, dictum mollis turpis. Donec euismod sapien non nisl porta, at dapibus mauris laoreet. Duis in tincidunt justo, rhoncus ultrices libero. Proin sodales suscipit ex eget consequat. Pellentesque at orci efficitur, molestie risus in, porta diam. Phasellus ac efficitur metus, a fermentum leo. Maecenas posuere luctus urna et vehicula. Vestibulum et quam in orci cursus interdum non at leo. Nunc non ante ultricies, viverra dui eu, interdum elit.');
+        echo '<textarea name="crafted_menu_info_text" rows="6" style="width:100%;max-width:800px;">' . esc_textarea($val) . '</textarea>';
+        echo '<p class="description">Deze tekst wordt getoond in het paarse info-blokje in het menu overlay.</p>';
+    }, 'crafted_menu', 'crafted_menu_info_section');
+
+    // Knoppen
+    add_settings_section('crafted_menu_buttons_section', '2. Menu Knoppen Links (6 stuks)', function () {
+        echo '<p>Beheer de links en de (vertaalde) namen van de 6 grote knoppen in het menu overlay.</p>';
+    }, 'crafted_menu');
+
+    $btn_defaults = [
+        1 => ['nl' => 'Home', 'en' => 'Home', 'url' => '/'],
+        2 => ['nl' => 'Nieuws', 'en' => 'News', 'url' => '/nieuws'],
+        3 => ['nl' => 'Contact', 'en' => 'Contact', 'url' => '/contact'],
+        4 => ['nl' => 'Crafted<br><span class="smallFont">&</span><br>Friends', 'en' => '', 'url' => '/crafted-friends'],
+        5 => ['nl' => 'Tickets', 'en' => 'Tickets', 'url' => '/tickets'],
+        6 => ['nl' => 'Programma', 'en' => 'Program', 'url' => '/programma'],
+    ];
+
+    for ($i = 1; $i <= 6; $i++) {
+        $def = $btn_defaults[$i];
+
+        register_setting('crafted_menu_group', "crafted_menu_btn_{$i}_nl");
+        register_setting('crafted_menu_group', "crafted_menu_btn_{$i}_en");
+        register_setting('crafted_menu_group', "crafted_menu_btn_{$i}_url");
+
+        add_settings_field("crafted_menu_btn_{$i}", "Knop $i", function () use ($i, $def) {
+            $nl = get_option("crafted_menu_btn_{$i}_nl", $def['nl']);
+            $en = get_option("crafted_menu_btn_{$i}_en", $def['en']);
+            $url = get_option("crafted_menu_btn_{$i}_url", $def['url']);
+
+            echo '<div style="display:flex; gap:10px; align-items:center;">';
+            echo '<input type="text" name="crafted_menu_btn_' . $i . '_nl" value="' . esc_attr($nl) . '" placeholder="NL Tekst (HTML toegestaan)" style="width:220px;">';
+            echo '<input type="text" name="crafted_menu_btn_' . $i . '_en" value="' . esc_attr($en) . '" placeholder="EN Tekst" style="width:150px;">';
+            echo '<input type="text" name="crafted_menu_btn_' . $i . '_url" value="' . esc_attr($url) . '" placeholder="URL / Link" class="regular-text" style="width:250px;">';
+            echo '</div>';
+            if ($i == 4) {
+                echo '<p class="description" style="margin-top:5px; margin-bottom: 20px;">Tip knop 4: Gebruik <code>Crafted&lt;br&gt;&lt;span class=&quot;smallFont&quot;&gt;&amp;&lt;/span&gt;&lt;br&gt;Friends</code> voor de speciale opmaak.</p>';
+            }
+        }, 'crafted_menu', 'crafted_menu_buttons_section');
+    }
+
+    // Timer Instellingen
+    add_settings_section('crafted_menu_timer_section', '3. Countdown Timer', function () {
+        echo '<p>Stel hier de doeldatum en tijd (formaat: <code>YYYY-MM-DDTHH:MM:SS</code>) van de countdown in, en wat de timer moet tonen als deze is afgelopen.</p>';
+    }, 'crafted_menu');
+
+    register_setting('crafted_menu_group', 'crafted_timer_date');
+    register_setting('crafted_menu_group', 'crafted_timer_expired_text');
+    register_setting('crafted_menu_group', 'crafted_timer_expired_url');
+
+    add_settings_field('crafted_timer_date', 'Doeldatum & Tijd', function () {
+        $val = get_option('crafted_timer_date', '2026-06-18T00:00:00');
+        echo '<input type="datetime-local" name="crafted_timer_date" value="' . esc_attr($val) . '" class="regular-text">';
+        echo '<p class="description">De datum en tijd waar de timer naartoe aftelt.</p>';
+    }, 'crafted_menu', 'crafted_menu_timer_section');
+
+    add_settings_field('crafted_timer_expired_text', 'Knop Tekst (Na afloop)', function () {
+        $val = get_option('crafted_timer_expired_text', 'Kijk de livestream');
+        echo '<input type="text" name="crafted_timer_expired_text" value="' . esc_attr($val) . '" class="regular-text">';
+        echo '<p class="description">De tekst die in de timer verschijnt als deze op 0 staat.</p>';
+    }, 'crafted_menu', 'crafted_menu_timer_section');
+
+    add_settings_field('crafted_timer_expired_url', 'Knop URL (Na afloop)', function () {
+        $val = get_option('crafted_timer_expired_url', '/livestream');
+        echo '<input type="text" name="crafted_timer_expired_url" value="' . esc_attr($val) . '" class="regular-text">';
+        echo '<p class="description">De link (URL) voor de livestream knop.</p>';
+    }, 'crafted_menu', 'crafted_menu_timer_section');
+
+}
+add_action('admin_init', 'crafted_menu_settings_init');
+
+function crafted_plattegrond_admin_scripts()
+{
+    ?>
+    <script>
+        jQuery(document).ready(function ($) {
+            // Plattegrond Uploader
+            $('.crafted-upload-btn').on('click', function (e) {
+                e.preventDefault();
+                var button = $(this);
+                var target_id = button.data('target');
+
+                var custom_uploader = wp.media({
+                    title: 'Kies een Afbeelding',
+                    button: { text: 'Gebruik deze Afbeelding' },
+                    multiple: false
+                }).on('select', function () {
+                    var attachment = custom_uploader.state().get('selection').first().toJSON();
+                    $('#' + target_id + '_id').val(attachment.id);
+                    $('#' + target_id + '_preview').attr('src', attachment.url).show();
+                }).open();
+            });
+
+            // Verwijder knop
+            $('.crafted-remove-btn').on('click', function (e) {
+                e.preventDefault();
+                var button = $(this);
+                var target_id = button.data('target');
+                $('#' + target_id + '_id').val('');
+                $('#' + target_id + '_preview').attr('src', '').hide();
+            });
+        });
+    </script>
+    <?php
+}
+add_action('admin_footer', 'crafted_plattegrond_admin_scripts');
+
+// =============================================
+// COMING SOON OPTIES
+// =============================================
+function crafted_coming_soon_menu()
+{
+    add_menu_page('Coming Soon', 'Coming Soon', 'manage_options', 'crafted-coming-soon', 'crafted_coming_soon_page', 'dashicons-clock', 33);
+}
+add_action('admin_menu', 'crafted_coming_soon_menu');
+
+function crafted_coming_soon_page()
+{
+    echo '<div class="wrap"><h1>Coming Soon Instellingen</h1><form method="post" action="options.php">';
+    settings_fields('crafted_cs_group');
+    do_settings_sections('crafted_cs');
+    submit_button();
+    echo '</form></div>';
+}
+
+function crafted_cs_settings_init()
+{
+    add_settings_section('crafted_cs_timer_section', 'Countdown Timer', function () {
+        echo '<p>Stel hier de doeldatum en tijd in voor de <strong>Coming Soon pagina</strong>. Deze is onafhankelijk van de header timer.</p>';
+    }, 'crafted_cs');
+
+    register_setting('crafted_cs_group', 'crafted_cs_timer_date');
+    register_setting('crafted_cs_group', 'crafted_cs_expired_text');
+    register_setting('crafted_cs_group', 'crafted_cs_expired_url');
+
+    add_settings_field('crafted_cs_timer_date', 'Doeldatum & Tijd', function () {
+        $val = get_option('crafted_cs_timer_date', '2026-06-18T00:00:00');
+        echo '<input type="datetime-local" name="crafted_cs_timer_date" value="' . esc_attr($val) . '" class="regular-text">';
+    }, 'crafted_cs', 'crafted_cs_timer_section');
+
+    add_settings_field('crafted_cs_expired_text', 'Knop Tekst (Na afloop)', function () {
+        $val = get_option('crafted_cs_expired_text', 'Kijk de livestream');
+        echo '<input type="text" name="crafted_cs_expired_text" value="' . esc_attr($val) . '" class="regular-text">';
+    }, 'crafted_cs', 'crafted_cs_timer_section');
+
+    add_settings_field('crafted_cs_expired_url', 'Knop URL (Na afloop)', function () {
+        $val = get_option('crafted_cs_expired_url', '/livestream');
+        echo '<input type="text" name="crafted_cs_expired_url" value="' . esc_attr($val) . '" class="regular-text">';
+    }, 'crafted_cs', 'crafted_cs_timer_section');
+
+    add_settings_section('crafted_cs_text_section', 'Teksten & Vertalingen', function () {
+        echo '<p>Stel hier de teksten in voor de Coming Soon pagina in het Nederlands en Engels.</p>';
+    }, 'crafted_cs');
+
+    register_setting('crafted_cs_group', 'crafted_cs_title_nl');
+    register_setting('crafted_cs_group', 'crafted_cs_title_en');
+    register_setting('crafted_cs_group', 'crafted_cs_sub_nl');
+    register_setting('crafted_cs_group', 'crafted_cs_sub_en');
+
+    add_settings_field('crafted_cs_title', 'Titel (Groot)', function () {
+        $nl = get_option('crafted_cs_title_nl', 'Snel online');
+        $en = get_option('crafted_cs_title_en', 'Coming Soon');
+        echo '<div><label style="display:inline-block;width:100px;">Nederlands:</label><input type="text" name="crafted_cs_title_nl" value="' . esc_attr($nl) . '" class="regular-text"></div>';
+        echo '<div style="margin-top:10px;"><label style="display:inline-block;width:100px;">Engels:</label><input type="text" name="crafted_cs_title_en" value="' . esc_attr($en) . '" class="regular-text"></div>';
+    }, 'crafted_cs', 'crafted_cs_text_section');
+
+    add_settings_field('crafted_cs_sub', 'Ondertitel', function () {
+        $nl = get_option('crafted_cs_sub_nl', 'We zijn nog even bezig met bouwen. De website lanceert over:');
+        $en = get_option('crafted_cs_sub_en', 'We are currently building the site. We will launch in:');
+        echo '<div><label style="display:inline-block;width:100px;">Nederlands:</label><textarea name="crafted_cs_sub_nl" rows="2" class="regular-text" style="width:300px;">' . esc_textarea($nl) . '</textarea></div>';
+        echo '<div style="margin-top:10px;"><label style="display:inline-block;width:100px;">Engels:</label><textarea name="crafted_cs_sub_en" rows="2" class="regular-text" style="width:300px;">' . esc_textarea($en) . '</textarea></div>';
+    }, 'crafted_cs', 'crafted_cs_text_section');
+}
+add_action('admin_init', 'crafted_cs_settings_init');
 

@@ -23,18 +23,36 @@ function enableScroll() {
     window.removeEventListener('keydown', preventScrollKeys);
 }
 
+let savedScrollPosition = 0;
+
 function toggleMenu() {
     const menu = document.querySelector('menu');
     const timer = document.querySelector('.timer');
+    const header = document.getElementById('header');
     if (menu) {
         menu.classList.toggle('menu-invisible');
         timer.classList.toggle('timer-invisible');
         
-        // Disable scroll when the menu opens, enable it when closing
         if (!menu.classList.contains('menu-invisible')) {
+            // Menu is opening: save scroll pos, fix header to viewport top
+            savedScrollPosition = window.scrollY;
+            if (header) {
+                header.style.position = 'fixed';
+                header.style.top = '0';
+                header.style.left = '0';
+                header.style.width = '100%';
+            }
             disableScroll();
         } else {
+            // Menu is closing: restore header and scroll position
             enableScroll();
+            if (header) {
+                header.style.position = '';
+                header.style.top = '';
+                header.style.left = '';
+                header.style.width = '';
+            }
+            window.scrollTo({ top: savedScrollPosition, behavior: 'instant' });
         }
     }
 }

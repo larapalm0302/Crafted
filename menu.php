@@ -1,20 +1,46 @@
  <menu class="menu-invisible">
      <div class="menu-buttons">
-         <button class="menu-button largeW notranslate" delay="0.15s" onclick="window.location.href='/'" data-nl="Home" data-en="Home">Home</button>
-         <button class="menu-button largeW notranslate" delay="0.30s" onclick="window.location.href='/nieuws'" data-nl="Nieuws" data-en="News">Nieuws</button>
-         <button class="menu-button largeW notranslate" delay="0.45s" onclick="window.location.href='/contact'" data-nl="Contact" data-en="Contact">Contact</button>
-         <button class="menu-button largeW largeH notranslate" delay="0.60s" onclick="window.location.href='/crafted-friends'">
-             Crafted<br>
-             <span class="smallFont">&</span><br>
-             Friends
+         <?php
+         $delays = ['0.15s', '0.30s', '0.45s', '0.60s', '0.75s', '0.90s'];
+         $btn_defaults = [
+             1 => ['nl' => 'Home', 'en' => 'Home', 'url' => '/'],
+             2 => ['nl' => 'Nieuws', 'en' => 'News', 'url' => '/nieuws'],
+             3 => ['nl' => 'Contact', 'en' => 'Contact', 'url' => '/contact'],
+             4 => ['nl' => 'Crafted<br><span class="smallFont">&</span><br>Friends', 'en' => '', 'url' => '/crafted-friends'],
+             5 => ['nl' => 'Tickets', 'en' => 'Tickets', 'url' => '/tickets'],
+             6 => ['nl' => 'Programma', 'en' => 'Program', 'url' => '/programma'],
+         ];
+
+         for ($i = 1; $i <= 6; $i++):
+             $def = $btn_defaults[$i];
+             $btn_nl = get_option("crafted_menu_btn_{$i}_nl", $def['nl']);
+             $btn_en = get_option("crafted_menu_btn_{$i}_en", $def['en']);
+             $btn_url = get_option("crafted_menu_btn_{$i}_url", $def['url']);
+
+             // Fallbacks if empty strings are returned from DB
+             if (empty($btn_nl)) $btn_nl = $def['nl'];
+             if (empty($btn_url)) $btn_url = $def['url'];
+
+             $delay = $delays[$i - 1];
+             
+             // Extra classes for specific buttons (e.g., button 4 'Crafted & Friends')
+             $extra_classes = ($i == 4) ? ' largeH' : '';
+             
+             // Only output data attributes if plain text (no HTML) to avoid breaking attributes
+             $data_nl = (strip_tags($btn_nl) === $btn_nl) ? ' data-nl="' . esc_attr($btn_nl) . '"' : '';
+             $data_en = !empty($btn_en) && (strip_tags($btn_en) === $btn_en) ? ' data-en="' . esc_attr($btn_en) . '"' : '';
+         ?>
+         <button class="menu-button largeW<?= $extra_classes ?> notranslate" delay="<?= $delay ?>" onclick="window.location.href='<?= esc_url($btn_url) ?>'"<?= $data_nl ?><?= $data_en ?>>
+             <?php echo wp_kses_post($btn_nl); ?>
          </button>
-         <button class="menu-button largeW notranslate" delay="0.75s" onclick="window.location.href='/tickets'" data-nl="Tickets" data-en="Tickets">Tickets</button>
-         <button class="menu-button largeW notranslate" delay="0.90s" onclick="window.location.href='/programma'" data-nl="Programma" data-en="Program">Programma</button>
+         <?php endfor; ?>
      </div>
      <div class="info-container">
          <div class="info">
-             <!-- Lorem ipsum dolor sit amet, -->
-             <p>Lorem ipsum dolor sit amet, .consectetur adipiscing elit. In nibh libero, feugiat ac laoreet ac, dictum mollis turpis. Donec euismod sapien non nisl porta, at dapibus mauris laoreet. Duis in tincidunt justo, rhoncus ultrices libero. Proin sodales suscipit ex eget consequat. Pellentesque at orci efficitur, molestie risus in, porta diam. Phasellus ac efficitur metus, a fermentum leo. Maecenas posuere luctus urna et vehicula. Vestibulum et quam in orci cursus interdum non at leo. Nunc non ante ultricies, viverra dui eu, interdum elit.</p>
+             <?php 
+             $info_text = get_option('crafted_menu_info_text', 'Lorem ipsum dolor sit amet, .consectetur adipiscing elit. In nibh libero, feugiat ac laoreet ac, dictum mollis turpis. Donec euismod sapien non nisl porta, at dapibus mauris laoreet. Duis in tincidunt justo, rhoncus ultrices libero. Proin sodales suscipit ex eget consequat. Pellentesque at orci efficitur, molestie risus in, porta diam. Phasellus ac efficitur metus, a fermentum leo. Maecenas posuere luctus urna et vehicula. Vestibulum et quam in orci cursus interdum non at leo. Nunc non ante ultricies, viverra dui eu, interdum elit.');
+             ?>
+             <p><?= esc_html($info_text) ?></p>
          </div>
          <div class="socials">
              <?php

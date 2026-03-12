@@ -40,6 +40,20 @@ translate:no;
 <?php wp_head(); ?>
 <title><?php wp_title(); ?></title>
 
+<?php
+// Expose timer settings to JavaScript
+$timer_date = get_option('crafted_timer_date', '2026-06-18T00:00:00');
+$expired_text = get_option('crafted_timer_expired_text', 'Kijk de livestream');
+$expired_url = get_option('crafted_timer_expired_url', '/livestream');
+?>
+<script>
+    window.craftedTimerSettings = {
+        targetDate: "<?php echo esc_js($timer_date); ?>",
+        expiredText: "<?php echo esc_js($expired_text); ?>",
+        expiredUrl: "<?php echo esc_js($expired_url); ?>"
+    };
+</script>
+
 </head>
 
 <body <?php body_class(); ?>>
@@ -154,5 +168,4 @@ translate:no;
     </script>
     <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
-</body>
-</html>
+

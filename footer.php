@@ -16,11 +16,13 @@
                     for ($i = 1; $i <= 4; $i++):
                         $text = get_option("crafted_footer_btn_{$i}_text", "Knop $i");
                         $url = get_option("crafted_footer_btn_{$i}_url", "#");
+                        $custom_icon = get_option("crafted_footer_btn_{$i}_icon");
+                        $icon_class = !empty($custom_icon) ? $custom_icon : $icons[$i - 1];
                         ?>
                     <a href="<?= esc_url($url) ?>" class="footer-glass-btn">
                         <div class="btn-icon-box">
-                            <!-- Using Dashicons for simplicity, can be replaced with SVGs -->
-                            <span class="dashicons <?= $icons[$i - 1] ?>"></span>
+                            <!-- Using Dashicons -->
+                            <span class="dashicons <?= esc_attr($icon_class) ?>"></span>
                         </div>
                         <span class="btn-text"><?= esc_html($text) ?></span>
                     </a>

@@ -31,7 +31,7 @@ $text3 = get_option('crafted_home_carousel_3') ?: 'Gratis Entree';
 
     <!-- Hero Content (Matches original front-page.php structure) -->
     <div class="hero-content">
-        <h1 class="site-title">CRAFTED</h1>
+        <h1 class="site-title notranslate">CRAFTED</h1>
         <p>Voor studenten, door studenten</p>
     </div>
 
@@ -80,26 +80,28 @@ $text3 = get_option('crafted_home_carousel_3') ?: 'Gratis Entree';
    <!-- What Awaits You Cards Section -->
    <section class="awaits-section">
      <div class="cards-container">
-       <div class="card">
-         <div class="card-image" style="background-image: url('<?php echo esc_url(get_template_directory_uri() . '/assets/images/landing.jpg'); ?>');"></div>
-         <h3 class="card-title">Programma</h3>
-         <p class="card-description">State-of-the-art lighting, visuals, and production design create a multi-sensory journey like no other</p>
-         <button class="card-button">→</button>
-       </div>
+       <?php
+       $card_defaults = [
+           1 => ['title' => 'Programma', 'desc' => 'State-of-the-art lighting, visuals, and production design create a multi-sensory journey like no other'],
+           2 => ['title' => 'Tickets', 'desc' => 'World-class artists and emerging talents come together on multiple stages to create unforgettable moments'],
+           3 => ['title' => 'Crafted & Friends', 'desc' => 'Dance until sunrise with cutting-edge electronic music from renowned DJs and producers from around the globe'],
+       ];
+       $fallback_img = get_template_directory_uri() . '/assets/images/landing.jpg';
 
+       for ($i = 1; $i <= 3; $i++):
+           $card_title = get_option("crafted_home_card_{$i}_title", $card_defaults[$i]['title']);
+           $card_desc = get_option("crafted_home_card_{$i}_desc", $card_defaults[$i]['desc']);
+           $card_image_id = get_option("crafted_home_card_{$i}_image");
+           $card_image_url = $card_image_id ? wp_get_attachment_image_url($card_image_id, 'large') : $fallback_img;
+           $card_link = get_option("crafted_home_card_{$i}_link", '#');
+       ?>
        <div class="card">
-         <div class="card-image" style="background-image: url('<?php echo esc_url(get_template_directory_uri() . '/assets/images/landing.jpg'); ?>');"></div>
-         <h3 class="card-title">Tickets</h3>
-         <p class="card-description">World-class artists and emerging talents come together on multiple stages to create unforgettable moments</p>
-         <button class="card-button">→</button>
+         <div class="card-image" style="background-image: url('<?= esc_url($card_image_url) ?>');"></div>
+         <h3 class="card-title"><?= esc_html($card_title) ?></h3>
+         <p class="card-description"><?= esc_html($card_desc) ?></p>
+         <button class="card-button" onclick="window.location.href='<?= esc_url($card_link) ?>'">&#8594;</button>
        </div>
-
-       <div class="card">
-         <div class="card-image" style="background-image: url('<?php echo esc_url(get_template_directory_uri() . '/assets/images/landing.jpg'); ?>');"></div>
-         <h3 class="card-title">Crafted & Friends</h3>
-         <p class="card-description">Dance until sunrise with cutting-edge electronic music from renowned DJs and producers from around the globe</p>
-         <button class="card-button">→</button>
-       </div>
+       <?php endfor; ?>
      </div>
    </section>
 
@@ -107,21 +109,31 @@ $text3 = get_option('crafted_home_carousel_3') ?: 'Gratis Entree';
    <section class="nieuws-section">
      <div class="nieuws-container">
        <div class="nieuws-content">
-         <h2 class="nieuws-title">Volg hier het laatste nieuws!</h2>
-         <p class="nieuws-description">Blijf op de hoogte met teasers, previews en andere interessante updates.</p>
-         <button class="nieuws-button">
+         <?php
+         $nieuws_title = get_option('crafted_home_nieuws_title', 'Volg hier het laatste nieuws!');
+         $nieuws_desc = get_option('crafted_home_nieuws_desc', 'Blijf op de hoogte met teasers, previews en andere interessante updates.');
+         $nieuws_link = get_option('crafted_home_nieuws_link', '/nieuws');
+         ?>
+         <h2 class="nieuws-title"><?= esc_html($nieuws_title) ?></h2>
+         <p class="nieuws-description"><?= esc_html($nieuws_desc) ?></p>
+         <a href="<?= esc_url($nieuws_link) ?>" class="nieuws-button">
            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
              <path d="M3 3h14v14H3V3z" stroke="currentColor" stroke-width="2" fill="none"/>
              <path d="M7 7h6M7 10h6M7 13h4" stroke="currentColor" stroke-width="1.5"/>
            </svg>
            Nieuws
-         </button>
+         </a>
        </div>
        <div class="nieuws-image-wrapper">
          <div class="nieuws-image-border">
-           <div class="nieuws-image" style="background-image: url('https://via.placeholder.com/400x300?text=Nieuws+Foto');"></div>
+           <?php
+           $nieuws_image_id = get_option('crafted_home_nieuws_image');
+           $nieuws_image_url = $nieuws_image_id ? wp_get_attachment_image_url($nieuws_image_id, 'large') : 'https://via.placeholder.com/400x300?text=Nieuws+Foto';
+           ?>
+           <div class="nieuws-image" style="background-image: url('<?= esc_url($nieuws_image_url) ?>');"></div>
          </div>
-         <p class="nieuws-credit">Door Summa Marketing</p>
+         <?php $nieuws_credit = get_option('crafted_home_nieuws_credit', 'Door Summa Marketing'); ?>
+         <p class="nieuws-credit"><?= esc_html($nieuws_credit) ?></p>
        </div>
      </div>
    </section>
@@ -130,28 +142,34 @@ $text3 = get_option('crafted_home_carousel_3') ?: 'Gratis Entree';
    <section class="locatie-section">
      <div class="locatie-container">
        <div class="locatie-column">
-         <div class="section-heading">
-           <h2>Locatie</h2>
-           <span class="heading-underline"></span>
-         </div>
+          <div class="section-heading">
+            <h2>Locatie</h2>
+            <span class="heading-underline"></span>
+          </div>
 
-         <div class="map-card">
-           <div class="map-embed">
-             <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2250.1712848719576!2d5.454405376123775!3d51.44860461499746!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47c6d96b3a220f6b%3A0x3a0eb3741c513904!2sKlokgebouw%2C%20Eindhoven!5e1!3m2!1snl!2snl!4v1769778877889!5m2!1snl!2snl" width="600" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-           </div>
-         </div>
+          <div class="map-card">
+            <div class="map-embed">
+              <?php $maps_url = get_option('crafted_home_locatie_maps_url', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2250.1712848719576!2d5.454405376123775!3d51.44860461499746!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47c6d96b3a220f6b%3A0x3a0eb3741c513904!2sKlokgebouw%2C%20Eindhoven!5e1!3m2!1snl!2snl!4v1769778877889!5m2!1snl!2snl'); ?>
+              <iframe src="<?= esc_url($maps_url) ?>" width="600" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+          </div>
 
-         <div class="address-card">
-           <div class="address-header">
-             <span class="address-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></span>
-             <div>
-               <p class="address-title">Adres</p>
-               <p class="address-text">Klokgebouw 50<br>5617 AB Eindhoven</p>
-             </div>
-           </div>
-           <a class="route-button" href="#">Routebeschrijving</a>
-         </div>
-       </div>
+          <div class="address-card">
+            <div class="address-header">
+              <span class="address-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></span>
+              <div>
+                <p class="address-title">Adres</p>
+                <?php
+                $adres1 = get_option('crafted_home_locatie_adres_titel', 'Klokgebouw 50');
+                $adres2 = get_option('crafted_home_locatie_adres_tekst', '5617 AB Eindhoven');
+                ?>
+                <p class="address-text"><?= esc_html($adres1) ?><br><?= esc_html($adres2) ?></p>
+              </div>
+            </div>
+            <?php $route_url = get_option('crafted_home_locatie_route_url', '#'); ?>
+            <a class="route-button" href="<?= esc_url($route_url) ?>">Routebeschrijving</a>
+          </div>
+        </div>
 
        <div class="buurt-column">
          <div class="section-heading">
@@ -160,57 +178,46 @@ $text3 = get_option('crafted_home_carousel_3') ?: 'Gratis Entree';
          </div>
 
          <div class="buurt-grid">
-           <div class="buurt-card">
-             <div class="buurt-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M21 5V4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v1c0 3.75 2.44 6.94 5.92 8.35L6 20H4v2h16v-2h-2l-2.92-6.65C18.56 11.94 21 8.75 21 5zM8 4h8v1c0 2.21-1.79 4-4 4s-4-1.79-4-4V4z"/></svg></div>
-             <div>
-               <p class="buurt-title">Biergarten Eindhoven</p>
-               <p class="buurt-sub">Bar & terras</p>
-               <p class="buurt-distance">300m</p>
-             </div>
-           </div>
-           <div class="buurt-card">
-             <div class="buurt-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M21 5V4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v1c0 3.75 2.44 6.94 5.92 8.35L6 20H4v2h16v-2h-2l-2.92-6.65C18.56 11.94 21 8.75 21 5zM8 4h8v1c0 2.21-1.79 4-4 4s-4-1.79-4-4V4z"/></svg></div>
-             <div>
-               <p class="buurt-title">Ketelhuis Strijp-S</p>
-               <p class="buurt-sub">Bar</p>
-               <p class="buurt-distance">300m</p>
-             </div>
-           </div>
-           <div class="buurt-card">
-             <div class="buurt-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z"/></svg></div>
-             <div>
-               <p class="buurt-title">STR’EAT Bars & kitchens</p>
-               <p class="buurt-sub">Restaurant</p>
-               <p class="buurt-distance">300m</p>
-             </div>
-           </div>
-           <div class="buurt-card">
-             <div class="buurt-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M7 13c1.66 0 3-1.34 3-3S8.66 7 7 7s-3 1.34-3 3 1.34 3 3 3zm12-6h-8v7H3V5H1v15h2v-3h18v3h2v-9c0-2.21-1.79-4-4-4z"/></svg></div>
-             <div>
-               <p class="buurt-title">Hotel Crown</p>
-               <p class="buurt-sub">Comfortabel overnachten</p>
-               <p class="buurt-distance">800m</p>
-             </div>
-           </div>
-           <div class="buurt-card">
-             <div class="buurt-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-4 0-8 .5-8 4v9.5C4 17.43 5.57 19 7.5 19L6 20.5v.5h12v-.5L16.5 19c1.93 0 3.5-1.57 3.5-3.5V6c0-3.5-3.58-4-8-4zM7.5 17c-.83 0-1.5-.67-1.5-1.5S6.67 14 7.5 14s1.5.67 1.5 1.5S8.33 17 7.5 17zm3.5-7H6V6h5v4zm4 0h-5V6h5v4zm1.5 7c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg></div>
-             <div>
-               <p class="buurt-title">NS Station Eindhoven</p>
-               <p class="buurt-sub">Trein & bus verbindingen</p>
-               <p class="buurt-distance">1.2km</p>
-             </div>
-           </div>
-           <div class="buurt-card">
-             <div class="buurt-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M13.2 11H10V7h3.2c1.1 0 2 .9 2 2s-.9 2-2 2zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.2 11H10v4H8V5h5.2c2.21 0 4 1.79 4 4s-1.79 4-4 4z"/></svg></div>
-             <div>
-               <p class="buurt-title">Parkeergarage P1</p>
-               <p class="buurt-sub">24/7 beschikbaar</p>
-               <p class="buurt-distance">150m</p>
-             </div>
-           </div>
-         </div>
+            <?php
+            $buurt_icons = [
+                'bar' => '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M21 5V4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v1c0 3.75 2.44 6.94 5.92 8.35L6 20H4v2h16v-2h-2l-2.92-6.65C18.56 11.94 21 8.75 21 5zM8 4h8v1c0 2.21-1.79 4-4 4s-4-1.79-4-4V4z"/></svg>',
+                'restaurant' => '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z"/></svg>',
+                'hotel' => '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M7 13c1.66 0 3-1.34 3-3S8.66 7 7 7s-3 1.34-3 3 1.34 3 3 3zm12-6h-8v7H3V5H1v15h2v-3h18v3h2v-9c0-2.21-1.79-4-4-4z"/></svg>',
+                'station' => '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-4 0-8 .5-8 4v9.5C4 17.43 5.57 19 7.5 19L6 20.5v.5h12v-.5L16.5 19c1.93 0 3.5-1.57 3.5-3.5V6c0-3.5-3.58-4-8-4zM7.5 17c-.83 0-1.5-.67-1.5-1.5S6.67 14 7.5 14s1.5.67 1.5 1.5S8.33 17 7.5 17zm3.5-7H6V6h5v4zm4 0h-5V6h5v4zm1.5 7c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>',
+                'parkeren' => '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M13.2 11H10V7h3.2c1.1 0 2 .9 2 2s-.9 2-2 2zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.2 11H10v4H8V5h5.2c2.21 0 4 1.79 4 4s-1.79 4-4 4z"/></svg>',
+                'overig' => '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>',
+            ];
+            $buurt_defaults = [
+                1 => ['title' => 'Biergarten Eindhoven', 'sub' => 'Bar & terras', 'dist' => '300m', 'icon' => 'bar'],
+                2 => ['title' => 'Ketelhuis Strijp-S', 'sub' => 'Bar', 'dist' => '300m', 'icon' => 'bar'],
+                3 => ['title' => "STR'EAT Bars & kitchens", 'sub' => 'Restaurant', 'dist' => '300m', 'icon' => 'restaurant'],
+                4 => ['title' => 'Hotel Crown', 'sub' => 'Comfortabel overnachten', 'dist' => '800m', 'icon' => 'hotel'],
+                5 => ['title' => 'NS Station Eindhoven', 'sub' => 'Trein & bus verbindingen', 'dist' => '1.2km', 'icon' => 'station'],
+                6 => ['title' => 'Parkeergarage P1', 'sub' => '24/7 beschikbaar', 'dist' => '150m', 'icon' => 'parkeren'],
+                7 => ['title' => '', 'sub' => '', 'dist' => '', 'icon' => 'overig'],
+                8 => ['title' => '', 'sub' => '', 'dist' => '', 'icon' => 'overig'],
+            ];
+            for ($i = 1; $i <= 8; $i++):
+                $def = $buurt_defaults[$i];
+                $b_title = get_option("crafted_home_buurt_{$i}_title", $def['title']);
+                if (empty($b_title)) continue;
+                $b_sub = get_option("crafted_home_buurt_{$i}_sub", $def['sub']);
+                $b_dist = get_option("crafted_home_buurt_{$i}_dist", $def['dist']);
+                $b_icon = get_option("crafted_home_buurt_{$i}_icon", $def['icon']);
+                $icon_svg = isset($buurt_icons[$b_icon]) ? $buurt_icons[$b_icon] : $buurt_icons['overig'];
+            ?>
+            <div class="buurt-card">
+              <div class="buurt-icon"><?= $icon_svg ?></div>
+              <div>
+                <p class="buurt-title"><?= esc_html($b_title) ?></p>
+                <p class="buurt-sub"><?= esc_html($b_sub) ?></p>
+                <p class="buurt-distance"><?= esc_html($b_dist) ?></p>
+              </div>
+            </div>
+            <?php endfor; ?>
+          </div>
 
-         <div class="contact-panel">
+<div class="contact-panel">
            <div class="contact-text">
              <h3>Heeft u vragen of andere opmerking?</h3>
              <p>Kom in contact met ons! We helpen u graag verder.</p>
@@ -223,7 +230,61 @@ $text3 = get_option('crafted_home_carousel_3') ?: 'Gratis Entree';
          </div>
        </div>
      </div>
-   </section>
+   
+    <!-- Plattegrond Section -->
+    <?php
+    $plat_title = get_option('crafted_home_plattegrond_titel', 'Plattegrond');
+    $plat_text  = get_option('crafted_home_plattegrond_tekst', '');
+    $plat_img_id = get_option('crafted_home_plattegrond_img');
+    $plat_img_src = '';
+    if ($plat_img_id) {
+        $plat_img_src = wp_get_attachment_image_url($plat_img_id, 'full');
+    }
+    
+    // Only render the whole section if there's at least a title or image
+    if (!empty($plat_title) || !empty($plat_img_src) || !empty($plat_text)) :
+    ?>
+    <section class="plattegrond-section">
+        <div class="plattegrond-container<?= empty($plat_text) ? ' plattegrond-full' : ' plattegrond-split' ?>">
+            
+            <?php if (!empty($plat_text)) : ?>
+            <div class="plattegrond-content">
+                <?php if (!empty($plat_title)) : ?>
+                <div class="section-heading" style="text-align:left;">
+                    <h2><?= esc_html($plat_title) ?></h2>
+                    <span class="heading-underline"></span>
+                </div>
+                <?php endif; ?>
+                <div class="plattegrond-text">
+                    <?= wpautop(wp_kses_post($plat_text)) ?>
+                </div>
+            </div>
+            <?php endif; ?>
+
+            <div class="plattegrond-visual">
+                <?php if (empty($plat_text) && !empty($plat_title)) : ?>
+                <div class="section-heading">
+                    <h2><?= esc_html($plat_title) ?></h2>
+                    <span class="heading-underline"></span>
+                </div>
+                <?php endif; ?>
+                
+                <div class="map-card plattegrond-card">
+                    <?php if ($plat_img_src) : ?>
+                        <a href="<?= esc_url($plat_img_src) ?>" target="_blank" title="Bekijk grote plattegrond">
+                            <img src="<?= esc_url($plat_img_src) ?>" alt="Plattegrond" class="plattegrond-img">
+                        </a>
+                    <?php else : ?>
+                        <div class="plattegrond-placeholder">
+                            <p>Geen plattegrond geselecteerd.</p>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+        </div>
+    </section>
+    <?php endif; ?>
 </main>
 
 <!-- JavaScript voor Smooth Scrolling -->
