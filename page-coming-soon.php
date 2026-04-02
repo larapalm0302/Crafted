@@ -15,6 +15,8 @@ $bg_image_url = $image_id ? wp_get_attachment_image_url($image_id, 'full') : get
     <link rel="icon" href="<?php echo get_template_directory_uri(); ?>/assets/images/logo.png">
     
     <link rel="stylesheet" href="<?php echo esc_url(get_template_directory_uri() . '/assets/css/index.css'); ?>">
+    <link href="https://fonts.googleapis.com/css2?family=Krona+One&display=swap" rel="stylesheet">
+
     
     <style>
         body, html {
@@ -73,14 +75,17 @@ $bg_image_url = $image_id ? wp_get_attachment_image_url($image_id, 'full') : get
         }
 
         .cs-title {
-            color: #fff;
+            color: #ffea99;
             font-size: clamp(30px, 6vw, 60px);
-            font-weight: 900;
+            font-weight: 400;
             text-transform: uppercase;
-            margin-bottom: 10px;
-            text-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            margin-bottom: 20px;
+            text-shadow: -6px -3px 0 #4f2e5b;
             text-align: center;
+            font-family: "Krona One", sans-serif;
+            line-height: 1.2;
         }
+
         
         .cs-subtitle {
             color: #FFEA99;
@@ -95,44 +100,57 @@ $bg_image_url = $image_id ? wp_get_attachment_image_url($image_id, 'full') : get
         .cs-timer {
             display: flex;
             align-items: center;
-            color: #fff;
-            font-weight: 900;
-            background: rgba(0, 0, 0, 0.4);
-            padding: 20px 40px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            justify-content: center;
+            gap: 25px;
+            background: transparent;
+            padding: 0;
+            border: none;
+            backdrop-filter: none;
+            box-shadow: none;
+            margin-top: 40px;
         }
 
         .cs-timerelement {
+            position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-width: 80px;
+            min-width: 130px;
+            height: 90px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
         }
 
         .cs-timercounter {
-            font-size: clamp(40px, 8vw, 80px);
+            font-size: clamp(32px, 5vw, 48px);
             line-height: 1;
-            text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            font-family: "Krona One", sans-serif;
+            color: #FFEA99;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
 
         .cs-timer-label {
-            font-size: clamp(12px, 2vw, 18px);
+            font-size: 11px;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            color: rgba(255, 255, 255, 0.8);
-            margin-top: 5px;
+            letter-spacing: 1.5px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 8px;
+            font-weight: 500;
         }
 
         .cs-divider {
-            font-size: clamp(30px, 6vw, 60px);
-            margin: 0 15px;
-            margin-bottom: 25px;
-            color: #FFEA99;
+            font-size: 32px;
+            margin: 0;
+            color: rgba(255, 234, 153, 0.6);
+            align-self: center;
+            font-weight: bold;
         }
+
         
         .cs-livestream-btn {
             display: inline-block;
@@ -157,16 +175,27 @@ $bg_image_url = $image_id ? wp_get_attachment_image_url($image_id, 'full') : get
 
         @media (max-width: 600px) {
             .cs-timer {
-                padding: 15px 20px;
+                gap: 8px;
             }
             .cs-timerelement {
-                min-width: 60px;
+                min-width: 75px;
+                height: 65px;
+                border-radius: 8px;
+            }
+            .cs-timercounter {
+                font-size: 24px;
+            }
+            .cs-timer-label {
+                font-size: 8px;
+                letter-spacing: 0.5px;
+                margin-top: 4px;
             }
             .cs-divider {
-                margin: 0 8px;
-                margin-bottom: 15px;
+                display: none; /* Cleaner look on mobile */
             }
         }
+
+
         
         /* Hide Google Translate Banner completely */
         body { top: 0 !important; }
