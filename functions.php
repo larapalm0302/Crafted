@@ -17,6 +17,8 @@ function register_programma_posttype()
         'menu_icon' => 'dashicons-calendar',
         'supports' => ['title', 'thumbnail', 'excerpt'],
         'show_in_rest' => true,
+        'capability_type' => ['programma', 'programmas'],
+        'map_meta_cap' => true,
     ]);
 }
 add_action('init', 'register_programma_posttype');
@@ -218,9 +220,9 @@ function get_field($field, $post_id = null)
 
 function crafted_contact_settings_init()
 {
-    register_setting('crafted_contact', 'crafted_contact_email');
-    register_setting('crafted_contact', 'crafted_contact_phone');
-    register_setting('crafted_contact', 'crafted_contact_address');
+    register_setting('crafted_contact', 'crafted_contact_email', ['capability' => 'crafted_manage_contact_options']);
+    register_setting('crafted_contact', 'crafted_contact_phone', ['capability' => 'crafted_manage_contact_options']);
+    register_setting('crafted_contact', 'crafted_contact_address', ['capability' => 'crafted_manage_contact_options']);
 
     add_settings_section(
         'crafted_contact_section',
@@ -278,17 +280,50 @@ function crafted_contact_menu()
     add_menu_page(
         'Contact Info',
         'Contact Info',
-        'manage_options',
+        'crafted_manage_contact_options',
         'crafted-contact',
         'crafted_contact_page',
         'dashicons-phone',
-        30
+        29
     );
 }
 add_action('admin_menu', 'crafted_contact_menu');
 
+add_filter('option_page_capability_crafted_contact', function () {
+    return 'crafted_manage_contact_options';
+});
+
+function crafted_block_unauthorized_option_updates()
+{
+    if (!is_admin() || !isset($_POST['option_page'])) {
+        return;
+    }
+
+    $capability_map = [
+        'crafted_contact' => 'crafted_manage_contact_options',
+        'crafted_home_group' => 'crafted_manage_home_options',
+        'crafted_footer_group' => 'crafted_manage_footer_options',
+        'crafted_menu_group' => 'crafted_manage_menu_options',
+        'crafted_cs_group' => 'crafted_manage_coming_soon_options',
+    ];
+
+    $option_page = sanitize_key(wp_unslash($_POST['option_page']));
+    if (!isset($capability_map[$option_page])) {
+        return;
+    }
+
+    if (!current_user_can($capability_map[$option_page])) {
+        wp_die('Je hebt geen toestemming om deze instellingen op te slaan.', 'Geen toestemming', ['response' => 403]);
+    }
+}
+add_action('admin_init', 'crafted_block_unauthorized_option_updates', 1);
+
 function crafted_contact_page()
 {
+    if (!current_user_can('crafted_manage_contact_options')) {
+        wp_die('Je hebt geen toestemming voor Contact Info.', 'Geen toestemming', ['response' => 403]);
+    }
+
     ?>
 <div class="wrap">
     <h1>Contact Informatie</h1>
@@ -345,13 +380,14 @@ function register_nieuws_posttype()
         ],
         'public' => true,
         'has_archive' => false,
-        // 'publicly_queryable' => false,
         'menu_icon' => 'dashicons-megaphone',
         'supports' => ['title', 'thumbnail', 'excerpt'],
         'show_in_rest' => true,
         'rewrite' => [
             'slug' => 'nieuws-berichten'
         ],
+        'capability_type' => ['nieuws', 'nieuwss'],
+        'map_meta_cap' => true,
     ]);
 }
 add_action('init', 'register_nieuws_posttype');
@@ -508,6 +544,8 @@ function register_teasers_posttype()
         'menu_icon' => 'dashicons-lightbulb',
         'supports' => ['title', 'thumbnail', 'excerpt'],
         'show_in_rest' => true,
+        'capability_type' => ['teaser', 'teasers'],
+        'map_meta_cap' => true,
     ]);
 }
 add_action('init', 'register_teasers_posttype');
@@ -662,6 +700,8 @@ function register_storylines_posttype()
         'menu_icon' => 'dashicons-book',
         'supports' => ['title', 'thumbnail', 'excerpt'],
         'show_in_rest' => true,
+        'capability_type' => ['storyline', 'storylines'],
+        'map_meta_cap' => true,
     ]);
 }
 add_action('init', 'register_storylines_posttype');
@@ -923,6 +963,8 @@ function crafted_register_extra_cpts()
         'public' => true,
         'menu_icon' => 'dashicons-welcome-learn-more',
         'supports' => ['title', 'editor', 'thumbnail'],
+        'capability_type' => ['school', 'scholen'],
+        'map_meta_cap' => true,
     ]);
     // Organisatie
     register_post_type('organisatie', [
@@ -930,6 +972,8 @@ function crafted_register_extra_cpts()
         'public' => true,
         'menu_icon' => 'dashicons-groups',
         'supports' => ['title', 'editor', 'thumbnail'],
+        'capability_type' => ['organisatie', 'organisaties'],
+        'map_meta_cap' => true,
     ]);
     // Ambassadeur
     register_post_type('ambassadeur', [
@@ -937,6 +981,8 @@ function crafted_register_extra_cpts()
         'public' => true,
         'menu_icon' => 'dashicons-businessman',
         'supports' => ['title', 'thumbnail'],
+        'capability_type' => ['ambassadeur', 'ambassadeurs'],
+        'map_meta_cap' => true,
     ]);
     // Livestream
     register_post_type('livestream', [
@@ -950,6 +996,8 @@ function crafted_register_extra_cpts()
         'menu_icon' => 'dashicons-video-alt3',
         'supports' => ['title'],
         'show_in_rest' => true,
+        'capability_type' => ['livestream', 'livestreams'],
+        'map_meta_cap' => true,
     ]);
 }
 add_action('init', 'crafted_register_extra_cpts');
@@ -1183,12 +1231,16 @@ add_action('save_post', 'crafted_save_extra_meta_data');
 // --- Home Menu Pagina ---
 function crafted_home_menu()
 {
-    add_menu_page('Home Opties', 'Home Opties', 'manage_options', 'crafted-home', 'crafted_home_page', 'dashicons-admin-home', 30);
+    add_menu_page('Home Opties', 'Home Opties', 'crafted_manage_home_options', 'crafted-home', 'crafted_home_page', 'dashicons-admin-home', 30);
 }
 add_action('admin_menu', 'crafted_home_menu');
 
 function crafted_home_page()
 {
+    if (!current_user_can('crafted_manage_home_options')) {
+        wp_die('Je hebt geen toestemming voor Home Opties.', 'Geen toestemming', ['response' => 403]);
+    }
+
     wp_enqueue_media();
     echo '<div class="wrap"><h1>Home Pagina Instellingen</h1><form method="post" action="options.php">';
     settings_fields('crafted_home_group');
@@ -1238,7 +1290,7 @@ function crafted_home_settings_init()
     add_settings_section('crafted_home_hero_section', 'Hero Achtergrond (Video of Afbeelding)', '__return_false', 'crafted_home');
 
     // Video URL (has priority over image if filled)
-    register_setting('crafted_home_group', 'crafted_home_video_url');
+    register_setting('crafted_home_group', 'crafted_home_video_url', ['capability' => 'crafted_manage_home_options']);
     add_settings_field('crafted_home_video_url', 'Achtergrond Video URL (.mp4)', function () {
         $val = get_option('crafted_home_video_url');
         echo '<input type="url" name="crafted_home_video_url" value="' . esc_attr($val) . '" class="regular-text" placeholder="https://.../video.mp4" style="width: 100%; max-width: 600px;">';
@@ -1246,7 +1298,7 @@ function crafted_home_settings_init()
     }, 'crafted_home', 'crafted_home_hero_section');
 
     // Image Upload
-    register_setting('crafted_home_group', 'crafted_home_image_id');
+    register_setting('crafted_home_group', 'crafted_home_image_id', ['capability' => 'crafted_manage_home_options']);
     add_settings_field('crafted_home_image_id', 'Fallback Achtergrond Afbeelding', function () {
         $image_id = get_option('crafted_home_image_id');
         $image_url = $image_id ? wp_get_attachment_image_url($image_id, 'medium') : '';
@@ -1300,7 +1352,7 @@ jQuery(document).ready(function($) {
     add_settings_section('crafted_home_carousel_section', 'Info Balk Caroussel', '__return_false', 'crafted_home');
 
     for ($i = 1; $i <= 3; $i++) {
-        register_setting('crafted_home_group', "crafted_home_carousel_{$i}");
+        register_setting('crafted_home_group', "crafted_home_carousel_{$i}", ['capability' => 'crafted_manage_home_options']);
         add_settings_field("crafted_home_carousel_{$i}", "Caroussel Tekst $i", function () use ($i) {
             $val = get_option("crafted_home_carousel_{$i}");
             echo '<input type="text" name="crafted_home_carousel_' . $i . '" value="' . esc_attr($val) . '" class="regular-text">';
@@ -1324,21 +1376,21 @@ jQuery(document).ready(function($) {
         $defaults = $card_defaults[$i];
 
         // Title
-        register_setting('crafted_home_group', "crafted_home_card_{$i}_title");
+        register_setting('crafted_home_group', "crafted_home_card_{$i}_title", ['capability' => 'crafted_manage_home_options']);
         add_settings_field("crafted_home_card_{$i}_title", "Kaart $i — Titel", function () use ($i, $defaults) {
             $val = get_option("crafted_home_card_{$i}_title", $defaults['title']);
             echo '<input type="text" name="crafted_home_card_' . $i . '_title" value="' . esc_attr($val) . '" class="regular-text" style="width:100%;max-width:400px;">';
         }, 'crafted_home', 'crafted_home_cards_section');
 
         // Description
-        register_setting('crafted_home_group', "crafted_home_card_{$i}_desc");
+        register_setting('crafted_home_group', "crafted_home_card_{$i}_desc", ['capability' => 'crafted_manage_home_options']);
         add_settings_field("crafted_home_card_{$i}_desc", "Kaart $i — Beschrijving", function () use ($i, $defaults) {
             $val = get_option("crafted_home_card_{$i}_desc", $defaults['desc']);
             echo '<textarea name="crafted_home_card_' . $i . '_desc" rows="3" style="width:100%;max-width:500px;">' . esc_textarea($val) . '</textarea>';
         }, 'crafted_home', 'crafted_home_cards_section');
 
         // Image
-        register_setting('crafted_home_group', "crafted_home_card_{$i}_image");
+        register_setting('crafted_home_group', "crafted_home_card_{$i}_image", ['capability' => 'crafted_manage_home_options']);
         add_settings_field("crafted_home_card_{$i}_image", "Kaart $i — Afbeelding", function () use ($i) {
             $image_id = get_option("crafted_home_card_{$i}_image");
             $image_url = $image_id ? wp_get_attachment_image_url($image_id, 'medium') : '';
@@ -1357,7 +1409,7 @@ jQuery(document).ready(function($) {
         }, 'crafted_home', 'crafted_home_cards_section');
 
         // Button Link
-        register_setting('crafted_home_group', "crafted_home_card_{$i}_link");
+        register_setting('crafted_home_group', "crafted_home_card_{$i}_link", ['capability' => 'crafted_manage_home_options']);
         add_settings_field("crafted_home_card_{$i}_link", "Kaart $i — Knop Link", function () use ($i) {
             $val = get_option("crafted_home_card_{$i}_link", '#');
             echo '<input type="text" name="crafted_home_card_' . $i . '_link" value="' . esc_attr($val) . '" class="regular-text" placeholder="/programma" style="width:100%;max-width:400px;">';
@@ -1373,26 +1425,26 @@ jQuery(document).ready(function($) {
         echo '<p>Beheer het adres, de Google Maps kaart en de routeknop.</p>';
     }, 'crafted_home');
 
-    register_setting('crafted_home_group', 'crafted_home_locatie_adres_titel');
+    register_setting('crafted_home_group', 'crafted_home_locatie_adres_titel', ['capability' => 'crafted_manage_home_options']);
     add_settings_field('crafted_home_locatie_adres_titel', 'Adres Regel 1', function () {
         $val = get_option('crafted_home_locatie_adres_titel', 'Klokgebouw 50');
         echo '<input type="text" name="crafted_home_locatie_adres_titel" value="' . esc_attr($val) . '" class="regular-text">';
     }, 'crafted_home', 'crafted_home_locatie_section');
 
-    register_setting('crafted_home_group', 'crafted_home_locatie_adres_tekst');
+    register_setting('crafted_home_group', 'crafted_home_locatie_adres_tekst', ['capability' => 'crafted_manage_home_options']);
     add_settings_field('crafted_home_locatie_adres_tekst', 'Adres Regel 2', function () {
         $val = get_option('crafted_home_locatie_adres_tekst', '5617 AB Eindhoven');
         echo '<input type="text" name="crafted_home_locatie_adres_tekst" value="' . esc_attr($val) . '" class="regular-text">';
     }, 'crafted_home', 'crafted_home_locatie_section');
 
-    register_setting('crafted_home_group', 'crafted_home_locatie_maps_url');
+    register_setting('crafted_home_group', 'crafted_home_locatie_maps_url', ['capability' => 'crafted_manage_home_options']);
     add_settings_field('crafted_home_locatie_maps_url', 'Google Maps Embed URL', function () {
         $val = get_option('crafted_home_locatie_maps_url', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2250.1712848719576!2d5.454405376123775!3d51.44860461499746!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47c6d96b3a220f6b%3A0x3a0eb3741c513904!2sKlokgebouw%2C%20Eindhoven!5e1!3m2!1snl!2snl!4v1769778877889!5m2!1snl!2snl');
         echo '<input type="url" name="crafted_home_locatie_maps_url" value="' . esc_attr($val) . '" style="width:100%;max-width:600px;">';
         echo '<p class="description">Plak hier de volledige Google Maps embed URL (de src van de iframe).</p>';
     }, 'crafted_home', 'crafted_home_locatie_section');
 
-    register_setting('crafted_home_group', 'crafted_home_locatie_route_url');
+    register_setting('crafted_home_group', 'crafted_home_locatie_route_url', ['capability' => 'crafted_manage_home_options']);
     add_settings_field('crafted_home_locatie_route_url', 'Routebeschrijving Link', function () {
         $val = get_option('crafted_home_locatie_route_url', '#');
         echo '<input type="url" name="crafted_home_locatie_route_url" value="' . esc_attr($val) . '" class="regular-text" placeholder="https://maps.google.com/...">';
@@ -1405,19 +1457,19 @@ jQuery(document).ready(function($) {
         echo '<p>Beheer de contactinformatie en de contactformulierinstellingen.</p>';
     }, 'crafted_home');
 
-    register_setting('crafted_home_group', 'crafted_home_contact_email');
+    register_setting('crafted_home_group', 'crafted_home_contact_email', ['capability' => 'crafted_manage_home_options']);
     add_settings_field('crafted_home_contact_email', 'Email', function () {
         $val = get_option('crafted_home_contact_email', '');
         echo '<input type="email" name="crafted_home_contact_email" value="' . esc_attr($val) . '" class="regular-text" placeholder="info@example.com">';
     }, 'crafted_home', 'crafted_home_contact_section');
 
-    register_setting('crafted_home_group', 'crafted_home_contact_telefoon');
+    register_setting('crafted_home_group', 'crafted_home_contact_telefoon', ['capability' => 'crafted_manage_home_options']);
     add_settings_field('crafted_home_contact_telefoon', 'TelefoonNummer', function () {
         $val = get_option('crafted_home_contact_telefoon', '');
         echo '<input type="tel" name="crafted_home_contact_telefoon" value="' . esc_attr($val) . '" class="regular-text" placeholder="+31 6 00000000">';
     }, 'crafted_home', 'crafted_home_contact_section');
 
-    register_setting('crafted_home_group', 'crafted_home_contact_url');
+    register_setting('crafted_home_group', 'crafted_home_contact_url', ['capability' => 'crafted_manage_home_options']);
     add_settings_field('crafted_home_contact_url', 'Contact Url', function () {
         $val = get_option('crafted_home_contact_url', '#');
         echo '<input type="text" name="crafted_home_contact_url" value="' . esc_attr($val) . '" class="regular-text" placeholder="/contact">';
@@ -1453,10 +1505,10 @@ jQuery(document).ready(function($) {
     for ($i = 1; $i <= 8; $i++) {
         $def = $buurt_defaults[$i];
 
-        register_setting('crafted_home_group', "crafted_home_buurt_{$i}_title");
-        register_setting('crafted_home_group', "crafted_home_buurt_{$i}_sub");
-        register_setting('crafted_home_group', "crafted_home_buurt_{$i}_dist");
-        register_setting('crafted_home_group', "crafted_home_buurt_{$i}_icon");
+        register_setting('crafted_home_group', "crafted_home_buurt_{$i}_title", ['capability' => 'crafted_manage_home_options']);
+        register_setting('crafted_home_group', "crafted_home_buurt_{$i}_sub", ['capability' => 'crafted_manage_home_options']);
+        register_setting('crafted_home_group', "crafted_home_buurt_{$i}_dist", ['capability' => 'crafted_manage_home_options']);
+        register_setting('crafted_home_group', "crafted_home_buurt_{$i}_icon", ['capability' => 'crafted_manage_home_options']);
 
         add_settings_field("crafted_home_buurt_{$i}", "Item $i", function () use ($i, $def, $icon_options) {
             $title = get_option("crafted_home_buurt_{$i}_title", $def['title']);
@@ -1486,9 +1538,9 @@ jQuery(document).ready(function($) {
         echo '<p>Upload hier de plattegrond afbeelding. De titel en tekst zijn optioneel. Als je geen tekst invult, wordt de plattegrond gecentreerd over de volle breedte getoond.</p>';
     }, 'crafted_home');
 
-    register_setting('crafted_home_group', 'crafted_home_plattegrond_titel');
-    register_setting('crafted_home_group', 'crafted_home_plattegrond_tekst');
-    register_setting('crafted_home_group', 'crafted_home_plattegrond_img');
+    register_setting('crafted_home_group', 'crafted_home_plattegrond_titel', ['capability' => 'crafted_manage_home_options']);
+    register_setting('crafted_home_group', 'crafted_home_plattegrond_tekst', ['capability' => 'crafted_manage_home_options']);
+    register_setting('crafted_home_group', 'crafted_home_plattegrond_img', ['capability' => 'crafted_manage_home_options']);
 
     add_settings_field('crafted_home_plattegrond_titel', 'Titel', function () {
         $val = get_option('crafted_home_plattegrond_titel', 'Plattegrond');
@@ -1522,7 +1574,7 @@ jQuery(document).ready(function($) {
         echo '<p>Beheer de "Volg hier het laatste nieuws" sectie op de homepage.</p>';
     }, 'crafted_home');
 
-    register_setting('crafted_home_group', 'crafted_home_nieuws_title');
+    register_setting('crafted_home_group', 'crafted_home_nieuws_title', ['capability' => 'crafted_manage_home_options']);
     add_settings_field('crafted_home_nieuws_title', 'Titel', function () {
         $val = get_option('crafted_home_nieuws_title', 'Volg hier het laatste nieuws!');
         echo '<input type="text" name="crafted_home_nieuws_title" value="' . esc_attr($val) . '" class="regular-text" style="width:100%;max-width:400px;">';
@@ -1565,12 +1617,20 @@ add_action('admin_init', 'crafted_home_settings_init');
 // --- Footer Menu Pagina ---
 function crafted_footer_menu()
 {
-    add_menu_page('Footer Opties', 'Footer Opties', 'manage_options', 'crafted-footer', 'crafted_footer_page', 'dashicons-layout', 31);
+    add_menu_page('Footer Opties', 'Footer Opties', 'crafted_manage_footer_options', 'crafted-footer', 'crafted_footer_page', 'dashicons-layout', 31);
 }
 add_action('admin_menu', 'crafted_footer_menu');
 
+add_filter('option_page_capability_crafted_footer_group', function () {
+    return 'crafted_manage_footer_options';
+});
+
 function crafted_footer_page()
 {
+    if (!current_user_can('crafted_manage_footer_options')) {
+        wp_die('Je hebt geen toestemming voor Footer Opties.', 'Geen toestemming', ['response' => 403]);
+    }
+
     echo '<div class="wrap"><h1>Footer Instellingen</h1><form method="post" action="options.php">';
     settings_fields('crafted_footer_group');
     do_settings_sections('crafted_footer');
@@ -1689,12 +1749,20 @@ function crafted_footer_btn_cb($i)
 // =============================================
 function crafted_menu_menu()
 {
-    add_menu_page('Menu Opties', 'Menu Opties', 'manage_options', 'crafted-menu', 'crafted_menu_page', 'dashicons-menu', 32);
+    add_menu_page('Menu Opties', 'Menu Opties', 'crafted_manage_menu_options', 'crafted-menu', 'crafted_menu_page', 'dashicons-menu', 32);
 }
 add_action('admin_menu', 'crafted_menu_menu');
 
+add_filter('option_page_capability_crafted_menu_group', function () {
+    return 'crafted_manage_menu_options';
+});
+
 function crafted_menu_page()
 {
+    if (!current_user_can('crafted_manage_menu_options')) {
+        wp_die('Je hebt geen toestemming voor Menu Opties.', 'Geen toestemming', ['response' => 403]);
+    }
+
     echo '<div class="wrap"><h1>Menu Instellingen</h1><form method="post" action="options.php">';
     settings_fields('crafted_menu_group');
     do_settings_sections('crafted_menu');
@@ -1824,12 +1892,24 @@ add_action('admin_footer', 'crafted_plattegrond_admin_scripts');
 // =============================================
 function crafted_coming_soon_menu()
 {
-    add_menu_page('Coming Soon', 'Coming Soon', 'manage_options', 'crafted-coming-soon', 'crafted_coming_soon_page', 'dashicons-clock', 33);
+    add_menu_page('Coming Soon', 'Coming Soon', 'crafted_manage_coming_soon_options', 'crafted-coming-soon', 'crafted_coming_soon_page', 'dashicons-clock', 33);
 }
 add_action('admin_menu', 'crafted_coming_soon_menu');
 
+add_filter('option_page_capability_crafted_cs_group', function () {
+    return 'crafted_manage_coming_soon_options';
+});
+
+add_filter('option_page_capability_crafted_home_group', function () {
+    return 'crafted_manage_home_options';
+});
+
 function crafted_coming_soon_page()
 {
+    if (!current_user_can('crafted_manage_coming_soon_options')) {
+        wp_die('Je hebt geen toestemming voor Coming Soon.', 'Geen toestemming', ['response' => 403]);
+    }
+
     echo '<div class="wrap"><h1>Coming Soon Instellingen</h1><form method="post" action="options.php">';
     settings_fields('crafted_cs_group');
     do_settings_sections('crafted_cs');
