@@ -70,7 +70,7 @@
                 <div class="marquee-content">
                     <?php
                     $manual_sponsors = [];
-                    for ($j = 1; $j <= 20; $j++) {
+                    for ($j = 1; $j <= 40; $j++) {
                         $img_id = get_option("crafted_footer_sponsor_{$j}_img");
                         $url = get_option("crafted_footer_sponsor_{$j}_url");
 

@@ -11,7 +11,10 @@
              6 => ['nl' => 'Programma', 'en' => 'Program', 'url' => '/programma'],
          ];
 
+         $count = 0;
          for ($i = 1; $i <= 6; $i++):
+             if ($i === 5) continue; // Skip Tickets
+
              $def = $btn_defaults[$i];
              $btn_nl = get_option("crafted_menu_btn_{$i}_nl", $def['nl']);
              $btn_en = get_option("crafted_menu_btn_{$i}_en", $def['en']);
@@ -21,7 +24,7 @@
              if (empty($btn_nl)) $btn_nl = $def['nl'];
              if (empty($btn_url)) $btn_url = $def['url'];
 
-             $delay = $delays[$i - 1];
+             $delay = $delays[$count++];
              
              // Extra classes for specific buttons (e.g., button 4 'Crafted & Friends')
              $extra_classes = ($i == 4) ? ' largeH' : '';

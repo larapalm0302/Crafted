@@ -17,8 +17,6 @@ function register_programma_posttype()
         'menu_icon' => 'dashicons-calendar',
         'supports' => ['title', 'thumbnail', 'excerpt'],
         'show_in_rest' => true,
-        'capability_type' => ['programma', 'programmas'],
-        'map_meta_cap' => true,
     ]);
 }
 add_action('init', 'register_programma_posttype');
@@ -386,8 +384,6 @@ function register_nieuws_posttype()
         'rewrite' => [
             'slug' => 'nieuws-berichten'
         ],
-        'capability_type' => ['nieuws', 'nieuwss'],
-        'map_meta_cap' => true,
     ]);
 }
 add_action('init', 'register_nieuws_posttype');
@@ -544,8 +540,6 @@ function register_teasers_posttype()
         'menu_icon' => 'dashicons-lightbulb',
         'supports' => ['title', 'thumbnail', 'excerpt'],
         'show_in_rest' => true,
-        'capability_type' => ['teaser', 'teasers'],
-        'map_meta_cap' => true,
     ]);
 }
 add_action('init', 'register_teasers_posttype');
@@ -570,6 +564,7 @@ function teasers_meta_box_callback($post)
     $description = get_post_meta($post->ID, 'description', true);
     $image_id = get_post_meta($post->ID, 'teasers_image', true);
     $image_url = $image_id ? wp_get_attachment_image_url($image_id, 'medium') : '';
+    $video_url = get_post_meta($post->ID, 'teasers_video', true);
     $rawdatetime = get_post_meta($post->ID, 'raw_teasers_date', true);
     $datetime = get_post_meta($post->ID, 'teasers_date', true);
     if (empty($datetime)) {
@@ -583,7 +578,7 @@ function teasers_meta_box_callback($post)
                       style="width: 100%;"><?php echo esc_textarea($description); ?></textarea></td>
     </tr>
     <tr>
-        <th><label>Afbeelding <span style="color:red;">*</span></label></th>
+        <th><label>Afbeelding</label></th>
         <td>
             <div id="teasers-image-preview" style="margin-bottom: 10px;">
                 <?php if ($image_url): ?>
@@ -595,6 +590,13 @@ function teasers_meta_box_callback($post)
             <button type="button" class="button" id="upload-image-btn">Afbeelding uploaden</button>
             <button type="button" class="button" id="remove-image-btn"
                     style="<?php echo $image_id ? '' : 'display:none;'; ?>">Verwijderen</button>
+        </td>
+    </tr>
+    <tr>
+        <th><label for="teasers_video">Video URL</label></th>
+        <td>
+            <input type="url" name="teasers_video" id="teasers_video" value="<?php echo esc_attr($video_url); ?>" style="width: 100%;" placeholder="Bijv. YouTube link of .mp4 link">
+            <span class="description">Optioneel. Als je een video toevoegt, wordt deze getoond in plaats van de afbeelding.</span>
         </td>
     </tr>
     <tr>
@@ -656,6 +658,9 @@ function teasers_save_meta($post_id)
     if (isset($_POST['teasers_image'])) {
         update_post_meta($post_id, 'teasers_image', absint($_POST['teasers_image']));
     }
+    if (isset($_POST['teasers_video'])) {
+        update_post_meta($post_id, 'teasers_video', esc_url_raw($_POST['teasers_video']));
+    }
     if (isset($_POST['raw_teasers_date'])) {
         $rdate = sanitize_text_field($_POST['raw_teasers_date']);
         if (!empty($rdate)) {
@@ -700,8 +705,6 @@ function register_storylines_posttype()
         'menu_icon' => 'dashicons-book',
         'supports' => ['title', 'thumbnail', 'excerpt'],
         'show_in_rest' => true,
-        'capability_type' => ['storyline', 'storylines'],
-        'map_meta_cap' => true,
     ]);
 }
 add_action('init', 'register_storylines_posttype');
@@ -863,15 +866,23 @@ function validate_required_fields($post_id, $post, $update)
             $errors[] = 'Een titel is verplicht.';
         }
 
-        $image_meta_key = $post->post_type . '_image';
-        $image = get_post_meta($post_id, $image_meta_key, true);
-        if (empty($image)) {
-            $errors[] = 'Een afbeelding is verplicht.';
-        }
-
         $description = get_post_meta($post_id, 'description', true);
         if (empty($description)) {
             $errors[] = 'Een beschrijving is verplicht.';
+        }
+
+        $image_meta_key = $post->post_type . '_image';
+        $image = get_post_meta($post_id, $image_meta_key, true);
+
+        if ($post->post_type === 'teasers') {
+            $video = get_post_meta($post_id, 'teasers_video', true);
+            if (empty($image) && empty($video)) {
+                $errors[] = 'Een afbeelding of video is verplicht.';
+            }
+        } else {
+            if (empty($image)) {
+                $errors[] = 'Een afbeelding is verplicht.';
+            }
         }
 
         if (!empty($errors)) {
@@ -963,8 +974,6 @@ function crafted_register_extra_cpts()
         'public' => true,
         'menu_icon' => 'dashicons-welcome-learn-more',
         'supports' => ['title', 'editor', 'thumbnail'],
-        'capability_type' => ['school', 'scholen'],
-        'map_meta_cap' => true,
     ]);
     // Organisatie
     register_post_type('organisatie', [
@@ -972,8 +981,6 @@ function crafted_register_extra_cpts()
         'public' => true,
         'menu_icon' => 'dashicons-groups',
         'supports' => ['title', 'editor', 'thumbnail'],
-        'capability_type' => ['organisatie', 'organisaties'],
-        'map_meta_cap' => true,
     ]);
     // Ambassadeur
     register_post_type('ambassadeur', [
@@ -981,8 +988,6 @@ function crafted_register_extra_cpts()
         'public' => true,
         'menu_icon' => 'dashicons-businessman',
         'supports' => ['title', 'thumbnail'],
-        'capability_type' => ['ambassadeur', 'ambassadeurs'],
-        'map_meta_cap' => true,
     ]);
     // Livestream
     register_post_type('livestream', [
@@ -996,8 +1001,6 @@ function crafted_register_extra_cpts()
         'menu_icon' => 'dashicons-video-alt3',
         'supports' => ['title'],
         'show_in_rest' => true,
-        'capability_type' => ['livestream', 'livestreams'],
-        'map_meta_cap' => true,
     ]);
 }
 add_action('init', 'crafted_register_extra_cpts');
@@ -1670,9 +1673,9 @@ function crafted_footer_settings_init()
         );
     }
 
-    // Sponsors (20 slots)
+    // Sponsors (40 slots)
     add_settings_section('crafted_footer_sponsors_section', 'Sponsoren (Handmatig)', '__return_false', 'crafted_footer');
-    for ($j = 1; $j <= 20; $j++) {
+    for ($j = 1; $j <= 40; $j++) {
         register_setting('crafted_footer_group', "crafted_footer_sponsor_{$j}_img");
         register_setting('crafted_footer_group', "crafted_footer_sponsor_{$j}_url");
         add_settings_field(
@@ -1783,8 +1786,8 @@ function crafted_menu_settings_init()
     }, 'crafted_menu', 'crafted_menu_info_section');
 
     // Knoppen
-    add_settings_section('crafted_menu_buttons_section', '2. Menu Knoppen Links (6 stuks)', function () {
-        echo '<p>Beheer de links en de (vertaalde) namen van de 6 grote knoppen in het menu overlay.</p>';
+    add_settings_section('crafted_menu_buttons_section', '2. Menu Knoppen Links (5 stuks)', function () {
+        echo '<p>Beheer de links en de (vertaalde) namen van de 5 grote knoppen in het menu overlay.</p>';
     }, 'crafted_menu');
 
     $btn_defaults = [
@@ -1797,13 +1800,15 @@ function crafted_menu_settings_init()
     ];
 
     for ($i = 1; $i <= 6; $i++) {
+        if ($i === 5) continue; // Skip Tickets
+
         $def = $btn_defaults[$i];
 
         register_setting('crafted_menu_group', "crafted_menu_btn_{$i}_nl");
         register_setting('crafted_menu_group', "crafted_menu_btn_{$i}_en");
         register_setting('crafted_menu_group', "crafted_menu_btn_{$i}_url");
 
-        add_settings_field("crafted_menu_btn_{$i}", "Knop $i", function () use ($i, $def) {
+        add_settings_field("crafted_menu_btn_{$i}", "Knop " . ($i < 5 ? $i : $i - 1), function () use ($i, $def) {
             $nl = get_option("crafted_menu_btn_{$i}_nl", $def['nl']);
             $en = get_option("crafted_menu_btn_{$i}_en", $def['en']);
             $url = get_option("crafted_menu_btn_{$i}_url", $def['url']);

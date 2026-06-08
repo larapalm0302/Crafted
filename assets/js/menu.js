@@ -37,6 +37,7 @@ function toggleMenu() {
             // Menu is opening: save scroll pos, fix header to viewport top
             savedScrollPosition = window.scrollY;
             if (header) {
+                header.classList.remove('header-hidden');
                 header.style.position = 'fixed';
                 header.style.top = '0';
                 header.style.left = '0';
@@ -102,4 +103,45 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
     addDelay();
+
+    // Auto-hide header on scroll down, show on scroll up
+    let lastScrollY = window.scrollY;
+    let accumulatedScroll = 0;
+    const threshold = 15; // px scroll minimum delta
+    const header = document.getElementById('header');
+
+    window.addEventListener('scroll', function () {
+        const currentScrollY = window.scrollY;
+        const scrollDelta = currentScrollY - lastScrollY;
+
+        // Skip if menu is open
+        if (menu && !menu.classList.contains('menu-invisible')) {
+            lastScrollY = currentScrollY;
+            return;
+        }
+
+        // Always show header at the very top
+        if (currentScrollY <= 50) {
+            if (header) {
+                header.classList.remove('header-hidden');
+            }
+            accumulatedScroll = 0;
+            lastScrollY = currentScrollY;
+            return;
+        }
+
+        accumulatedScroll += scrollDelta;
+
+        if (header) {
+            if (accumulatedScroll > threshold && currentScrollY > 150) {
+                header.classList.add('header-hidden');
+                accumulatedScroll = 0;
+            } else if (accumulatedScroll < -threshold) {
+                header.classList.remove('header-hidden');
+                accumulatedScroll = 0;
+            }
+        }
+
+        lastScrollY = currentScrollY;
+    }, { passive: true });
 });

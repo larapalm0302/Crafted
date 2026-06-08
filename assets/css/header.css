@@ -30,6 +30,11 @@ body {
   grid-template-areas: "logo text buttons";
   align-items: center;
   justify-items: center;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#header.header-hidden {
+  transform: translateY(-100%);
 }
 
 #header::before {
